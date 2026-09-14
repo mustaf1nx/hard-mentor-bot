@@ -11,10 +11,14 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 # Для локальной разработки без Railway используется файл mentors.db.
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./mentors.db")
 
-# Railway (как и Heroku) отдаёт URL со схемой postgres://, а SQLAlchemy 2.x
-# требует postgresql://
+# Railway (как и Heroku) отдаёт URL со схемой postgres://, а SQLAlchemy
+# ожидает диалект+драйвер. Используем psycopg3 (пакет psycopg[binary]) —
+# у него есть готовые wheel'ы под новые версии Python, в отличие от
+# psycopg2-binary, который на Python 3.13 падает при сборке из исходников.
 if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
 
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 
