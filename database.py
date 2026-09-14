@@ -1,11 +1,24 @@
+import os
 from datetime import datetime
 
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = "sqlite:///./mentors.db"
+# На Railway бот и админка — это два разных сервиса (два разных контейнера),
+# поэтому локальный файл SQLite между ними не расшарить. Подключаем Postgres
+# через DATABASE_URL, который Railway сам подставит, если в проект добавлен
+# плагин Postgres и переменная указана на обоих сервисах.
+# Для локальной разработки без Railway используется файл mentors.db.
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./mentors.db")
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+# Railway (как и Heroku) отдаёт URL со схемой postgres://, а SQLAlchemy 2.x
+# требует postgresql://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
 
