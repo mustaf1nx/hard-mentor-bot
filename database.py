@@ -1,20 +1,23 @@
+from datetime import datetime
+
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text
+from sqlalchemy.orm import declarative_base, sessionmaker
+
 import os
 from datetime import datetime
 
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# На Railway бот и админка — это два разных сервиса (два разных контейнера),
-# поэтому локальный файл SQLite между ними не расшарить. Подключаем Postgres
-# через DATABASE_URL, который Railway сам подставит, если в проект добавлен
-# плагин Postgres и переменная указана на обоих сервисах.
-# Для локальной разработки без Railway используется файл mentors.db.
+# Бот и админка работают в одном процессе, но база — в Postgres, а не в файле
+# на диске контейнера: так заявки переживают любой передеплой без волюмов.
+# Для локальной разработки без Postgres под рукой падаем в SQLite-файл.
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./mentors.db")
 
-# Railway (как и Heroku) отдаёт URL со схемой postgres://, а SQLAlchemy
-# ожидает диалект+драйвер. Используем psycopg3 (пакет psycopg[binary]) —
-# у него есть готовые wheel'ы под новые версии Python, в отличие от
-# psycopg2-binary, который на Python 3.13 падает при сборке из исходников.
+# Railway (как и Heroku) отдаёт URL со схемой postgres://. SQLAlchemy ждёт
+# диалект+драйвер, поэтому переписываем на postgresql+psycopg:// — это
+# psycopg3 (пакет psycopg[binary] в requirements.txt), у него есть готовые
+# wheel'ы под свежий Python, в отличие от psycopg2-binary.
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
 elif DATABASE_URL.startswith("postgresql://"):

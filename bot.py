@@ -90,10 +90,5 @@ async def process_comment(message: Message, state: FSMContext):
     await state.clear()
 
 
-async def main():
-    init_db()
+async def run_bot():
     await dp.start_polling(bot)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

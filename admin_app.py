@@ -80,10 +80,3 @@ async def update_application(
         await notify_student(telegram_id, text)
 
     return RedirectResponse(url="/", status_code=303)
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    port = int(os.getenv("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
