@@ -23,8 +23,7 @@ def utcnow() -> datetime:
 
 
 def ticket_code(ticket_id: int) -> str:
-    return f"HM-{ticket_id:04d}"
-
+    return str(ticket_id)
 
 class Base(DeclarativeBase):
     pass
