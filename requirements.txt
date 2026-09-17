@@ -1,0 +1,4 @@
+aiogram==3.31.0
+SQLAlchemy[asyncio]==2.0.54
+asyncpg==0.31.0
+tzdata
