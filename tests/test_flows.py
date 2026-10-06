@@ -23,7 +23,7 @@ async def all_tickets(h) -> list[Ticket]:
 
 # ---------- подача ----------
 
-async def test_named_complaint_goes_to_coordinator_only(h):
+async def test_named_complaint_goes_to_coordinator_and_lead(h):
     await h.submit(ALICE, "complaint", COMPLAINT, related="CS101, четверг")
     (ticket,) = await all_tickets(h)
     assert ticket.category == "complaint" and ticket.status == "new"
@@ -32,7 +32,7 @@ async def test_named_complaint_goes_to_coordinator_only(h):
     assert ticket.priority == "normal" and not ticket.lead_only
     assert any(ticket.code in x and "48" in x for x in h.texts_to(ALICE))
     assert any(ticket.code in x for x in h.texts_to(COORD))
-    assert h.sent_to(LEAD) == []  # LEAD_GETS_ALL выключен
+    assert any(ticket.code in x for x in h.texts_to(LEAD))  # LEAD_GETS_ALL включён по умолчанию
 
 
 async def test_anonymous_ticket_stores_no_identity(h):

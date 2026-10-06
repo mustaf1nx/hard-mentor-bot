@@ -56,7 +56,7 @@ class Settings:
     db_connect_args: dict = field(default_factory=dict)
     coordinator_ids: frozenset[int] = frozenset()
     lead_ids: frozenset[int] = frozenset()
-    lead_gets_all: bool = False
+    lead_gets_all: bool = True
     daily_limit: int = 5
     timezone: str = "Asia/Almaty"
     report_weekday: int = 0  # 0 = понедельник
@@ -67,14 +67,14 @@ class Settings:
     def staff_ids(self) -> frozenset[int]:
         return self.coordinator_ids | self.lead_ids
 
-    def role_for(self, telegram_id: int, db_role: str = "mentee") -> str:
+    def role_for(self, telegram_id: int, *, is_mentor: bool = False) -> str:
         """Роли координатора и руководителя задаются только через env —
         их нельзя получить или потерять командой в чате."""
         if telegram_id in self.lead_ids:
             return "lead"
         if telegram_id in self.coordinator_ids:
             return "coordinator"
-        return "mentor" if db_role == "mentor" else "mentee"
+        return "mentor" if is_mentor else "mentee"
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -97,7 +97,7 @@ class Settings:
             db_connect_args=connect_args,
             coordinator_ids=_ids(os.environ.get("COORDINATOR_IDS")),
             lead_ids=_ids(os.environ.get("LEAD_IDS")),
-            lead_gets_all=_bool(os.environ.get("LEAD_GETS_ALL")),
+            lead_gets_all=_bool(os.environ.get("LEAD_GETS_ALL"), default=True),
             daily_limit=int(os.environ.get("DAILY_LIMIT", "5")),
             timezone=os.environ.get("TIMEZONE", "Asia/Almaty"),
             report_weekday=int(os.environ.get("REPORT_WEEKDAY", "0")),

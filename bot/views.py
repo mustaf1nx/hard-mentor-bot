@@ -53,6 +53,7 @@ def _fit(head: list[str], tail: list[str], budget: int = CARD_BUDGET) -> str:
 
 def main_menu(lang: str, is_staff: bool) -> ReplyKeyboardMarkup:
     rows = [
+        [KeyboardButton(text=MENU["sessions"][lang]), KeyboardButton(text=MENU["materials"][lang])],
         [KeyboardButton(text=MENU["feedback"][lang])],
         [KeyboardButton(text=MENU["status"][lang]), KeyboardButton(text=MENU["help"][lang])],
     ]
@@ -70,16 +71,25 @@ def categories_kb(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-def related_kb(lang: str, category: str, mentors: list[User], has_lead: bool) -> InlineKeyboardMarkup:
+def related_kb(lang: str, category: str, mentors: list[User], has_lead: bool,
+               page: int = 0) -> InlineKeyboardMarkup:
     rows: list[list[InlineKeyboardButton]] = []
     pair: list[InlineKeyboardButton] = []
-    for m in mentors[:20]:
+    page = min(max(0, page), max(0, (len(mentors) - 1) // 20))
+    for m in mentors[page * 20:(page + 1) * 20]:
         pair.append(_btn(f"🎓 {m.display_name[:24]}", f"rel:m:{m.telegram_id}"))
         if len(pair) == 2:
             rows.append(pair)
             pair = []
     if pair:
         rows.append(pair)
+    nav = []
+    if page:
+        nav.append(_btn("◀️", f"relpage:{page - 1}"))
+    if (page + 1) * 20 < len(mentors):
+        nav.append(_btn("▶️", f"relpage:{page + 1}"))
+    if nav:
+        rows.append(nav)
     if category == "complaint" and has_lead:
         rows.append([_btn(t(lang, "btn_about_coord"), "rel:coord")])
     rows.append([_btn(t(lang, "btn_skip"), "rel:skip")])
@@ -292,9 +302,36 @@ def open_ticket_kb(ticket: Ticket, lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[[_btn(t(lang, "btn_open", code=ticket.code), f"tk:{ticket.id}")]])
 
 
-def assign_kb(ticket: Ticket, candidates: list[User], lang: str) -> InlineKeyboardMarkup:
-    rows = [[_btn(f"👤 {u.display_name[:30]}", f"asg:{ticket.id}:{u.telegram_id}")] for u in candidates[:30]]
+def assign_kb(ticket: Ticket, candidates: list[User], lang: str, page: int = 0) -> InlineKeyboardMarkup:
+    page = min(max(0, page), max(0, (len(candidates) - 1) // 20))
+    rows = [[_btn(f"👤 {u.display_name[:30]}", f"asg:{ticket.id}:{u.telegram_id}")]
+            for u in candidates[page * 20:(page + 1) * 20]]
+    nav = []
+    if page:
+        nav.append(_btn("◀️", f"as:{ticket.id}:{page - 1}"))
+    if (page + 1) * 20 < len(candidates):
+        nav.append(_btn("▶️", f"as:{ticket.id}:{page + 1}"))
+    if nav:
+        rows.append(nav)
     if ticket.assigned_to:
         rows.append([_btn(t(lang, "btn_unassign"), f"asg:{ticket.id}:0")])
     rows.append([_btn(t(lang, "btn_back"), f"tk:{ticket.id}")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def mentors_page(mentors: list[User], lang: str, page: int = 0) -> tuple[str, InlineKeyboardMarkup | None]:
+    if not mentors:
+        return t(lang, "mentors_empty"), None
+    size = 8
+    pages = (len(mentors) + size - 1) // size
+    page = min(max(0, page), pages - 1)
+    lines = [t(lang, "mentors_title"), t(lang, "mentors_page", total=len(mentors), page=page + 1, pages=pages), ""]
+    for user in mentors[page * size:(page + 1) * size]:
+        handle = f" @{escape(clip(user.username, 32))}" if user.username else ""
+        lines.append(f"• {escape(clip(user.display_name, 40))}{handle} — <code>{user.telegram_id}</code>")
+    nav = []
+    if page:
+        nav.append(_btn("◀️", f"ml:{page - 1}"))
+    if page + 1 < pages:
+        nav.append(_btn("▶️", f"ml:{page + 1}"))
+    return "\n".join(lines), InlineKeyboardMarkup(inline_keyboard=[nav]) if nav else None

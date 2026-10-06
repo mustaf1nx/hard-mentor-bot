@@ -1,0 +1,4 @@
+ImportError while loading conftest '/mnt/data/ticket-notifications-work/hard-mentor-bot-main/tests/conftest.py'.
+tests/conftest.py:14: in <module>
+    from aiogram import Bot
+E   ModuleNotFoundError: No module named 'aiogram'

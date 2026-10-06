@@ -2,17 +2,17 @@
 from __future__ import annotations
 
 from aiogram import Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.memory import MemoryStorage, SimpleEventIsolation
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from .config import Settings
-from .handlers import common, fallback, feedback, staff, status
+from .handlers import common, fallback, feedback, mentoring, staff, status
 from .middleware import ViewerMiddleware
 from .ratelimit import DailyCounter
 
 
 def build_dispatcher(settings: Settings, sm: async_sessionmaker) -> Dispatcher:
-    dp = Dispatcher(storage=MemoryStorage())
+    dp = Dispatcher(storage=MemoryStorage(), events_isolation=SimpleEventIsolation())
     dp["settings"] = settings
     dp["sm"] = sm
     dp["limiter"] = DailyCounter(settings.daily_limit)
@@ -20,6 +20,9 @@ def build_dispatcher(settings: Settings, sm: async_sessionmaker) -> Dispatcher:
     dp.update.outer_middleware(ViewerMiddleware(sm, settings))
     # Порядок важен: команды и кнопки меню должны срабатывать раньше, чем шаги анкеты
     # («📋 Мои обращения» не должно стать текстом жалобы).
-    for module in (common, status, staff, feedback, fallback):
+    dp.include_router(common.router)
+    # Global session navigation must also work while composing a ticket reply/comment.
+    dp.include_router(mentoring.entry_router)
+    for module in (status, staff, mentoring, feedback, fallback):
         dp.include_router(module.router)
     return dp

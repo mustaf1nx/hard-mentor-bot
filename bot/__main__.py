@@ -10,7 +10,8 @@ from aiogram.enums import ParseMode
 from aiogram.exceptions import TelegramAPIError
 from aiogram.types import BotCommand, BotCommandScopeChat
 
-from . import reports
+from . import notify, reports
+from .mentoring.reminders import reminder_loop
 from .app import build_dispatcher
 from .config import Settings
 from .db import init_db, make_engine, make_sessionmaker
@@ -18,12 +19,18 @@ from .db import init_db, make_engine, make_sessionmaker
 log = logging.getLogger("bot")
 
 USER_COMMANDS = {
-    "ru": [("feedback", "Оставить обращение"), ("status", "Мои обращения"), ("help", "Помощь"),
+    "ru": [("sessions", "Расписание и запись"), ("materials", "Банк материалов"), ("mysessions", "Мои занятия / записи"), ("feedback", "Оставить обращение"), ("status", "Мои обращения"), ("help", "Помощь"),
            ("cancel", "Отменить заполнение"), ("lang", "Сменить язык")],
-    "en": [("feedback", "Send feedback"), ("status", "My tickets"), ("help", "Help"),
+    "en": [("sessions", "Schedule and booking"), ("materials", "Material bank"), ("mysessions", "My sessions"), ("feedback", "Send feedback"), ("status", "My tickets"), ("help", "Help"),
            ("cancel", "Cancel submission"), ("lang", "Switch language")],
 }
-STAFF_COMMANDS = [("queue", "Очередь / Queue"), ("report", "Сводка / Summary"), ("mentors", "Менторы / Mentors")]
+STAFF_COMMANDS = [
+    ("newsession", "Создать занятие"), ("sessionreport", "Сводка менторок"),
+    ("addmaterial", "Добавить материал"), ("setchecklist", "Чек-лист темы"),
+    ("testnotify", "Проверить уведомления / Test alerts"),
+    ("queue", "Очередь / Queue"), ("report", "Сводка / Summary"), ("mentors", "Менторы / Mentors"),
+    ("addmentor", "Добавить менторов / Add mentors"), ("delmentor", "Убрать менторов / Remove mentors"),
+]
 
 
 async def setup_commands(bot: Bot, settings: Settings) -> None:
@@ -64,6 +71,8 @@ async def main() -> None:
         background = [
             asyncio.create_task(reports.weekly_report_loop(bot, sm, settings)),
             asyncio.create_task(reports.sla_watch_loop(bot, sm, settings)),
+            asyncio.create_task(reminder_loop(bot, sm, settings)),
+            asyncio.create_task(notify.ticket_notification_loop(bot, sm, settings)),
         ]
         # Long polling: порт и домен не нужны. drop_pending_updates не ставим —
         # сообщения, пришедшие во время редеплоя, не должны теряться.

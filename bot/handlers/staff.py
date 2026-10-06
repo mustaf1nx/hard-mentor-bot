@@ -4,19 +4,21 @@ from __future__ import annotations
 
 import re
 from html import escape
+from io import BytesIO
 
 from aiogram import Bot, F, Router
 from aiogram.exceptions import TelegramAPIError, TelegramBadRequest
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import BufferedInputFile, CallbackQuery, Message
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from .. import notify, repo, reports, views
 from ..config import Settings
 from ..db import CATEGORIES, STATUSES, Ticket
 from ..repo import Viewer
+from ..mentor_refs import MAX_IMPORT_BYTES, MAX_MENTOR_REFS, TooManyMentorRefs, parse_mentor_refs
 from ..texts import menu_labels, t
 
 router = Router(name="staff")
@@ -217,7 +219,9 @@ async def got_staff_text(message: Message, state: FSMContext, viewer: Viewer,
 
 @router.callback_query(F.data.startswith("as:"))
 async def cb_assign_menu(callback: CallbackQuery, viewer: Viewer, settings: Settings, sm: async_sessionmaker) -> None:
-    ticket = await _load(sm, viewer, callback.data.split(":")[1])
+    parts = callback.data.split(":")
+    ticket = await _load(sm, viewer, parts[1])
+    page = int(parts[2]) if len(parts) == 3 and parts[2].isdigit() and len(parts[2]) < 10 else 0
     if ticket is None or not viewer.is_admin:
         await callback.answer(t(viewer.lang, "no_access"), show_alert=True)
         return
@@ -227,9 +231,10 @@ async def cb_assign_menu(callback: CallbackQuery, viewer: Viewer, settings: Sett
         else:
             people = list((await repo.users_by_ids(session, settings.staff_ids)).values())
             people += [m for m in await repo.list_mentors(session) if m.telegram_id not in settings.staff_ids]
+    people.sort(key=lambda user: (user.display_name.casefold(), user.telegram_id))
     await callback.answer()
     await _edit_or_send(callback, t(viewer.lang, "choose_assignee", code=ticket.code),
-                        views.assign_kb(ticket, people, viewer.lang))
+                        views.assign_kb(ticket, people, viewer.lang, page=page))
 
 
 @router.callback_query(F.data.startswith("asg:"))
@@ -237,14 +242,15 @@ async def cb_assign(callback: CallbackQuery, viewer: Viewer, settings: Settings,
                     sm: async_sessionmaker, bot: Bot) -> None:
     parts = callback.data.split(":")
     ticket = await _load(sm, viewer, parts[1]) if len(parts) == 3 else None
-    if ticket is None or not viewer.is_admin or not parts[2].isdigit():
+    if (ticket is None or not viewer.is_admin or not parts[2].isdigit()
+            or len(parts[2]) > 19 or int(parts[2]) > (1 << 63) - 1):
         await callback.answer(t(viewer.lang, "no_access"), show_alert=True)
         return
     target = int(parts[2]) or None
     if target is not None:
         async with sm() as session:
             user = await repo.get_user(session, target)
-        role = settings.role_for(target, user.role) if user else "mentee"
+            role = await repo.effective_role(session, settings, target) if user else "mentee"
         allowed = role == "lead" if ticket.lead_only else role in ("mentor", "coordinator", "lead")
         if not allowed:  # защита от поддельного callback: тикет нельзя «назначить» постороннему
             await callback.answer(t(viewer.lang, "no_access"), show_alert=True)
@@ -253,7 +259,7 @@ async def cb_assign(callback: CallbackQuery, viewer: Viewer, settings: Settings,
         ticket = await repo.get_ticket(session, ticket.id)
         await repo.assign(session, ticket, target)
     if target and target != viewer.id:
-        await notify.notify_assignee(bot, sm, ticket, target)
+        await notify.notify_assignee(bot, sm, settings, ticket, target)
     text, kb = await _card(sm, viewer, ticket)
     await callback.answer()
     await _edit_or_send(callback, text, kb)
@@ -261,43 +267,144 @@ async def cb_assign(callback: CallbackQuery, viewer: Viewer, settings: Settings,
 
 # ---------- менторы ----------
 
-@router.message(Command("mentors"))
-async def cmd_mentors(message: Message, viewer: Viewer, sm: async_sessionmaker) -> None:
-    if not viewer.is_admin:
-        await message.answer(t(viewer.lang, "admin_only"))
-        return
+async def _mentors_page(sm: async_sessionmaker, lang: str, page: int = 0):
     async with sm() as session:
         mentors = await repo.list_mentors(session)
-    if not mentors:
-        await message.answer(t(viewer.lang, "mentors_empty"))
-        return
-    lines = [t(viewer.lang, "mentors_title")]
-    for m in mentors:
-        handle = f" @{m.username}" if m.username else ""
-        lines.append(f"• {escape(m.display_name)}{handle} — <code>{m.telegram_id}</code>")
-    await message.answer("\n".join(lines))
+    return views.mentors_page(mentors, lang, page)
 
 
-@router.message(Command("addmentor", "delmentor"))
-async def cmd_mentor_edit(message: Message, command: CommandObject, viewer: Viewer,
-                          sm: async_sessionmaker, bot: Bot) -> None:
+@router.message(Command("mentors"))
+async def cmd_mentors(message: Message, command: CommandObject, viewer: Viewer,
+                      sm: async_sessionmaker) -> None:
     if not viewer.is_admin:
         await message.answer(t(viewer.lang, "admin_only"))
         return
-    if not command.args:
-        await message.answer(t(viewer.lang, "mentor_usage", cmd=command.command))
+    arg = (command.args or "").strip()
+    page = max(0, int(arg) - 1) if arg.isdigit() and len(arg) < 10 else 0
+    text, kb = await _mentors_page(sm, viewer.lang, page)
+    await message.answer(text, reply_markup=kb)
+
+
+@router.callback_query(F.data.startswith("ml:"))
+async def cb_mentors_page(callback: CallbackQuery, viewer: Viewer, sm: async_sessionmaker) -> None:
+    raw = callback.data.split(":", 1)[1]
+    if not viewer.is_admin or not raw.isdigit() or len(raw) > 9:
+        await callback.answer(t(viewer.lang, "admin_only"), show_alert=True)
         return
-    adding = command.command == "addmentor"
-    async with sm() as session:
-        user = await repo.find_user(session, command.args.split()[0])
-        if user is None:
-            await message.answer(t(viewer.lang, "user_unknown"))
+    text, kb = await _mentors_page(sm, viewer.lang, int(raw))
+    await callback.answer()
+    await _edit_or_send(callback, text, kb)
+
+
+class _ImportTooLarge(ValueError):
+    pass
+
+
+class _LimitedBuffer(BytesIO):
+    def write(self, data: bytes) -> int:
+        if self.tell() + len(data) > MAX_IMPORT_BYTES:
+            raise _ImportTooLarge
+        return super().write(data)
+
+
+def _user_label(user) -> str:
+    handle = f"@{user.username} — " if user.username else ""
+    return f"{handle}{user.telegram_id} — {user.display_name}"
+
+
+def _mentor_report(result: repo.MentorEditResult, lang: str, adding: bool) -> str:
+    groups = [
+        ("mentor_bulk_added" if adding else "mentor_bulk_removed", [_user_label(u) for u in result.changed]),
+        ("mentor_bulk_already" if adding else "mentor_bulk_not_members", [_user_label(u) for u in result.unchanged]),
+        ("mentor_bulk_unknown", result.unknown),
+        ("mentor_bulk_ambiguous", result.ambiguous),
+        ("mentor_bulk_invalid", result.invalid),
+    ]
+    lines = []
+    for key, values in groups:
+        lines += [t(lang, key, n=len(values)), *values, ""]
+    lines += [t(lang, "mentor_bulk_duplicates", n=result.duplicates)]
+    if result.unassigned:
+        lines += [t(lang, "mentor_bulk_unassigned", n=result.unassigned)]
+    return "\n".join(lines)
+
+
+@router.message(Command("addmentor", "delmentor", "addmentors", "delmentors", ignore_case=True))
+async def cmd_mentor_edit(message: Message, command: CommandObject, viewer: Viewer,
+                          settings: Settings, sm: async_sessionmaker, bot: Bot) -> None:
+    if not viewer.is_admin:
+        await message.answer(t(viewer.lang, "admin_only"))
+        return
+    lang = viewer.lang
+    adding = command.command.lower().startswith("add")
+    text = command.args or ""
+    document = message.document
+    if document is None and message.reply_to_message:
+        document = message.reply_to_message.document
+    if document:
+        filename = (document.file_name or "").lower()
+        if not filename.endswith(".txt"):
+            await message.answer(t(lang, "mentor_file_format"))
             return
-        await repo.set_role(session, user.telegram_id, "mentor" if adding else "mentee")
-    await message.answer(t(viewer.lang, "mentor_added" if adding else "mentor_removed", name=escape(user.display_name)))
-    if adding:
-        await notify.safe_send(bot, user.telegram_id, t(user.lang, "you_are_mentor"), staff=True,
-                               reply_markup=views.main_menu(user.lang, True))
+        if document.file_size and document.file_size > MAX_IMPORT_BYTES:
+            await message.answer(t(lang, "mentor_file_large"))
+            return
+        try:
+            with _LimitedBuffer() as destination:
+                await bot.download(document, destination=destination)
+                text += "\n" + destination.getvalue().decode("utf-8-sig")
+        except _ImportTooLarge:
+            await message.answer(t(lang, "mentor_file_large"))
+            return
+        except UnicodeError:
+            await message.answer(t(lang, "mentor_file_encoding"))
+            return
+        except (TelegramAPIError, OSError):
+            await message.answer(t(lang, "mentor_file_failed"))
+            return
+    if not text.strip():
+        await message.answer(t(lang, "mentor_usage", cmd=command.command))
+        return
+    try:
+        parsed = parse_mentor_refs(text)
+    except TooManyMentorRefs:
+        await message.answer(t(lang, "mentor_too_many", n=MAX_MENTOR_REFS))
+        return
+    if not parsed.total:
+        await message.answer(t(lang, "mentor_usage", cmd=command.command))
+        return
+    async with sm() as session:
+        result = await repo.edit_mentors(session, parsed, adding=adding, protected_ids=settings.staff_ids)
+    lines = [
+        t(lang, "mentor_bulk_added" if adding else "mentor_bulk_removed", n=len(result.changed)),
+        t(lang, "mentor_bulk_already" if adding else "mentor_bulk_not_members", n=len(result.unchanged)),
+        t(lang, "mentor_bulk_unknown", n=len(result.unknown)),
+    ]
+    for key, values in (("mentor_bulk_ambiguous", result.ambiguous), ("mentor_bulk_invalid", result.invalid)):
+        if values:
+            lines.append(t(lang, key, n=len(values)))
+    if result.duplicates:
+        lines.append(t(lang, "mentor_bulk_duplicates", n=result.duplicates))
+    if result.unassigned:
+        lines.append(t(lang, "mentor_bulk_unassigned", n=result.unassigned))
+    # A short error preview; the full report is attached for large/error lists.
+    errors = result.unknown + result.ambiguous + result.invalid
+    if errors:
+        preview = ", ".join(escape(views.clip(ref, 60)) for ref in errors[:5])
+        lines += ["", preview, t(lang, "mentor_resolve_hint")]
+    if parsed.total > 1:
+        lines += ["", t(lang, "mentor_bulk_no_notify")]
+    await message.answer("\n".join(lines))
+    if document or parsed.total > 1:
+        report = BufferedInputFile(_mentor_report(result, lang, adding).encode("utf-8"), filename="mentors_result.txt")
+        await message.answer_document(report, caption=t(lang, "mentor_report_file"))
+    if parsed.total == 1 and result.changed:
+        user = result.changed[0]
+        role = settings.role_for(user.telegram_id, is_mentor=adding)
+        await notify.safe_send(
+            bot, user.telegram_id, t(user.lang, "you_are_mentor" if adding else "you_are_not_mentor"),
+            staff=True, reply_markup=views.main_menu(user.lang, role != "mentee"),
+        )
 
 
 # ---------- отчёт по запросу ----------

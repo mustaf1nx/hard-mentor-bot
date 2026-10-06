@@ -35,6 +35,8 @@ STATUS_NAMES = {
 }
 
 MENU = {
+    "sessions": {"ru": "🗓 Менторки", "en": "🗓 Mentoring sessions"},
+    "materials": {"ru": "📚 Банк материалов", "en": "📚 Material bank"},
     "feedback": {"ru": "✍️ Оставить обращение", "en": "✍️ Send feedback"},
     "status": {"ru": "📋 Мои обращения", "en": "📋 My tickets"},
     "help": {"ru": "ℹ️ Помощь", "en": "ℹ️ Help"},
@@ -54,8 +56,8 @@ T: dict[str, dict[str, str]] = {
             "Здесь можно задать вопрос о программе, пожаловаться, предложить идею, "
             "поблагодарить ментора или сообщить о серьёзной проблеме. Каждое обращение "
             "получает номер и попадает к тому, кто за него отвечает.\n\n"
-            "Это <b>не</b> бот записи на менторские сессии — заявки на помощь по предметам "
-            "идут через entry-ticket.\n\n"
+            "Для записи на занятия откройте /sessions, для подготовки — /materials. "
+            "Записи на занятия именные и не связаны с анонимными обращениями.\n\n"
             "Нажмите «✍️ Оставить обращение» или отправьте /feedback."
         ),
         "en": (
@@ -63,8 +65,8 @@ T: dict[str, dict[str, str]] = {
             "Use it to ask a question about the program, raise a complaint, suggest an idea, "
             "thank a mentor, or report something serious. Every submission gets a ticket ID "
             "and goes to the person responsible for it.\n\n"
-            "This is <b>not</b> the bot for booking mentoring sessions — academic help requests "
-            "go through the entry-ticket system.\n\n"
+            "Use /sessions to book mentoring sessions and /materials to prepare. "
+            "Session bookings are identified and separate from anonymous feedback.\n\n"
             "Tap “✍️ Send feedback” or send /feedback."
         ),
     },
@@ -84,6 +86,9 @@ T: dict[str, dict[str, str]] = {
             "даже для серьёзных сообщений. Уведомления по такому обращению не приходят: "
             "статус и ответы можно смотреть по секретному коду, который бот выдаст при отправке.\n\n"
             "<b>Команды</b>\n"
+            "/sessions — расписание и запись на менторки\n"
+            "/materials — банк материалов\n"
+            "/mysessions — мои занятия / записи\n"
             "/feedback — новое обращение\n"
             "/status — мои обращения\n"
             "/status HM-0001 КОД — анонимное обращение по коду\n"
@@ -105,6 +110,9 @@ T: dict[str, dict[str, str]] = {
             "You won't get notifications for such a ticket: check its status and replies with "
             "the secret code the bot gives you on submission.\n\n"
             "<b>Commands</b>\n"
+            "/sessions — session schedule and booking\n"
+            "/materials — material bank\n"
+            "/mysessions — my sessions / bookings\n"
             "/feedback — new submission\n"
             "/status — my tickets\n"
             "/status HM-0001 CODE — anonymous ticket by code\n"
@@ -119,9 +127,11 @@ T: dict[str, dict[str, str]] = {
             "/queue — очередь обращений (фильтры по категории и статусу)\n"
             "/ticket HM-0001 — открыть обращение\n"
             "/report — сводка за неделю\n"
+            "/testnotify — проверить свои уведомления и повторить неудачные отправки\n"
             "/mentors — список менторов\n"
-            "/addmentor ID|@username — добавить ментора (он должен нажать /start)\n"
-            "/delmentor ID|@username — убрать ментора\n"
+            "/addmentor @user1 @user2 — добавить менторов списком\n"
+            "/delmentor @user1 @user2 — убрать менторов списком\n"
+            "Для большого списка: .txt с подписью /addmentor или /delmentor.\n"
             "/myid — мой Telegram ID"
         ),
         "en": (
@@ -129,9 +139,11 @@ T: dict[str, dict[str, str]] = {
             "/queue — ticket queue (filter by category and status)\n"
             "/ticket HM-0001 — open a ticket\n"
             "/report — weekly summary\n"
+            "/testnotify — test your alerts and retry failed deliveries\n"
             "/mentors — list mentors\n"
-            "/addmentor ID|@username — add a mentor (they must press /start first)\n"
-            "/delmentor ID|@username — remove a mentor\n"
+            "/addmentor @user1 @user2 — add a list of mentors\n"
+            "/delmentor @user1 @user2 — remove a list of mentors\n"
+            "For a large list: a .txt file captioned /addmentor or /delmentor.\n"
             "/myid — my Telegram ID"
         ),
     },
@@ -408,7 +420,67 @@ T: dict[str, dict[str, str]] = {
     },
     "mentors_title": {"ru": "<b>Менторы</b>", "en": "<b>Mentors</b>"},
     "mentors_empty": {"ru": "Менторов пока нет. Добавьте: /addmentor ID|@username", "en": "No mentors yet. Add one: /addmentor ID|@username"},
-    "mentor_usage": {"ru": "Формат: <code>/{cmd} ID</code> или <code>/{cmd} @username</code>", "en": "Usage: <code>/{cmd} ID</code> or <code>/{cmd} @username</code>"},
+    "mentor_usage": {
+        "ru": "Формат: <code>/{cmd} @user1 @user2 123456789</code>\n"
+              "Разделители: пробелы, переносы строк, запятые или точка с запятой.\n"
+              "Можно отправить .txt (UTF-8) с подписью <code>/{cmd}</code> "
+              "или ответить этой командой на .txt. До 1000 записей, файл до 128 КиБ.\n"
+              "Пользователи должны уже быть зарегистрированы в боте через /start.",
+        "en": "Usage: <code>/{cmd} @user1 @user2 123456789</code>\n"
+              "Separate entries with spaces, newlines, commas or semicolons.\n"
+              "Send a UTF-8 .txt file captioned <code>/{cmd}</code>, "
+              "or reply to a .txt file with this command. Up to 1000 entries / 128 KiB.\n"
+              "Users must have registered with this bot using /start.",
+    },
+    "mentors_page": {
+        "ru": "Всего: {total} · Страница {page}/{pages}",
+        "en": "Total: {total} · Page {page}/{pages}",
+    },
+    "mentor_bulk_added": {"ru": "✅ Добавлено менторов: {n}", "en": "✅ Mentors added: {n}"},
+    "mentor_bulk_removed": {"ru": "✅ Удалено из менторов: {n}", "en": "✅ Mentors removed: {n}"},
+    "mentor_bulk_already": {"ru": "ℹ️ Уже были менторами: {n}", "en": "ℹ️ Already mentors: {n}"},
+    "mentor_bulk_not_members": {"ru": "ℹ️ Не были менторами: {n}", "en": "ℹ️ Were not mentors: {n}"},
+    "mentor_bulk_unknown": {"ru": "❓ Не найдены: {n}", "en": "❓ Not found: {n}"},
+    "mentor_bulk_ambiguous": {"ru": "⚠️ Неоднозначные usernames: {n}", "en": "⚠️ Ambiguous usernames: {n}"},
+    "mentor_bulk_invalid": {"ru": "⚠️ Неверный формат: {n}", "en": "⚠️ Invalid entries: {n}"},
+    "mentor_bulk_duplicates": {"ru": "↪️ Повторы пропущены: {n}", "en": "↪️ Duplicates skipped: {n}"},
+    "mentor_bulk_unassigned": {
+        "ru": "Активных обращений возвращено в общую очередь: {n}",
+        "en": "Active tickets returned to the admin queue: {n}",
+    },
+    "mentor_bulk_no_notify": {
+        "ru": "Массовое изменение — без рассылки. Права действуют при следующем взаимодействии; "
+              "для обновления кнопок меню — /start.",
+        "en": "Bulk changes do not send individual notifications. Permissions apply on the next "
+              "interaction; use /start to refresh the menu buttons.",
+    },
+    "mentor_resolve_hint": {
+        "ru": "Для ненайденных проверьте username или используйте Telegram ID. "
+              "Если человек ещё не зарегистрирован — нужен /start. "
+              "При неоднозначном username используйте только ID.",
+        "en": "For missing users, check the username or use their Telegram ID. "
+              "Unregistered users need /start. Use an ID for ambiguous usernames.",
+    },
+    "mentor_report_file": {"ru": "Полный результат обработки списка", "en": "Full list processing report"},
+    "mentor_file_format": {"ru": "Нужен файл .txt со списком ID или @username.", "en": "Use a .txt file with IDs or @usernames."},
+    "mentor_file_large": {"ru": "Файл слишком большой. Максимум — 128 КиБ.", "en": "The file is too large. Maximum: 128 KiB."},
+    "mentor_file_encoding": {"ru": "Сохраните .txt в кодировке UTF-8 и отправьте снова.", "en": "Save the .txt file as UTF-8 and send it again."},
+    "mentor_file_failed": {
+        "ru": "Не удалось скачать файл. Изменения не внесены — отправьте файл ещё раз.",
+        "en": "Could not download the file. No changes were made; send it again.",
+    },
+    "mentor_too_many": {
+        "ru": "Не более {n} записей за раз. Разделите список. Изменения не внесены.",
+        "en": "At most {n} entries at a time. Split the list. No changes were made.",
+    },
+    "mentor_unavailable": {
+        "ru": "Этот пользователь больше не в списке менторов. Выберите другого или пропустите шаг.",
+        "en": "This user is no longer a mentor. Choose another person or skip this step.",
+    },
+    "you_are_not_mentor": {
+        "ru": "Вас убрали из списка менторов. Права руководства из настроек, если они есть, сохраняются.",
+        "en": "You have been removed from the mentor list. Any coordinator/lead permissions remain unchanged.",
+    },
     "user_unknown": {
         "ru": "Не знаю такого пользователя. Попросите его сначала нажать /start в этом боте.",
         "en": "I don't know this user. Ask them to press /start in this bot first.",

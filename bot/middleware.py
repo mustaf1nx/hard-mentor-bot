@@ -34,9 +34,10 @@ class ViewerMiddleware(BaseMiddleware):
                 session, tg_user.id, tg_user.full_name, tg_user.username,
                 detect_lang(tg_user.language_code),
             )
+            role = await repo.effective_role(session, self.settings, user.telegram_id)
         data["viewer"] = repo.Viewer(
             id=user.telegram_id,
-            role=self.settings.role_for(user.telegram_id, user.role),
+            role=role,
             lang=user.lang,
             name=user.display_name,
             username=user.username,

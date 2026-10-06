@@ -1,13 +1,13 @@
 """Общие команды: /start, /help, /lang, /myid, /cancel."""
 from __future__ import annotations
 
-from aiogram import F, Router
+from aiogram import Bot, F, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from .. import repo, views
+from .. import notify, repo, views
 from ..config import Settings
 from ..repo import Viewer
 from ..texts import menu_labels, t
@@ -19,6 +19,15 @@ router = Router(name="common")
 async def cmd_start(message: Message, state: FSMContext, viewer: Viewer) -> None:
     await state.clear()
     await message.answer(t(viewer.lang, "start"), reply_markup=views.main_menu(viewer.lang, viewer.is_staff))
+
+
+@router.message(Command("testnotify"))
+async def cmd_testnotify(message: Message, viewer: Viewer, settings: Settings,
+                         sm: async_sessionmaker, bot: Bot) -> None:
+    if not viewer.is_staff:
+        await message.answer(t(viewer.lang, "staff_only"))
+        return
+    await notify.test_notifications(bot, sm, settings, viewer)
 
 
 @router.message(Command("help"))

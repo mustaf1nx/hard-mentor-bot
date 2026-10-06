@@ -127,7 +127,7 @@ async def check_sla_once(bot: Bot, sm: async_sessionmaker, settings: Settings,
             ticket.sla_alerted = True
         await session.commit()
     for ticket in overdue:
-        targets = set(watchers_for(settings, ticket))
+        targets = set(await watchers_for(sm, settings, ticket))
         if ticket.lead_only:
             targets = set(settings.lead_ids)
         else:

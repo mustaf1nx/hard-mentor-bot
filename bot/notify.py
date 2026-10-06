@@ -4,17 +4,20 @@
 """
 from __future__ import annotations
 
+import asyncio
 import logging
 from html import escape
 
 from aiogram import Bot
-from aiogram.exceptions import TelegramAPIError, TelegramBadRequest
+from aiogram.exceptions import (TelegramAPIError, TelegramBadRequest,
+                                TelegramForbiddenError, TelegramRetryAfter)
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from . import repo, views
+from . import repo, ticket_notifications as outbox, views
 from .config import Settings
 from .db import Ticket
 from .texts import status_name, t
+from .ticket_notifications import DeliveryResult, recipients_for
 
 log = logging.getLogger(__name__)
 
@@ -27,7 +30,7 @@ async def safe_send(bot: Bot, chat_id: int, text: str, *, staff: bool = False,
         await bot.send_message(chat_id, text, **kwargs)
         return True
     except TelegramBadRequest as exc:
-        log.error("Telegram отверг сообщение (%s)", exc)
+        log.error("Telegram отверг сообщение (%s)", type(exc).__name__)
         if fallback:
             try:
                 await bot.send_message(chat_id, fallback, parse_mode=None)
@@ -37,30 +40,20 @@ async def safe_send(bot: Bot, chat_id: int, text: str, *, staff: bool = False,
         return False
     except TelegramAPIError as exc:
         if staff:
-            log.warning("Не удалось написать сотруднику %s: %s (он нажал /start?)", chat_id, exc)
+            log.warning("Не удалось написать сотруднику %s: %s (он нажал /start?)", chat_id, type(exc).__name__)
         else:
             log.warning("Не удалось доставить уведомление заявителю: %s", type(exc).__name__)
         return False
 
 
-def recipients_for(settings: Settings, ticket: Ticket) -> set[int]:
-    """Кому уходит новое обращение."""
-    if ticket.lead_only:
-        return set(settings.lead_ids)  # жалоба на координатора — только руководителю
-    if ticket.category == "serious":
-        return set(settings.coordinator_ids | settings.lead_ids)
-    out = set(settings.coordinator_ids)
-    if settings.lead_gets_all:
-        out |= settings.lead_ids
-    if not out:  # координатор не настроен — не теряем обращение
-        out |= settings.lead_ids
-    return out
-
-
-def watchers_for(settings: Settings, ticket: Ticket) -> set[int]:
-    """Кого уведомлять о событиях по уже существующему тикету."""
+async def watchers_for(sm: async_sessionmaker, settings: Settings, ticket: Ticket) -> set[int]:
+    """Check live permissions, including memberships removed directly through SQL."""
     if ticket.assigned_to:
-        return {ticket.assigned_to}
+        async with sm() as session:
+            role = await repo.effective_role(session, settings, ticket.assigned_to)
+        viewer = repo.Viewer(ticket.assigned_to, role, "ru", "")
+        if viewer.is_staff and repo.can_view(viewer, ticket):
+            return {ticket.assigned_to}
     return recipients_for(settings, ticket)
 
 
@@ -76,37 +69,128 @@ async def _names_for(sm: async_sessionmaker, ticket: Ticket) -> dict:
         return await repo.users_by_ids(session, ids)
 
 
-async def notify_new_ticket(bot: Bot, sm: async_sessionmaker, settings: Settings, ticket: Ticket) -> None:
-    targets = recipients_for(settings, ticket)
-    if not targets:
-        log.error("Обращение %s некому отправить: проверьте COORDINATOR_IDS / LEAD_IDS", ticket.code)
+async def _send_new_ticket(bot: Bot, sm: async_sessionmaker, ticket: Ticket,
+                           uid: int) -> DeliveryResult:
+    """Transport only: the outbox checks current authorization before calling us."""
+    langs = await _staff_langs(sm, {uid})
+    lang = langs[uid]
     names = await _names_for(sm, ticket)
-    praise_mentor = ticket.mentor_id if ticket.category == "praise" else None
-    langs = await _staff_langs(sm, targets | ({praise_mentor} if praise_mentor else set()))
+    if ticket.lead_only:
+        header = t(lang, "new_ticket_lead_only")
+    elif ticket.category == "serious":
+        header = t(lang, "new_ticket_urgent")
+    elif ticket.category == "praise" and uid == ticket.mentor_id:
+        header = t(lang, "praise_for_you")
+    else:
+        header = t(lang, "new_ticket")
+    text = views.staff_card(ticket, [], lang, names, header=header)
+    markup = views.open_ticket_kb(ticket, lang)
+    short = (f"🔔 New ticket {ticket.code}. Open: /ticket {ticket.code}" if lang == "en" else
+             f"🔔 Новое обращение {ticket.code}. Открыть: /ticket {ticket.code}")
+    try:
+        try:
+            await bot.send_message(uid, text, reply_markup=markup, parse_mode="HTML",
+                                   disable_notification=False, request_timeout=15)
+        except TelegramBadRequest as exc:
+            # Bad recipient IDs cannot be repaired by changing the text.
+            message = str(exc).lower()
+            if any(part in message for part in ("chat not found", "user is deactivated",
+                                                  "bot can't initiate", "bot cannot initiate")):
+                return DeliveryResult("failed", "chat_unavailable")
+            # Keep the open button and audible-notification flag in the fallback.
+            await bot.send_message(uid, short, reply_markup=markup, parse_mode=None,
+                                   disable_notification=False, request_timeout=15)
+        return DeliveryResult("sent")
+    except TelegramRetryAfter as exc:
+        return DeliveryResult("retry", "TelegramRetryAfter", max(1, int(exc.retry_after)))
+    except TelegramForbiddenError:
+        return DeliveryResult("failed", "TelegramForbiddenError")
+    except TelegramBadRequest:
+        return DeliveryResult("failed", "TelegramBadRequest")
+    except (TelegramAPIError, OSError, TimeoutError) as exc:
+        return DeliveryResult("retry", type(exc).__name__)
+    finally:
+        # Rate limiting from Telegram is handled above; this also spreads batches.
+        await asyncio.sleep(0.05)
 
-    for uid in targets:
-        lang = langs[uid]
-        if ticket.lead_only:
-            header = t(lang, "new_ticket_lead_only")
-        elif ticket.category == "serious":
-            header = t(lang, "new_ticket_urgent")
+
+async def send_due_ticket_notifications(bot: Bot, sm: async_sessionmaker, settings: Settings,
+                                         *, ticket_id: int | None = None,
+                                         recipient_id: int | None = None) -> int:
+    async def sender(ticket: Ticket, uid: int) -> DeliveryResult:
+        return await _send_new_ticket(bot, sm, ticket, uid)
+    return await outbox.drain(sm, settings, sender, ticket_id=ticket_id, recipient_id=recipient_id)
+
+
+async def notify_new_ticket(bot: Bot, sm: async_sessionmaker, settings: Settings, ticket: Ticket) -> None:
+    # The submission handler already enqueues atomically. This idempotent insert
+    # keeps this entry point safe for other callers without resending sent jobs.
+    async with sm() as session:
+        current = await repo.get_ticket(session, ticket.id)
+        if current is None:
+            return
+        await outbox.enqueue_new_ticket(session, settings, current)
+        await session.commit()
+    await send_due_ticket_notifications(bot, sm, settings, ticket_id=ticket.id)
+
+
+async def ticket_notification_loop(bot: Bot, sm: async_sessionmaker, settings: Settings) -> None:
+    while True:
+        try:
+            await send_due_ticket_notifications(bot, sm, settings)
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            log.error("Ошибка очереди уведомлений тикетов (%s); будет повтор", type(exc).__name__)
+        await asyncio.sleep(10)
+
+
+async def test_notifications(bot: Bot, sm: async_sessionmaker, settings: Settings,
+                              viewer: repo.Viewer) -> None:
+    """Self-test only: no test ticket and no unsolicited broadcast to other staff."""
+    if not viewer.is_staff:
+        return
+    async with sm() as session:
+        counts = await outbox.counts_for_recipient(session, viewer.id)
+    waiting = counts.get("pending", 0) + counts.get("sending", 0)
+    failed = counts.get("failed", 0)
+    if viewer.lang == "en":
+        if viewer.role == "coordinator":
+            routing = "You receive new tickets, except complaints restricted to leads."
+        elif viewer.role == "lead":
+            routing = ("You receive all new tickets." if settings.lead_gets_all or not settings.coordinator_ids else
+                       "LEAD_GETS_ALL=false: ordinary tickets go to coordinators. Set it to true to receive all tickets.")
         else:
-            header = t(lang, "new_ticket")
-        await safe_send(
-            bot, uid, views.staff_card(ticket, [], lang, names, header=header),
-            staff=True, reply_markup=views.open_ticket_kb(ticket, lang),
-            fallback=f"New ticket {ticket.code} ({ticket.category}). Open: /ticket {ticket.code}",
-        )
-    if praise_mentor and praise_mentor not in targets:
-        lang = langs[praise_mentor]
-        await safe_send(
-            bot, praise_mentor,
-            views.staff_card(ticket, [], lang, names, header=t(lang, "praise_for_you")),
-            staff=True,
-        )
+            routing = "You receive assigned tickets and praise addressed to you, not the whole queue."
+        text = (f"🔔 <b>Test notification</b>\n\nRole: <b>{viewer.role}</b>\n{routing}\n\n"
+                f"Waiting: {waiting}. Failed: {failed}.\n"
+                "Your unsent ticket alerts will be retried; delivered ones will not be repeated.\n\n"
+                "If this arrives without a sound/banner, check this chat's notifications and your device settings.")
+    else:
+        if viewer.role == "coordinator":
+            routing = "Вам приходят новые тикеты, кроме жалоб, доступных только руководителям."
+        elif viewer.role == "lead":
+            routing = ("Вам приходят все новые тикеты." if settings.lead_gets_all or not settings.coordinator_ids else
+                       "LEAD_GETS_ALL=false: обычные тикеты уходят координаторам. Для всех тикетов установите true.")
+        else:
+            routing = "Вам приходят назначенные обращения и адресованные вам благодарности, не вся очередь."
+        role = {"coordinator": "координатор", "lead": "руководитель", "mentor": "ментор"}[viewer.role]
+        text = (f"🔔 <b>Тестовое уведомление</b>\n\nВаша роль: <b>{role}</b>\n{routing}\n\n"
+                f"Ожидают отправки: {waiting}. Не доставлены: {failed}.\n"
+                "Неотправленные уведомления для вас будут повторены, доставленные — нет.\n\n"
+                "Нет звука или баннера? Проверьте уведомления этого чата и настройки устройства.")
+    delivered = await safe_send(bot, viewer.id, text, staff=True, disable_notification=False)
+    if delivered:
+        async with sm() as session:
+            await outbox.retry_for_recipient(session, settings, viewer.id)
+            await session.commit()
+        await send_due_ticket_notifications(bot, sm, settings, recipient_id=viewer.id)
 
 
-async def notify_assignee(bot: Bot, sm: async_sessionmaker, ticket: Ticket, assignee_id: int) -> None:
+async def notify_assignee(bot: Bot, sm: async_sessionmaker, settings: Settings,
+                          ticket: Ticket, assignee_id: int) -> None:
+    if assignee_id not in await watchers_for(sm, settings, ticket):
+        return
     langs = await _staff_langs(sm, {assignee_id})
     lang = langs[assignee_id]
     names = await _names_for(sm, ticket)
@@ -151,7 +235,7 @@ async def notify_reply(bot: Bot, sm: async_sessionmaker, ticket: Ticket, text: s
 
 async def notify_submitter_comment(bot: Bot, sm: async_sessionmaker, settings: Settings,
                                    ticket: Ticket, text: str) -> None:
-    targets = watchers_for(settings, ticket)
+    targets = await watchers_for(sm, settings, ticket)
     langs = await _staff_langs(sm, targets)
     for uid in targets:
         lang = langs[uid]

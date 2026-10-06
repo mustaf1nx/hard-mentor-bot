@@ -102,17 +102,50 @@ async def pick_category(callback: CallbackQuery, state: FSMContext, viewer: View
 
 @router.callback_query(Feedback.related, F.data.startswith("rel:"))
 @router.callback_query(Feedback.coord, F.data.startswith("rel:"))
-async def pick_related(callback: CallbackQuery, state: FSMContext, viewer: Viewer, settings: Settings) -> None:
+async def pick_related(callback: CallbackQuery, state: FSMContext, viewer: Viewer,
+                       settings: Settings, sm: async_sessionmaker) -> None:
     parts = callback.data.split(":")
-    await callback.answer()
-    await _strip_buttons(callback)
-    if parts[1] == "m" and len(parts) == 3 and parts[2].isdigit():
-        await state.update_data(mentor_id=int(parts[2]))
-    elif parts[1] == "coord" and settings.lead_ids:
+    data = await state.get_data()
+    if len(parts) == 3 and parts[1] == "m" and parts[2].isdigit() and len(parts[2]) <= 19:
+        mentor_id = int(parts[2])
+        if mentor_id > (1 << 63) - 1 or data.get("category") not in ASKS_RELATED:
+            await callback.answer(t(viewer.lang, "no_access"), show_alert=True)
+            return
+        async with sm() as session:
+            known = await repo.is_mentor(session, mentor_id)
+        if not known:
+            await callback.answer(t(viewer.lang, "mentor_unavailable"), show_alert=True)
+            return
+        await state.update_data(mentor_id=mentor_id)
+    elif parts == ["rel", "coord"] and settings.lead_ids and data.get("category") in ("complaint", "serious"):
         await state.update_data(lead_only=True)
         await callback.message.answer(t(viewer.lang, "lead_only_note"))
+    elif parts != ["rel", "skip"]:
+        await callback.answer(t(viewer.lang, "no_access"), show_alert=True)
+        return
+    await callback.answer()
+    await _strip_buttons(callback)
     await state.set_state(Feedback.text)
     await callback.message.answer(t(viewer.lang, "ask_text"))
+
+
+@router.callback_query(Feedback.related, F.data.startswith("relpage:"))
+async def related_page(callback: CallbackQuery, state: FSMContext, viewer: Viewer,
+                       settings: Settings, sm: async_sessionmaker) -> None:
+    raw = callback.data.split(":", 1)[1]
+    data = await state.get_data()
+    if not raw.isdigit() or len(raw) > 9 or data.get("category") not in ASKS_RELATED:
+        await callback.answer(t(viewer.lang, "expired"), show_alert=True)
+        return
+    async with sm() as session:
+        mentors = await repo.list_mentors(session)
+    await callback.answer()
+    try:
+        await callback.message.edit_reply_markup(reply_markup=views.related_kb(
+            viewer.lang, data["category"], mentors, bool(settings.lead_ids), page=int(raw),
+        ))
+    except (TelegramBadRequest, AttributeError):
+        pass
 
 
 @router.message(Feedback.related, F.text & ~F.text.startswith("/"))
@@ -200,6 +233,15 @@ async def finish(callback: CallbackQuery, state: FSMContext, viewer: Viewer, set
     category = data["category"]
     lead_only = bool(data.get("lead_only")) and bool(settings.lead_ids)
     mentor_id = data.get("mentor_id")
+    if mentor_id:
+        async with sm() as session:
+            active = await repo.is_mentor(session, mentor_id)
+            former = await repo.get_user(session, mentor_id) if not active else None
+        if not active:
+            # Removed while the submitter was filling in the form: route to admins
+            # instead of sending sensitive content to a former mentor.
+            data["related_course"] = data.get("related_course") or (former.display_name if former else str(mentor_id))
+            mentor_id = None
     flagged = ", ".join(moderation.check(data["text"])) or None
     secret_code = repo.new_access_code() if is_anonymous else None
     name = viewer.name + (f" (@{viewer.username})" if viewer.username else "")
@@ -223,6 +265,7 @@ async def finish(callback: CallbackQuery, state: FSMContext, viewer: Viewer, set
             # Благодарность конкретному ментору доставляется сразу — очередь ей не нужна.
             status="closed" if praise_delivered else "new",
             assigned_to=mentor_id if praise_delivered else None,
+            notification_settings=settings,
         )
     limiter.hit(viewer.id, today)
     # В лог — только номер и категория. Никаких ID заявителя, даже для именных обращений.
@@ -233,6 +276,9 @@ async def finish(callback: CallbackQuery, state: FSMContext, viewer: Viewer, set
         text = t(lang, "submitted_anon", code=ticket.code, sla=sla, secret=secret_code)
     else:
         text = t(lang, "submitted", code=ticket.code, sla=sla)
-    await callback.message.answer(text, reply_markup=views.main_menu(lang, viewer.is_staff))
-
-    await notify.notify_new_ticket(bot, sm, settings, ticket)
+    try:
+        await callback.message.answer(text, reply_markup=views.main_menu(lang, viewer.is_staff))
+    finally:
+        # Still notify staff if the submitter blocks the bot immediately after
+        # submission. The persistent worker also recovers after a process exit.
+        await notify.notify_new_ticket(bot, sm, settings, ticket)

@@ -7,11 +7,12 @@ import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .config import SLA_HOURS
-from .db import OPEN_STATUSES, Meta, Note, Ticket, User, utcnow
+from .config import SLA_HOURS, Settings
+from .db import OPEN_STATUSES, Mentor, Meta, Note, Ticket, User, conflict_insert, utcnow
+from .mentor_refs import ParsedMentorRefs
 
 CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"  # без похожих O/0, I/1, L
 
@@ -78,16 +79,108 @@ async def set_lang(session: AsyncSession, telegram_id: int, lang: str) -> None:
         await session.commit()
 
 
-async def set_role(session: AsyncSession, telegram_id: int, role: str) -> None:
-    user = await session.get(User, telegram_id)
-    if user:
-        user.role = role
-        await session.commit()
+async def is_mentor(session: AsyncSession, telegram_id: int) -> bool:
+    # SELECT rather than a cached attribute: direct SQL edits take effect on the
+    # next interaction, without restarting the bot or changing users.role.
+    return await session.scalar(
+        select(Mentor.telegram_id).where(Mentor.telegram_id == telegram_id)
+    ) is not None
+
+
+async def effective_role(session: AsyncSession, settings: Settings, telegram_id: int) -> str:
+    if telegram_id in settings.staff_ids:
+        return settings.role_for(telegram_id)
+    return settings.role_for(telegram_id, is_mentor=await is_mentor(session, telegram_id))
 
 
 async def list_mentors(session: AsyncSession) -> list[User]:
-    res = await session.execute(select(User).where(User.role == "mentor").order_by(User.display_name))
+    res = await session.execute(
+        select(User).join(Mentor, Mentor.telegram_id == User.telegram_id)
+        .order_by(func.lower(User.display_name), User.telegram_id)
+    )
     return list(res.scalars())
+
+
+@dataclass
+class MentorEditResult:
+    changed: list[User]
+    unchanged: list[User]
+    unknown: list[str]
+    ambiguous: list[str]
+    invalid: list[str]
+    duplicates: int
+    unassigned: int = 0
+
+
+async def edit_mentors(
+    session: AsyncSession, parsed: ParsedMentorRefs, *, adding: bool,
+    protected_ids: frozenset[int] = frozenset(),
+) -> MentorEditResult:
+    """Resolve a list in batches, then change membership in one transaction.
+
+    Ambiguous cached usernames never grant access to an arbitrary first match;
+    an administrator must use the numeric Telegram ID for those entries.
+    Unknown users are not fabricated and never silently assigned a role.
+    """
+    found: dict[int, User] = {}
+    refs = parsed.refs
+    for offset in range(0, len(refs), 300):
+        chunk = refs[offset:offset + 300]
+        ids = [r.value for r in chunk if isinstance(r.value, int)]
+        handles = [r.value for r in chunk if isinstance(r.value, str)]
+        rows = await session.scalars(select(User).where(or_(
+            User.telegram_id.in_(ids), func.lower(User.username).in_(handles),
+        )))
+        found.update({u.telegram_id: u for u in rows})
+    by_username: dict[str, list[User]] = {}
+    for user in found.values():
+        if user.username:
+            by_username.setdefault(user.username.lower(), []).append(user)
+    result = MentorEditResult([], [], [], [], list(parsed.invalid), parsed.duplicates)
+    targets: dict[int, User] = {}
+    for ref in refs:
+        if isinstance(ref.value, int):
+            matches = [found[ref.value]] if ref.value in found else []
+        else:
+            matches = by_username.get(ref.value, [])
+        if not matches:
+            result.unknown.append(ref.raw)
+        elif len(matches) > 1:
+            result.ambiguous.append(ref.raw)
+        elif matches[0].telegram_id in targets:
+            result.duplicates += 1
+        else:
+            targets[matches[0].telegram_id] = matches[0]
+
+    changed_ids: set[int] = set()
+    ids = list(targets)
+    for offset in range(0, len(ids), 300):
+        chunk = ids[offset:offset + 300]
+        if adding:
+            stmt = (
+                conflict_insert(Mentor.__table__, session.get_bind().dialect.name)
+                .values([{"telegram_id": uid} for uid in chunk])
+                .on_conflict_do_nothing(index_elements=["telegram_id"])
+                .returning(Mentor.telegram_id)
+            )
+        else:
+            stmt = delete(Mentor).where(Mentor.telegram_id.in_(chunk)).returning(Mentor.telegram_id)
+        changed_ids.update((await session.scalars(stmt)).all())
+    result.changed = [u for uid, u in targets.items() if uid in changed_ids]
+    result.unchanged = [u for uid, u in targets.items() if uid not in changed_ids]
+
+    # Keep closed-ticket history, but return active work to the admin queue.
+    # Lead/coordinator membership in the table must never revoke their env rights.
+    to_unassign = sorted(changed_ids - protected_ids) if not adding else []
+    for offset in range(0, len(to_unassign), 300):
+        stmt = update(Ticket).where(
+            Ticket.assigned_to.in_(to_unassign[offset:offset + 300]),
+            Ticket.status.in_(OPEN_STATUSES),
+        ).values(assigned_to=None)
+        changed = await session.execute(stmt)
+        result.unassigned += changed.rowcount
+    await session.commit()
+    return result
 
 
 async def users_by_ids(session: AsyncSession, ids) -> dict[int, User]:
@@ -144,6 +237,7 @@ async def create_ticket(
     status: str = "new",
     assigned_to: int | None = None,
     now: datetime | None = None,
+    notification_settings: Settings | None = None,
 ) -> Ticket:
     now = now or utcnow()
     if is_anonymous:
@@ -174,6 +268,12 @@ async def create_ticket(
         updated_at=now,
     )
     session.add(ticket)
+    if notification_settings is not None:
+        # The ticket and its notifications are one transaction. A crash after
+        # commit, including before the confirmation message, cannot lose the job.
+        from .ticket_notifications import enqueue_new_ticket
+        await session.flush()
+        await enqueue_new_ticket(session, notification_settings, ticket)
     await session.commit()
     return ticket
 
