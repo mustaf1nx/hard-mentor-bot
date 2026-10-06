@@ -206,6 +206,7 @@ T: dict[str, dict[str, str]] = {
         ),
     },
     "btn_skip": {"ru": "Пропустить", "en": "Skip"},
+    "btn_cancel": {"ru": "❌ Отмена", "en": "❌ Cancel"},
     "btn_about_coord": {"ru": "👤 Это про координатора", "en": "👤 It's about the coordinator"},
     "btn_coord_yes": {
         "ru": "Да — отправить только руководителю", "en": "Yes — send to the program lead only",

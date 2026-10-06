@@ -64,10 +64,23 @@ def main_menu(lang: str, is_staff: bool) -> ReplyKeyboardMarkup:
 
 # ---------- подача обращения ----------
 
+def _feedback_nav_row(lang: str, *, back: bool = True) -> list[InlineKeyboardButton]:
+    row: list[InlineKeyboardButton] = []
+    if back:
+        row.append(_btn(t(lang, "btn_back"), "fb:back"))
+    row.append(_btn(t(lang, "btn_cancel"), "fb:cancel"))
+    return row
+
+
+def feedback_nav_kb(lang: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[_feedback_nav_row(lang)])
+
+
 def categories_kb(lang: str) -> InlineKeyboardMarkup:
     order = ("question", "complaint", "suggestion", "praise")
     rows = [[_btn(CATEGORY_BUTTONS[c][lang], f"cat:{c}") for c in order[i:i + 2]] for i in (0, 2)]
     rows.append([_btn(CATEGORY_BUTTONS["serious"][lang], "cat:serious")])
+    rows.append(_feedback_nav_row(lang, back=False))
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -93,6 +106,7 @@ def related_kb(lang: str, category: str, mentors: list[User], has_lead: bool,
     if category == "complaint" and has_lead:
         rows.append([_btn(t(lang, "btn_about_coord"), "rel:coord")])
     rows.append([_btn(t(lang, "btn_skip"), "rel:skip")])
+    rows.append(_feedback_nav_row(lang))
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -100,17 +114,22 @@ def serious_kb(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [_btn(t(lang, "btn_coord_no"), "rel:skip")],
         [_btn(t(lang, "btn_coord_yes"), "rel:coord")],
+        _feedback_nav_row(lang),
     ])
 
 
 def skip_kb(lang: str, data: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(inline_keyboard=[[_btn(t(lang, "btn_skip"), data)]])
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [_btn(t(lang, "btn_skip"), data)],
+        _feedback_nav_row(lang),
+    ])
 
 
 def anon_kb(lang: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(inline_keyboard=[[
-        _btn(t(lang, "btn_named"), "anon:0"), _btn(t(lang, "btn_anon"), "anon:1"),
-    ]])
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [_btn(t(lang, "btn_named"), "anon:0"), _btn(t(lang, "btn_anon"), "anon:1")],
+        _feedback_nav_row(lang),
+    ])
 
 
 def rating_kb(ticket_id: int, token: str = "") -> InlineKeyboardMarkup:

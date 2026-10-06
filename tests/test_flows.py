@@ -83,6 +83,65 @@ async def test_text_validation_and_cancel(h):
     assert await all_tickets(h) == []
 
 
+
+
+async def test_feedback_buttons_can_go_back_and_cancel(h):
+    await h.say(ALICE, "/feedback")
+    assert "fb:cancel" in h.buttons(h.last_to(ALICE))
+
+    await h.tap(ALICE, "cat:complaint")
+    related = h.last_to(ALICE)
+    assert "fb:back" in h.buttons(related) and "fb:cancel" in h.buttons(related)
+
+    await h.tap(ALICE, "fb:back")
+    assert "cat:complaint" in h.buttons(h.last_to(ALICE))
+
+    await h.tap(ALICE, "cat:complaint")
+    await h.tap(ALICE, "fb:cancel")
+    assert "Отменено" in h.texts_to(ALICE)[-1]
+    assert await all_tickets(h) == []
+
+
+async def test_feedback_back_walks_through_later_steps(h):
+    await h.say(ALICE, "/feedback")
+    await h.tap(ALICE, "cat:complaint")
+    await h.tap(ALICE, "rel:skip")
+    assert "fb:back" in h.buttons(h.last_to(ALICE))
+
+    # Назад с текста возвращает выбор связи с курсом/ментором.
+    await h.tap(ALICE, "fb:back")
+    assert "rel:skip" in h.buttons(h.last_to(ALICE))
+    await h.tap(ALICE, "rel:skip")
+
+    await h.say(ALICE, COMPLAINT)
+    assert "att:skip" in h.buttons(h.last_to(ALICE))
+    # Назад с вложения позволяет переписать текст.
+    await h.tap(ALICE, "fb:back")
+    assert "fb:back" in h.buttons(h.last_to(ALICE))
+    await h.say(ALICE, COMPLAINT + " Повторно.")
+    await h.tap(ALICE, "att:skip")
+    assert "anon:0" in h.buttons(h.last_to(ALICE))
+
+    # Назад с анонимности возвращает шаг вложения; отмена ничего не сохраняет.
+    await h.tap(ALICE, "fb:back")
+    assert "att:skip" in h.buttons(h.last_to(ALICE))
+    await h.tap(ALICE, "fb:cancel")
+    assert await all_tickets(h) == []
+
+
+async def test_feedback_back_clears_lead_only_choice(h):
+    await h.say(ALICE, "/feedback")
+    await h.tap(ALICE, "cat:complaint")
+    await h.tap(ALICE, "rel:coord")
+    await h.tap(ALICE, "fb:back")
+    await h.tap(ALICE, "rel:skip")
+    await h.say(ALICE, COMPLAINT)
+    await h.tap(ALICE, "att:skip")
+    await h.tap(ALICE, "anon:0")
+    (ticket,) = await all_tickets(h)
+    assert not ticket.lead_only
+
+
 async def test_menu_button_is_not_captured_as_text(h):
     await h.say(ALICE, "/feedback")
     await h.tap(ALICE, "cat:suggestion")
