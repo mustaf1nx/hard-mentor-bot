@@ -26,6 +26,7 @@ USER_COMMANDS = {
 }
 STAFF_COMMANDS = [
     ("newsession", "Создать занятие"), ("sessionreport", "Сводка менторок"),
+    ("mentorreport", "Сдать отчёт ментора"), ("mentorreports", "Отчёты менторов"),
     ("addmaterial", "Добавить материал"), ("setchecklist", "Чек-лист темы"),
     ("testnotify", "Проверить уведомления / Test alerts"),
     ("queue", "Очередь / Queue"), ("report", "Сводка / Summary"), ("mentors", "Менторы / Mentors"),

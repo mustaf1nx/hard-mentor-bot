@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import repo
 from ..config import Settings
-from ..db import (LearningMaterial, Mentor, MentoringNotification, MentoringSession,
+from ..db import (LearningMaterial, Mentor, MentorWeeklyReport, MentoringNotification, MentoringSession,
                   SessionBooking, Subject, Topic, TopicChecklist, User, conflict_insert, utcnow)
 from ..repo import Viewer
 
@@ -74,7 +74,8 @@ def validate_file(name: str | None, size: int | None, mime: str | None) -> str:
     suffix = PurePosixPath(name).suffix.lower()
     expected = {'.pdf': 'application/pdf', '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
     if suffix not in expected:
-        raise RuleError('Отправьте документ PDF или DOCX, не фотографию и не картинку.')
+        shown = name or 'файл без имени'
+        raise RuleError(f'Файл «{shown[:80]}» не поддерживается. Принимаются только PDF и DOCX. Если это презентация, экспортируйте её в PDF.')
     if size is not None and (size <= 0 or size > MAX_FILE_BYTES):
         raise RuleError('Размер документа должен быть от 1 байта до 20 МиБ.')
     if mime and mime not in (expected[suffix], 'application/octet-stream', 'application/zip' if suffix == '.docx' else expected[suffix]):
@@ -446,6 +447,93 @@ async def session_list(s: AsyncSession, viewer: Viewer, mode: str, topic_id: int
     if topic_id:
         query = query.where(MentoringSession.topic_id == topic_id)
     return list(await s.scalars(query.order_by(MentoringSession.starts_at.desc() if mode in ('all','teaching','bookings') else MentoringSession.starts_at, MentoringSession.id)))
+
+
+def report_week_key(settings: Settings, shift: int = 0, now: datetime | None = None) -> str:
+    """Monday of the requested local week as YYYY-MM-DD. shift=-1 is previous week."""
+    base = (now or utcnow()).replace(tzinfo=timezone.utc).astimezone(ZoneInfo(settings.timezone))
+    monday = (base - timedelta(days=base.weekday()) + timedelta(weeks=shift)).date()
+    return monday.isoformat()
+
+
+def report_week_bounds(week_start: str, settings: Settings) -> tuple[datetime, datetime]:
+    try:
+        day = datetime.strptime(week_start, '%Y-%m-%d')
+    except ValueError as exc:
+        raise RuleError('Некорректная неделя отчёта.') from exc
+    local_start = day.replace(tzinfo=ZoneInfo(settings.timezone))
+    start = local_start.astimezone(timezone.utc).replace(tzinfo=None)
+    return start, start + timedelta(days=7)
+
+
+def report_week_label(week_start: str) -> str:
+    start = datetime.strptime(week_start, '%Y-%m-%d')
+    end = start + timedelta(days=6)
+    return f'{start:%d.%m.%Y}–{end:%d.%m.%Y}'
+
+
+async def save_mentor_report(s: AsyncSession, viewer: Viewer, week_start: str, content: str) -> MentorWeeklyReport:
+    if not await repo.is_mentor(s, viewer.id):
+        raise RuleError('Сдавать отчёт может пользователь, добавленный в список менторов.')
+    content = content.strip()
+    if not 10 <= len(content) <= 3500:
+        raise RuleError('Отчёт должен быть от 10 до 3500 символов.')
+    existing = await s.scalar(select(MentorWeeklyReport).where(
+        MentorWeeklyReport.mentor_id == viewer.id, MentorWeeklyReport.week_start == week_start
+    ).with_for_update())
+    if existing:
+        existing.content = content
+        existing.updated_at = utcnow()
+        return existing
+    report = MentorWeeklyReport(mentor_id=viewer.id, week_start=week_start, content=content,
+                                created_at=utcnow(), updated_at=utcnow())
+    s.add(report)
+    await s.flush()
+    return report
+
+
+async def mentor_report_list(s: AsyncSession, viewer: Viewer, *, week_start: str | None = None) -> list[MentorWeeklyReport]:
+    require_admin(viewer)
+    q = select(MentorWeeklyReport)
+    if week_start:
+        q = q.where(MentorWeeklyReport.week_start == week_start)
+    return list(await s.scalars(q.order_by(MentorWeeklyReport.week_start.desc(), MentorWeeklyReport.updated_at.desc(), MentorWeeklyReport.id.desc())))
+
+
+async def mentor_week_stats(s: AsyncSession, mentor_id: int, week_start: str, settings: Settings) -> dict:
+    start, end = report_week_bounds(week_start, settings)
+    lessons = list(await s.scalars(select(MentoringSession).where(
+        MentoringSession.mentor_id == mentor_id, MentoringSession.starts_at >= start, MentoringSession.starts_at < end
+    ).order_by(MentoringSession.starts_at)))
+    ids = [x.id for x in lessons]
+    bookings = []
+    material_sids: set[int] = set()
+    if ids:
+        bookings = list(await s.scalars(select(SessionBooking).where(
+            SessionBooking.session_id.in_(ids), SessionBooking.status == 'active')))
+        material_sids = set(await s.scalars(select(LearningMaterial.session_id).where(
+            LearningMaterial.session_id.in_(ids), LearningMaterial.archived.is_(False), LearningMaterial.session_id.is_not(None))))
+    by_sid: dict[int, list[SessionBooking]] = {}
+    for b in bookings:
+        by_sid.setdefault(b.session_id, []).append(b)
+    completed = [x for x in lessons if x.status == 'completed']
+    completed_ids = {x.id for x in completed}
+    completed_bookings = [b for b in bookings if b.session_id in completed_ids]
+    present = sum(b.attendance == 'present' for b in completed_bookings)
+    absent = sum(b.attendance == 'absent' for b in completed_bookings)
+    unknown = sum(b.attendance == 'unknown' for b in completed_bookings)
+    return {
+        'lessons': lessons,
+        'completed': len(completed),
+        'cancelled': sum(x.status == 'cancelled' for x in lessons),
+        'scheduled': sum(x.status == 'scheduled' for x in lessons),
+        'bookings': len(bookings),
+        'present': present,
+        'absent': absent,
+        'unknown': unknown,
+        'with_materials': sum(x.id in material_sids for x in completed),
+        'completed_without_materials': sum(x.id not in material_sids for x in completed),
+    }
 
 
 async def stats(s: AsyncSession) -> dict:

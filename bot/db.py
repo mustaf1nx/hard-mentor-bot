@@ -213,6 +213,20 @@ class LearningMaterial(Base):
     archived: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
+class MentorWeeklyReport(Base):
+    __tablename__ = "mentor_weekly_reports"
+    __table_args__ = (
+        UniqueConstraint("mentor_id", "week_start", name="uq_mentor_weekly_report"),
+    )
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    mentor_id: Mapped[int] = mapped_column(ForeignKey("users.telegram_id"), index=True)
+    # ISO Monday date (YYYY-MM-DD). Kept as text for portable SQLite/Postgres migrations.
+    week_start: Mapped[str] = mapped_column(String(10), index=True)
+    content: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
 class MentoringNotification(Base):
     __tablename__ = "mentoring_notifications"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

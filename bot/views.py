@@ -58,7 +58,7 @@ def main_menu(lang: str, is_staff: bool) -> ReplyKeyboardMarkup:
         [KeyboardButton(text=MENU["status"][lang]), KeyboardButton(text=MENU["help"][lang])],
     ]
     if is_staff:
-        rows.append([KeyboardButton(text=MENU["queue"][lang])])
+        rows.append([KeyboardButton(text=MENU["mentorreport"][lang]), KeyboardButton(text=MENU["queue"][lang])])
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True, is_persistent=True)
 
 

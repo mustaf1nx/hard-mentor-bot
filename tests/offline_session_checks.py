@@ -18,7 +18,7 @@ from sqlalchemy.schema import CreateTable
 
 from bot import repo
 from bot.config import Settings
-from bot.db import (Base, LearningMaterial, Mentor, MentoringNotification, MentoringSession,
+from bot.db import (Base, LearningMaterial, Mentor, MentorWeeklyReport, MentoringNotification, MentoringSession,
                     SessionBooking, Subject, Topic, TopicChecklist, User, init_db)
 from bot.mentoring import jobs, service as svc
 from tests.offline_mentor_checks import EngineAdapter, SessionAdapter, run
@@ -551,6 +551,59 @@ class SessionChecks(unittest.TestCase):
         self.s.add(Mentor(telegram_id=MENTOR.id))
         self.s.commit()
         self.assertIsNone(run(jobs.prepare(self.a, warnings[0], SETTINGS, NOW)))
+
+    def test_45_mentor_report_can_be_submitted_for_current_and_previous_week(self):
+        current = svc.report_week_key(SETTINGS, 0, NOW)
+        previous = svc.report_week_key(SETTINGS, -1, NOW)
+        self.assertEqual(current, '2026-09-28')
+        self.assertEqual(previous, '2026-09-21')
+        first = run(svc.save_mentor_report(self.a, MENTOR, current, 'Что прошли: интегралы. Сложности: подстановка.'))
+        second = run(svc.save_mentor_report(self.a, MENTOR, previous, 'Прошлая неделя: повторяли производные и базовые формулы.'))
+        self.s.commit()
+        self.assertNotEqual(first.id, second.id)
+        self.assertEqual(self.s.scalar(select(func.count()).select_from(MentorWeeklyReport)), 2)
+
+    def test_46_resubmitting_same_week_updates_instead_of_duplicate(self):
+        week = svc.report_week_key(SETTINGS, 0, NOW)
+        first = run(svc.save_mentor_report(self.a, MENTOR, week, 'Первый вариант отчёта с достаточным количеством текста.'))
+        self.s.commit()
+        first_id = first.id
+        updated = run(svc.save_mentor_report(self.a, MENTOR, week, 'Исправленный вариант отчёта: тема, сложности и следующий шаг.'))
+        self.s.commit()
+        self.assertEqual(updated.id, first_id)
+        self.assertIn('Исправленный', updated.content)
+        self.assertEqual(self.s.scalar(select(func.count()).select_from(MentorWeeklyReport)), 1)
+
+    def test_47_only_actual_mentor_can_submit_and_only_admin_can_list_reports(self):
+        week = svc.report_week_key(SETTINGS, 0, NOW)
+        with self.assertRaises(svc.RuleError):
+            run(svc.save_mentor_report(self.a, ALICE, week, 'Достаточно длинный текст отчёта студента.'))
+        run(svc.save_mentor_report(self.a, MENTOR, week, 'Достаточно длинный корректный отчёт ментора.'))
+        self.s.commit()
+        self.assertEqual(len(run(svc.mentor_report_list(self.a, ADMIN, week_start=week))), 1)
+        with self.assertRaises(svc.RuleError):
+            run(svc.mentor_report_list(self.a, MENTOR, week_start=week))
+
+    def test_48_mentor_report_stats_are_calculated_from_sessions(self):
+        week = svc.report_week_key(SETTINGS, 0, NOW)
+        lesson = self.create()
+        booking = self.book(lesson)
+        run(svc.set_attendance(self.a, MENTOR, booking.id, 'present', lesson.ends_at))
+        run(svc.complete_session(self.a, MENTOR, lesson.id, lesson.ends_at))
+        self.add_file(session_id=lesson.id, kind='material', file_unique_id='report-material')
+        self.s.commit()
+        stats = run(svc.mentor_week_stats(self.a, MENTOR.id, week, SETTINGS))
+        self.assertEqual(stats['completed'], 1)
+        self.assertEqual(stats['present'], 1)
+        self.assertEqual(stats['completed_without_materials'], 0)
+
+    def test_49_unsupported_material_error_names_format_and_keeps_pdf_docx_rule(self):
+        with self.assertRaises(svc.RuleError) as ctx:
+            svc.validate_file('guide.pptx', 100, 'application/vnd.openxmlformats-officedocument.presentationml.presentation')
+        self.assertIn('guide.pptx', str(ctx.exception))
+        self.assertIn('PDF', str(ctx.exception))
+        self.assertEqual(svc.validate_file('guide.pdf', 100, 'application/pdf'), 'guide.pdf')
+
 
 
 if __name__ == '__main__':

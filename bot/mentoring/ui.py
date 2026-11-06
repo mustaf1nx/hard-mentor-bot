@@ -75,9 +75,11 @@ def home(viewer: Viewer):
             [b('📚 Банк материалов', 'ms:subjects:bank:0')]]
     if viewer.is_staff:
         rows += [[b('🎓 Веду занятия', 'ms:list:teaching:0:0')],
+                 [b('📝 Сдать отчёт', 'ms:mentorreport:0')],
                  [b('➕ Материал', 'ms:wizard:material'), b('☑️ Чек-лист темы', 'ms:wizard:checklist')]]
     if viewer.is_admin:
         rows += [[b('➕ Создать занятие', 'ms:wizard:session')],
+                 [b('📋 Отчёты менторов', 'ms:mentorreports:0:0')],
                  [b('🗂 Все занятия', 'ms:list:all:0:0'), b('📊 Сводка', 'ms:report')]]
     text = ('<b>Менторки</b>\n\n'
             'Выберите предмет, тему и удобное занятие. Перед менторкой можно задать вопрос, '

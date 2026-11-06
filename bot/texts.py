@@ -41,6 +41,7 @@ MENU = {
     "status": {"ru": "📋 Мои обращения", "en": "📋 My tickets"},
     "help": {"ru": "ℹ️ Помощь", "en": "ℹ️ Help"},
     "queue": {"ru": "📥 Очередь", "en": "📥 Queue"},
+    "mentorreport": {"ru": "📝 Отчёт ментора", "en": "📝 Mentor report"},
 }
 
 

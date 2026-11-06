@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from .. import repo
 from ..config import Settings
-from ..db import LearningMaterial, MentoringSession, SessionBooking, Subject, Topic, TopicChecklist, User, utcnow
+from ..db import LearningMaterial, MentorWeeklyReport, MentoringSession, SessionBooking, Subject, Topic, TopicChecklist, User, utcnow
 from ..mentoring import service as svc
 from ..mentoring import ui
 from ..repo import Viewer
@@ -46,6 +46,7 @@ class MentoringForm(StatesGroup):
     cancel_confirm = State()
     edit_value = State()
     edit_confirm = State()
+    report_content = State()
 
 
 def num(raw: str) -> int:
@@ -377,6 +378,90 @@ async def send_material(bot, sm, viewer, material_id):
         raise svc.RuleError('Документ сейчас не удалось отправить. Попробуйте снова; если ошибка повторяется, попросите автора загрузить его заново.')
 
 
+def mentor_report_stats_text(stats: dict, week_start: str) -> str:
+    attendance_total = stats['present'] + stats['absent']
+    attendance = (f"{stats['present']}/{attendance_total}" if attendance_total else 'нет данных')
+    return (f"Неделя: <b>{ui.e(svc.report_week_label(week_start), 40)}</b>\n"
+            f"Проведено занятий: <b>{stats['completed']}</b>\n"
+            f"Отменено: {stats['cancelled']} · не закрыто: {stats['scheduled']}\n"
+            f"Активных записей: {stats['bookings']}\n"
+            f"Посещаемость проведённых: {attendance}\n"
+            f"Проведено без материалов: {stats['completed_without_materials']}")
+
+
+async def start_mentor_report(target, state, viewer, sm, settings, shift: int):
+    if shift not in (0, -1):
+        raise svc.RuleError('Можно выбрать текущую или прошлую неделю.')
+    week_start = svc.report_week_key(settings, shift)
+    async with sm() as s:
+        if not await repo.is_mentor(s, viewer.id):
+            raise svc.RuleError('Этот отчёт доступен только пользователям из списка менторов.')
+        existing = await s.scalar(select(MentorWeeklyReport).where(
+            MentorWeeklyReport.mentor_id == viewer.id, MentorWeeklyReport.week_start == week_start))
+        stats = await svc.mentor_week_stats(s, viewer.id, week_start, settings)
+    await state.clear()
+    await state.update_data(report_week_start=week_start)
+    await state.set_state(MentoringForm.report_content)
+    text = ('<b>Еженедельный отчёт ментора</b>\n\n' + mentor_report_stats_text(stats, week_start) +
+            '\n\nОтправьте одним сообщением:\n'
+            '<b>1. Что прошли / что делали</b>\n'
+            '<b>2. Какие были сложности</b>\n'
+            '<b>3. Что нужно повторить / улучшить</b>\n'
+            '<b>4. Дополнительный комментарий</b>\n\n'
+            'Можно писать свободным текстом — главное, чтобы смысл этих пунктов был понятен.')
+    if existing:
+        text += '\n\n⚠️ За эту неделю отчёт уже есть. Новая отправка <b>заменит</b> предыдущий текст.'
+    await ui.show(target, text, ui.kb([ui.b('❌ Отменить', 'ms:stop')]))
+
+
+async def show_mentor_reports(target, sm, viewer, settings, shift: int, page: int):
+    svc.require_admin(viewer)
+    if shift not in (0, -1):
+        raise svc.RuleError('Можно выбрать текущую или прошлую неделю.')
+    week_start = svc.report_week_key(settings, shift)
+    async with sm() as s:
+        reports = await svc.mentor_report_list(s, viewer, week_start=week_start)
+        mentors = await repo.list_mentors(s)
+        users = await repo.users_by_ids(s, [r.mentor_id for r in reports])
+    items, page = ui.page_slice(reports, page)
+    submitted = {r.mentor_id for r in reports}
+    lines = [f'<b>Отчёты менторов · {ui.e(svc.report_week_label(week_start), 40)}</b>',
+             f'Сдали: <b>{len(submitted)}/{len(mentors)}</b>']
+    missing = [m.display_name for m in mentors if m.telegram_id not in submitted]
+    if missing:
+        preview = ', '.join(missing[:8])
+        if len(missing) > 8:
+            preview += f' и ещё {len(missing) - 8}'
+        lines.append('Не сдали: ' + ui.e(preview, 500))
+    rows = []
+    for report in items:
+        user = users.get(report.mentor_id)
+        label = user.display_name if user else str(report.mentor_id)
+        rows.append([ui.b('📝 ' + clip(label, 42), f'ms:mentorreportview:{report.id}')])
+    if nav := ui.nav(len(reports), page, f'ms:mentorreports:{shift}'):
+        rows.append(nav)
+    rows += [[ui.b('Эта неделя', 'ms:mentorreports:0:0'), ui.b('Прошлая неделя', 'ms:mentorreports:-1:0')],
+             [ui.b('← Менторки', 'ms:home')]]
+    await ui.show(target, '\n'.join(lines), ui.kb(*rows))
+
+
+async def show_mentor_report_detail(target, sm, viewer, settings, report_id: int):
+    svc.require_admin(viewer)
+    async with sm() as s:
+        report = await s.get(MentorWeeklyReport, report_id)
+        if report is None:
+            raise svc.RuleError('Отчёт не найден.')
+        user = await s.get(User, report.mentor_id)
+        stats = await svc.mentor_week_stats(s, report.mentor_id, report.week_start, settings)
+    name = user.display_name if user else str(report.mentor_id)
+    text = (f'<b>Отчёт · {ui.e(name, 128)}</b>\n' + mentor_report_stats_text(stats, report.week_start) +
+            '\n\n<b>Комментарий ментора</b>\n' + ui.e(report.content, 3500))
+    await ui.long_text(target.message if isinstance(target, CallbackQuery) else target, text)
+    shift = 0 if report.week_start == svc.report_week_key(settings, 0) else -1
+    message = target.message if isinstance(target, CallbackQuery) else target
+    await message.answer('Навигация:', reply_markup=ui.kb([ui.b('← К отчётам', f'ms:mentorreports:{shift}:0')]))
+
+
 async def show_report(target, sm, viewer, settings):
     svc.require_admin(viewer)
     async with sm() as s:
@@ -452,6 +537,33 @@ async def new_command(message: Message, state: FSMContext, viewer: Viewer, sm: a
 async def report_command(message: Message, viewer: Viewer, settings: Settings, sm: async_sessionmaker):
     try:
         await show_report(message, sm, viewer, settings)
+    except svc.RuleError as exc:
+        await message.answer(ui.e(exc, 800))
+
+
+@entry_router.message(Command('mentorreport'))
+@entry_router.message(F.text.in_(menu_labels('mentorreport')))
+async def mentor_report_command(message: Message, state: FSMContext, viewer: Viewer, settings: Settings, sm: async_sessionmaker):
+    try:
+        await state.clear()
+        async with sm() as s:
+            member = await repo.is_mentor(s, viewer.id)
+        if not member:
+            if viewer.is_admin:
+                await message.answer('Вы не добавлены в список менторов. Чтобы посмотреть сданные отчёты, откройте /mentorreports.')
+                return
+            raise svc.RuleError('Сдавать отчёт могут только пользователи из списка менторов.')
+        await message.answer('<b>За какую неделю сдать отчёт?</b>', reply_markup=ui.kb(
+            [ui.b('Эта неделя', 'ms:mentorreport:0')], [ui.b('Прошлая неделя', 'ms:mentorreport:-1')],
+            [ui.b('❌ Отмена', 'ms:stop')]))
+    except svc.RuleError as exc:
+        await message.answer(ui.e(exc, 800))
+
+
+@entry_router.message(Command('mentorreports'))
+async def mentor_reports_command(message: Message, viewer: Viewer, settings: Settings, sm: async_sessionmaker):
+    try:
+        await show_mentor_reports(message, sm, viewer, settings, 0, 0)
     except svc.RuleError as exc:
         await message.answer(ui.e(exc, 800))
 
@@ -704,6 +816,24 @@ async def actions(callback: CallbackQuery, state: FSMContext, viewer: Viewer,
                         [ui.b('Да, убрать', f'ms:archive:{material.id}:yes')], [ui.b('Не убирать', f'ms:bank:{material.topic_id}:0')]))
                 else:
                     raise svc.RuleError('Неизвестное действие.')
+        elif op == 'mentorreport':
+            shift = int(p[2])
+            await start_mentor_report(callback, state, viewer, sm, settings, shift)
+        elif op == 'mentorreports':
+            await state.clear()
+            shift = int(p[2])
+            await show_mentor_reports(callback, sm, viewer, settings, shift, num(p[3]))
+        elif op == 'mentorreportview':
+            await state.clear()
+            await show_mentor_report_detail(callback, sm, viewer, settings, num(p[2]))
+        elif op == 'materialmore':
+            await form_is(state, MentoringForm.document)
+            data = await state.get_data()
+            await ui.show(callback, 'Отправьте следующий <b>PDF или DOCX</b>. Он сохранится с теми же предметом, темой, типом и доступом.\n'
+                          'Когда закончите — нажмите «Готово».', ui.kb([ui.b('🔄 Изменить тип / доступ', 'ms:materialsettings')], [ui.b('✅ Готово', 'ms:stop')]))
+        elif op == 'materialsettings':
+            await form_is(state, MentoringForm.document)
+            await ask_kind(callback, state)
         elif op == 'report':
             await state.clear()
             await show_report(callback, sm, viewer, settings)
@@ -725,6 +855,7 @@ async def actions(callback: CallbackQuery, state: FSMContext, viewer: Viewer,
 @router.message(MentoringForm.question, DATA_TEXT)
 @router.message(MentoringForm.cancel_reason, DATA_TEXT)
 @router.message(MentoringForm.edit_value, DATA_TEXT)
+@router.message(MentoringForm.report_content, DATA_TEXT)
 async def form_text(message: Message, state: FSMContext, viewer: Viewer, settings: Settings,
                     sm: async_sessionmaker, bot: Bot):
     current, data = await state.get_state(), await state.get_data()
@@ -753,6 +884,31 @@ async def form_text(message: Message, state: FSMContext, viewer: Viewer, setting
             else:
                 await message.answer('Чек-лист пока не добавлен. Его можно будет открыть из карточки занятия.')
                 await show_session(message, sm, viewer, lesson.id, settings)
+            return
+        if current == MentoringForm.report_content.state:
+            week_start = data.get('report_week_start')
+            if not week_start:
+                raise svc.RuleError('Черновик отчёта устарел. Откройте /mentorreport снова.')
+            async with sm() as s:
+                report = await svc.save_mentor_report(s, viewer, week_start, text)
+                stats = await svc.mentor_week_stats(s, viewer.id, week_start, settings)
+                await s.commit()
+            await state.clear()
+            # The report is already committed before notifications are attempted, so a blocked
+            # admin chat cannot make a mentor lose a submitted report.
+            for admin_id in settings.staff_ids:
+                if admin_id == viewer.id:
+                    continue
+                try:
+                    await bot.send_message(admin_id,
+                        f'📝 <b>{ui.e(viewer.name, 128)}</b> сдал(а) отчёт ментора за {ui.e(svc.report_week_label(week_start), 40)}.',
+                        reply_markup=ui.kb([ui.b('Открыть отчёт', f'ms:mentorreportview:{report.id}')]))
+                except TelegramAPIError:
+                    pass
+            await message.answer('✅ <b>Отчёт ментора сохранён.</b>\n\n' + mentor_report_stats_text(stats, week_start) +
+                                 '\n\nКоординатор и руководство увидят его в разделе «Отчёты менторов». '
+                                 'Если нужно исправить текст — снова откройте /mentorreport и выберите эту же неделю.',
+                                 reply_markup=ui.kb([ui.b('📝 Сдать / изменить отчёт', 'ms:mentorreport:0')], [ui.b('← Менторки', 'ms:home')]))
             return
         svc.require_staff(viewer)
         if current in (MentoringForm.mentor.state, MentoringForm.start.state, MentoringForm.duration.state,
@@ -829,17 +985,23 @@ async def material_document(message: Message, state: FSMContext, viewer: Viewer,
         svc.require_staff(viewer)
         doc = message.document
         if doc is None:
-            raise svc.RuleError('Нужен документ PDF или DOCX. Отправьте как файл, не картинку; /cancel — отмена.')
+            raise svc.RuleError('Отправьте файл как документ. Принимаются только PDF и DOCX; изображения и презентации PPTX не принимаются. /cancel — отмена.')
         data = await state.get_data()
         async with sm() as s:
             material = await svc.add_material(s, viewer, topic_id=data['topic_id'], kind=data['kind'],
                 visibility=data['visibility'], file_id=doc.file_id, file_unique_id=doc.file_unique_id,
                 file_name=doc.file_name, file_size=doc.file_size, mime=doc.mime_type, session_id=data.get('session_id'))
             await s.commit()
-        await state.clear()
-        await message.answer('✅ Документ сохранён в банке. ' + ('Доступен студентам.' if material.visibility == 'students' else 'Доступен только команде.'),
-            reply_markup=ui.kb([ui.b('Открыть банк темы', f'ms:bank:{material.topic_id}:0')],
-                [ui.b('Добавить ещё документ', f'ms:upload:{material.session_id}' if material.session_id else f'ms:materialtopic:{material.topic_id}')]))
+        # Keep the upload state active: the mentor can immediately send the next file
+        # without restarting /addmaterial and accidentally losing the selected topic/type.
+        await message.answer('✅ <b>Документ сохранён в банке.</b> ' +
+            ('Доступен студентам.' if material.visibility == 'students' else 'Доступен только команде.') +
+            '\n\nМожно <b>сразу отправить следующий PDF/DOCX</b> — он получит те же настройки.',
+            reply_markup=ui.kb(
+                [ui.b('➕ Загрузить ещё', 'ms:materialmore')],
+                [ui.b('🔄 Изменить тип / доступ', 'ms:materialsettings')],
+                [ui.b('📚 Открыть банк темы', f'ms:bank:{material.topic_id}:0')],
+                [ui.b('✅ Готово', 'ms:stop')]))
     except svc.RuleError as exc:
         await message.answer(ui.e(exc, 1000))
 
