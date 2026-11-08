@@ -163,8 +163,8 @@ async def test_all_mentors_reachable_on_all_three_pickers(h):
         await s.commit()
     await h.say(COORD, "/addmentor " + " ".join(str(5000+i) for i in range(65)))
     await h.say(COORD, "/mentors")
-    assert "ml:1" in h.buttons(h.last_to(COORD))
-    await h.tap(COORD, "ml:999")
+    assert "ml:1:all:0" in h.buttons(h.last_to(COORD))
+    await h.tap(COORD, "ml:999")  # короткая форма из старых сообщений по-прежнему работает
     assert "5064" in h.texts_to(COORD)[-1]
     await h.say(ALICE, "/feedback")
     await h.tap(ALICE, "cat:praise")
@@ -258,3 +258,84 @@ async def test_one_time_migration_with_actual_async_driver(h):
         await s.commit()
     await init_db(engine)
     assert MENTOR not in await mentor_ids(h)
+
+
+async def _seed_roles(h):
+    from datetime import timedelta
+    from bot.db import MentorRole, Term, utcnow
+    from bot.mentoring import service as svc
+    from .conftest import ensure_users
+    async with h.sm() as s:
+        await ensure_users(s, ALICE, BOB)
+        for uid in (MENTOR, LEAD, ALICE, BOB):
+            if await s.get(Mentor, uid) is None:
+                s.add(Mentor(telegram_id=uid))
+        calc = (await svc.ensure_topic(s, "Calculus", "Integrals")).subject_id
+        phys = (await svc.ensure_topic(s, "Physics", "Optics")).subject_id
+        term = Term(name="list-term", starts_on=(utcnow().date() - timedelta(weeks=2)).isoformat(),
+                    weeks=12, active=True)
+        s.add(term)
+        await s.flush()
+        s.add_all([
+            MentorRole(telegram_id=MENTOR, subject_id=calc, term_id=term.id, role="lead"),
+            MentorRole(telegram_id=MENTOR, subject_id=phys, term_id=term.id, role="respondent"),
+            MentorRole(telegram_id=LEAD, subject_id=phys, term_id=term.id, role="lead"),
+            MentorRole(telegram_id=ALICE, subject_id=calc, term_id=term.id, role="author"),
+        ])
+        await s.commit()
+    return calc, phys
+
+
+def _ids_in(text: str) -> set[int]:
+    return {uid for uid in (MENTOR, LEAD, ALICE, BOB) if f"<code>{uid}</code>" in text}
+
+
+async def test_mentors_list_shows_subject_and_role(h):
+    calc, phys = await _seed_roles(h)
+    await h.say(COORD, "/mentors")
+    text = h.texts_to(COORD)[-1]
+    assert "list-term" in text
+    assert "Ведущий — Calculus; Респондент — Physics" in text
+    assert "Автор — Calculus" in text and "роль не назначена" in text
+    assert _ids_in(text) == {MENTOR, LEAD, ALICE, BOB}
+    buttons = h.buttons(h.last_to(COORD))
+    assert "ml:0:lead:0" in buttons and "mls:all:0" in buttons
+
+
+async def test_mentors_filter_by_role_and_subject(h):
+    calc, phys = await _seed_roles(h)
+    await h.say(COORD, "/mentors")
+    await h.tap(COORD, "ml:0:lead:0")
+    assert _ids_in(h.texts_to(COORD)[-1]) == {MENTOR, LEAD}
+    await h.tap(COORD, f"ml:0:lead:{calc}")
+    assert _ids_in(h.texts_to(COORD)[-1]) == {MENTOR}
+    await h.tap(COORD, f"ml:0:all:{phys}")
+    assert _ids_in(h.texts_to(COORD)[-1]) == {MENTOR, LEAD}
+    await h.tap(COORD, "ml:0:none:0")
+    assert _ids_in(h.texts_to(COORD)[-1]) == {BOB}
+    await h.tap(COORD, "mls:respondent:0")
+    assert f"ml:0:respondent:{phys}" in h.buttons(h.last_to(COORD))
+    await h.tap(COORD, f"ml:0:respondent:{calc}")
+    assert "Под фильтр никто не подходит" in h.texts_to(COORD)[-1]
+
+
+async def test_mentors_text_filters(h):
+    calc, phys = await _seed_roles(h)
+    await h.say(COORD, "/mentors ведущие phys")
+    assert _ids_in(h.texts_to(COORD)[-1]) == {LEAD}
+    await h.say(COORD, "/mentors автор")
+    assert _ids_in(h.texts_to(COORD)[-1]) == {ALICE}
+    await h.say(COORD, "/mentors без роли")
+    assert _ids_in(h.texts_to(COORD)[-1]) == {BOB}
+    await h.say(COORD, "/mentors <нет такого>")
+    assert "не найден" in h.texts_to(COORD)[-1]
+    assert f"ml:0:all:{calc}" in h.buttons(h.last_to(COORD))
+
+
+async def test_mentors_rejects_forged_filter_callbacks(h):
+    await _seed_roles(h)
+    await h.tap(ALICE, "ml:0:lead:0")
+    assert h.alerts()
+    h.clear()
+    await h.tap(COORD, "ml:0:boss:0")
+    assert h.alerts()

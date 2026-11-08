@@ -278,31 +278,122 @@ async def cb_assign(callback: CallbackQuery, viewer: Viewer, settings: Settings,
 
 # ---------- менторы ----------
 
-async def _mentors_page(sm: async_sessionmaker, lang: str, page: int = 0):
-    async with sm() as session:
-        mentors = await repo.list_mentors(session)
-    return views.mentors_page(mentors, lang, page)
+# Слова, которыми в /mentors можно задать фильтр по роли (п. 5.9).
+_MENTOR_ROLE_ALIASES = {
+    "все": "all", "all": "all",
+    "ведущий": "lead", "ведущие": "lead", "lead": "lead", "leads": "lead",
+    "респондент": "respondent", "респонденты": "respondent",
+    "respondent": "respondent", "respondents": "respondent",
+    "автор": "author", "авторы": "author", "author": "author", "authors": "author",
+    "безроли": "none", "без_роли": "none", "none": "none", "norole": "none",
+}
+
+
+def _small_int(raw: str, limit: int = 9) -> int | None:
+    return int(raw) if raw.isdigit() and len(raw) <= limit else None
+
+
+async def _mentors_page(sm: async_sessionmaker, settings: Settings, lang: str, page: int = 0,
+                        role: str = "all", subject_id: int = 0):
+    """Менторы с ролями на предмет в активном триместре; фильтр по роли и предмету."""
+    async with sm() as s:
+        mentors = await repo.list_mentors(s)
+        term = await svc.active_term(s, settings)
+        subject = await s.get(Subject, subject_id) if subject_id else None
+        assignments: dict[int, list[tuple[int, str, str]]] = {}
+        if term is not None:
+            rows = (await s.execute(
+                select(MentorRole.telegram_id, MentorRole.subject_id, Subject.name, MentorRole.role)
+                .join(Subject, Subject.id == MentorRole.subject_id)
+                .where(MentorRole.term_id == term.id)
+                .order_by(Subject.name_key, MentorRole.role))).all()
+            for uid, sid, name, r in rows:
+                assignments.setdefault(uid, []).append((sid, name, r))
+    if subject is None:
+        subject_id = 0
+    if term is None:  # без триместра ролей нет — фильтровать не по чему
+        role, subject_id = "all", 0
+
+    def keep(user) -> bool:
+        own = assignments.get(user.telegram_id, [])
+        if role == "none":
+            return not any(not subject_id or sid == subject_id for sid, _, _ in own)
+        if role == "all" and not subject_id:
+            return True
+        return any((role == "all" or r == role) and (not subject_id or sid == subject_id)
+                   for sid, _, r in own)
+
+    shown = [u for u in mentors if keep(u)]
+    roles = {uid: [(name, r) for _, name, r in own] for uid, own in assignments.items()}
+    return views.mentors_page(shown, lang, page, roles=roles,
+                              term_name=term.name if term else None, role=role,
+                              subject_id=subject_id, subject_name=subject.name if subject else None,
+                              total_mentors=len(mentors))
+
+
+async def _subject_choices(sm: async_sessionmaker, query: str = "") -> list[tuple[int, str]]:
+    async with sm() as s:
+        subjects = (await s.execute(select(Subject.id, Subject.name).order_by(Subject.name_key))).all()
+    q = query.casefold()
+    return [(sid, name) for sid, name in subjects if q in name.casefold()]
 
 
 @router.message(Command("mentors"))
 async def cmd_mentors(message: Message, command: CommandObject, viewer: Viewer,
-                      sm: async_sessionmaker) -> None:
+                      settings: Settings, sm: async_sessionmaker) -> None:
+    """/mentors [роль] [предмет] [страница] — например «/mentors ведущий матан 2»."""
     if not viewer.is_admin:
         await message.answer(t(viewer.lang, "admin_only"))
         return
-    arg = (command.args or "").strip()
-    page = max(0, int(arg) - 1) if arg.isdigit() and len(arg) < 10 else 0
-    text, kb = await _mentors_page(sm, viewer.lang, page)
+    tokens = (command.args or "").split()
+    page, role = 0, "all"
+    if tokens and _small_int(tokens[-1]) is not None:
+        page = max(0, _small_int(tokens.pop()) - 1)
+    if tokens and tokens[0].casefold() in _MENTOR_ROLE_ALIASES:
+        role = _MENTOR_ROLE_ALIASES[tokens.pop(0).casefold()]
+    elif len(tokens) >= 2 and f"{tokens[0]}{tokens[1]}".casefold() == "безроли":
+        role, tokens = "none", tokens[2:]
+    query = " ".join(tokens)[:100]
+    subject_id = 0
+    if query:
+        matches = await _subject_choices(sm, query)
+        exact = [m for m in matches if m[1].casefold() == query.casefold()]
+        if len(exact) == 1 or len(matches) == 1:
+            subject_id = (exact or matches)[0][0]
+        else:
+            key = "mentors_subject_many" if matches else "mentors_subject_unknown"
+            text, kb = views.mentor_subjects_page(matches or await _subject_choices(sm), viewer.lang, role)
+            await message.answer(t(viewer.lang, key, q=escape(query)) + "\n\n" + text, reply_markup=kb)
+            return
+    text, kb = await _mentors_page(sm, settings, viewer.lang, page, role, subject_id)
     await message.answer(text, reply_markup=kb)
 
 
 @router.callback_query(F.data.startswith("ml:"))
-async def cb_mentors_page(callback: CallbackQuery, viewer: Viewer, sm: async_sessionmaker) -> None:
-    raw = callback.data.split(":", 1)[1]
-    if not viewer.is_admin or not raw.isdigit() or len(raw) > 9:
+async def cb_mentors_page(callback: CallbackQuery, viewer: Viewer, settings: Settings,
+                          sm: async_sessionmaker) -> None:
+    # ml:<страница>[:<роль>:<id предмета>] — короткая форма осталась от старых сообщений.
+    parts = callback.data.split(":")[1:]
+    page = _small_int(parts[0]) if parts else None
+    role = parts[1] if len(parts) == 3 else "all"
+    subject_id = _small_int(parts[2]) if len(parts) == 3 else 0
+    if (not viewer.is_admin or len(parts) not in (1, 3) or page is None or subject_id is None
+            or role not in views.MENTOR_ROLE_FILTERS):
         await callback.answer(t(viewer.lang, "admin_only"), show_alert=True)
         return
-    text, kb = await _mentors_page(sm, viewer.lang, int(raw))
+    text, kb = await _mentors_page(sm, settings, viewer.lang, page, role, subject_id)
+    await callback.answer()
+    await _edit_or_send(callback, text, kb)
+
+
+@router.callback_query(F.data.startswith("mls:"))
+async def cb_mentors_subjects(callback: CallbackQuery, viewer: Viewer, sm: async_sessionmaker) -> None:
+    parts = callback.data.split(":")[1:]
+    page = _small_int(parts[1]) if len(parts) == 2 else None
+    if not viewer.is_admin or page is None or parts[0] not in views.MENTOR_ROLE_FILTERS:
+        await callback.answer(t(viewer.lang, "admin_only"), show_alert=True)
+        return
+    text, kb = views.mentor_subjects_page(await _subject_choices(sm), viewer.lang, parts[0], page)
     await callback.answer()
     await _edit_or_send(callback, text, kb)
 

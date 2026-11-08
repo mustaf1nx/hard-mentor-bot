@@ -338,19 +338,100 @@ def assign_kb(ticket: Ticket, candidates: list[User], lang: str, page: int = 0) 
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-def mentors_page(mentors: list[User], lang: str, page: int = 0) -> tuple[str, InlineKeyboardMarkup | None]:
-    if not mentors:
+# Роли ментора на предмет (п. 5.9). Ключи совпадают с MentorRole.role.
+MENTOR_ROLE_NAMES = {
+    "lead": {"ru": "Ведущий", "en": "Lead"},
+    "respondent": {"ru": "Респондент", "en": "Respondent"},
+    "author": {"ru": "Автор", "en": "Author"},
+}
+# Фильтр списка /mentors: all — без фильтра, none — без роли в текущем триместре.
+MENTOR_ROLE_FILTERS = {
+    "all": {"ru": "Все", "en": "All"},
+    "lead": {"ru": "Ведущие", "en": "Leads"},
+    "respondent": {"ru": "Респонденты", "en": "Respondents"},
+    "author": {"ru": "Авторы", "en": "Authors"},
+    "none": {"ru": "Без роли", "en": "No role"},
+}
+
+
+def _lang_name(names: dict, lang: str) -> str:
+    return names.get(lang) or names["ru"]
+
+
+def mentors_page(mentors: list[User], lang: str, page: int = 0, *,
+                 roles: dict[int, list[tuple[str, str]]] | None = None,
+                 term_name: str | None = None, role: str = "all",
+                 subject_id: int = 0, subject_name: str | None = None,
+                 total_mentors: int | None = None) -> tuple[str, InlineKeyboardMarkup | None]:
+    """Список менторов с ролями на предмет. roles: {telegram_id: [(предмет, роль)]}."""
+    filtered = role != "all" or subject_id
+    if not mentors and not filtered and not total_mentors:
         return t(lang, "mentors_empty"), None
+    roles = roles or {}
     size = 8
-    pages = (len(mentors) + size - 1) // size
+    pages = max(1, (len(mentors) + size - 1) // size)
     page = min(max(0, page), pages - 1)
-    lines = [t(lang, "mentors_title"), t(lang, "mentors_page", total=len(mentors), page=page + 1, pages=pages), ""]
+    lines = [t(lang, "mentors_title")]
+    if term_name:
+        lines.append(t(lang, "mentors_term", term=escape(clip(term_name, 60))))
+    else:
+        lines.append(t(lang, "mentors_no_term"))
+    if filtered:
+        parts = []
+        if role != "all":
+            parts.append(_lang_name(MENTOR_ROLE_FILTERS[role], lang))
+        if subject_id:
+            parts.append(escape(clip(subject_name or str(subject_id), 60)))
+        lines.append(t(lang, "mentors_filter", filter=" · ".join(parts)))
+    lines += [t(lang, "mentors_page", total=len(mentors), page=page + 1, pages=pages), ""]
+    if not mentors:
+        lines.append(t(lang, "mentors_filter_empty"))
     for user in mentors[page * size:(page + 1) * size]:
         handle = f" @{escape(clip(user.username, 32))}" if user.username else ""
         lines.append(f"• {escape(clip(user.display_name, 40))}{handle} — <code>{user.telegram_id}</code>")
+        own = roles.get(user.telegram_id, [])
+        if own:
+            desc = "; ".join(f"{_lang_name(MENTOR_ROLE_NAMES.get(r, {'ru': r}), lang)} — {subj}"
+                             for subj, r in own)
+            lines.append(f"   {escape(clip(desc, 300))}")
+        elif term_name:
+            lines.append(f"   <i>{t(lang, 'mentors_no_role')}</i>")
+    rows = []
+    if term_name:
+        def role_btn(key: str) -> InlineKeyboardButton:
+            label = _lang_name(MENTOR_ROLE_FILTERS[key], lang)
+            return _btn(f"• {label}" if key == role else label, f"ml:0:{key}:{subject_id}")
+        rows.append([role_btn("all"), role_btn("lead"), role_btn("respondent")])
+        rows.append([role_btn("author"), role_btn("none")])
+        subject_row = [_btn(t(lang, "mentors_pick_subject"), f"mls:{role}:0")]
+        if subject_id:
+            subject_row.append(_btn(t(lang, "mentors_all_subjects"), f"ml:0:{role}:0"))
+        rows.append(subject_row)
     nav = []
     if page:
-        nav.append(_btn("◀️", f"ml:{page - 1}"))
+        nav.append(_btn("◀️", f"ml:{page - 1}:{role}:{subject_id}"))
     if page + 1 < pages:
-        nav.append(_btn("▶️", f"ml:{page + 1}"))
-    return "\n".join(lines), InlineKeyboardMarkup(inline_keyboard=[nav]) if nav else None
+        nav.append(_btn("▶️", f"ml:{page + 1}:{role}:{subject_id}"))
+    if nav:
+        rows.append(nav)
+    return "\n".join(lines), InlineKeyboardMarkup(inline_keyboard=rows) if rows else None
+
+
+def mentor_subjects_page(subjects: list[tuple[int, str]], lang: str, role: str,
+                         page: int = 0) -> tuple[str, InlineKeyboardMarkup]:
+    """Выбор предмета для фильтра /mentors. subjects: [(id, название)]."""
+    size = 8
+    pages = max(1, (len(subjects) + size - 1) // size)
+    page = min(max(0, page), pages - 1)
+    rows = [[_btn(clip(name, 60), f"ml:0:{role}:{sid}")]
+            for sid, name in subjects[page * size:(page + 1) * size]]
+    nav = []
+    if page:
+        nav.append(_btn("◀️", f"mls:{role}:{page - 1}"))
+    if page + 1 < pages:
+        nav.append(_btn("▶️", f"mls:{role}:{page + 1}"))
+    if nav:
+        rows.append(nav)
+    rows.append([_btn(t(lang, "mentors_back"), f"ml:0:{role}:0")])
+    text = t(lang, "mentors_subjects_title") if subjects else t(lang, "mentors_no_subjects")
+    return text, InlineKeyboardMarkup(inline_keyboard=rows)
