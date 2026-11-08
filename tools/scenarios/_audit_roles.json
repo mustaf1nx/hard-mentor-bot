@@ -1,0 +1,297 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Привет! Это <b>Hard-менторство</b> Школы менторства Re:Born 🎓\n\n<b>Что здесь есть</b>\n📅 Доступные занятия — записаться на менторку: предмет, тема, время (/sessions)\n📚 Банк материалов — гайды, разборы, чек-листы (/materials)\n📝 Мои записи — что вы уже запланировали (/mysessions)\n\nМенторки ведут старшекурсники: разбираем сложные темы и пробные экзамены, но не решаем задания за вас. Запись именная — ментор видит ваш вопрос и готовится заранее.\n\nВопрос, жалоба или идея? Нажмите «✍️ Оставить обращение» или отправьте /feedback — обращение получит номер, и вы увидите ответ в /status.",
+    "markup": {
+     "keyboard": [
+      [
+       {
+        "text": "🗓 Менторки"
+       },
+       {
+        "text": "📚 Банк материалов"
+       }
+      ],
+      [
+       {
+        "text": "✍️ Оставить обращение"
+       }
+      ],
+      [
+       {
+        "text": "📋 Мои обращения"
+       },
+       {
+        "text": "ℹ️ Помощь"
+       }
+      ],
+      [
+       {
+        "text": "📝 Отчёт ментора"
+       },
+       {
+        "text": "📥 Очередь"
+       }
+      ]
+     ],
+     "is_persistent": true,
+     "resize_keyboard": true
+    },
+    "at": 1794039938
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Триместр «demo»</b>\nСтарт: 2026-10-12 (пн), недель: 12, поток: 2500\nСейчас: <b>неделя 4</b>\n\nОриентиры: 5 — мидтермы, 10 — эндтермы, 11 — финальные экзамены, 12 — пересдача.",
+    "markup": null,
+    "at": 1794039938
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "📝 Как прошла менторка #1? Оцените её — это анонимно для ментора, он увидит только средние оценки и тексты без имени.\n\nCalculus 1 · Интегралы\n05.11.2026 12:25 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Оставить отзыв",
+        "callback_data": "ms:fb:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794039939
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Кому назначить роль?</b>\n\nВыберите ментора.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "@user100500",
+        "callback_data": "rl:men:100500"
+       }
+      ],
+      [
+       {
+        "text": "@demo_mentor",
+        "callback_data": "rl:men:900001"
+       }
+      ],
+      [
+       {
+        "text": "← Меню ролей",
+        "callback_data": "rl:view"
+       }
+      ]
+     ]
+    },
+    "at": 1794039939
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Роли · demo</b>\n\nКак смотреть?",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "По предметам",
+        "callback_data": "rl:sub"
+       }
+      ],
+      [
+       {
+        "text": "По людям",
+        "callback_data": "rl:ppl:0"
+       }
+      ],
+      [
+       {
+        "text": "Назначить роль",
+        "callback_data": "rl:pick:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794039940
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Роли по предметам</b>\n\nВыберите предмет.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Calculus 1",
+        "callback_data": "rl:subv:1"
+       }
+      ],
+      [
+       {
+        "text": "Discrete Math",
+        "callback_data": "rl:subv:3"
+       }
+      ],
+      [
+       {
+        "text": "English",
+        "callback_data": "rl:subv:6"
+       }
+      ],
+      [
+       {
+        "text": "ICT",
+        "callback_data": "rl:subv:4"
+       }
+      ],
+      [
+       {
+        "text": "Linear Algebra",
+        "callback_data": "rl:subv:2"
+       }
+      ],
+      [
+       {
+        "text": "Programming",
+        "callback_data": "rl:subv:5"
+       }
+      ],
+      [
+       {
+        "text": "← Меню ролей",
+        "callback_data": "rl:view"
+       }
+      ]
+     ]
+    },
+    "at": 1794039941
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Роли · demo</b>\n\nКак смотреть?",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "По предметам",
+        "callback_data": "rl:sub"
+       }
+      ],
+      [
+       {
+        "text": "По людям",
+        "callback_data": "rl:ppl:0"
+       }
+      ],
+      [
+       {
+        "text": "Назначить роль",
+        "callback_data": "rl:pick:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794039942
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Кому назначить роль?</b>\n\nВыберите ментора.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "@user100500",
+        "callback_data": "rl:men:100500"
+       }
+      ],
+      [
+       {
+        "text": "@demo_mentor",
+        "callback_data": "rl:men:900001"
+       }
+      ],
+      [
+       {
+        "text": "← Меню ролей",
+        "callback_data": "rl:view"
+       }
+      ]
+     ]
+    },
+    "at": 1794039942
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>KPI · demo, неделя 4</b>\nМенторы 1–2 из 2\n\n· @user100500: менторки 0/1 · записи 0 · материалы 0 · оценки —\n· @demo_mentor: менторки 1/2 · записи 1 · материалы 0 · оценки —",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794039943
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "✅ @user100500 — Ведущий · Calculus 1 · demo",
+    "markup": null,
+    "at": 1794039944
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 0,
+    "text": "/start"
+   },
+   {
+    "after": 0,
+    "text": "/term"
+   },
+   {
+    "after": 3,
+    "text": "/role"
+   },
+   {
+    "after": 4,
+    "text": "→ rl:view"
+   },
+   {
+    "after": 5,
+    "text": "→ rl:sub"
+   },
+   {
+    "after": 6,
+    "text": "→ rl:view"
+   },
+   {
+    "after": 7,
+    "text": "→ rl:pick:0"
+   },
+   {
+    "after": 8,
+    "text": "/kpi"
+   },
+   {
+    "after": 9,
+    "text": "/role @user100500 ведущий Calculus 1"
+   }
+  ]
+ }
+}

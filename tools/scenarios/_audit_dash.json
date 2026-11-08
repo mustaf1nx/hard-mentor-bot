@@ -1,0 +1,286 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "📝 Как прошла менторка #1? Оцените её — это анонимно для ментора, он увидит только средние оценки и тексты без имени.\n\nCalculus 1 · Интегралы\n05.11.2026 12:26 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Оставить отзыв",
+        "callback_data": "ms:fb:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794040000
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Сводка · demo, неделя 4</b>\n07.11.2026 13:26 · Asia/Almaty\n\n<b>Требует внимания · 3</b>\n🟡 1 менторок без формы ОС\n🟡 1 менторок без материалов в Банке\n🟡 2 не сдали отчёт: @user100500, @demo_mentor\n\n<b>KPI против цели</b>\nОтчёты: 0 из 2 — цель 100%\nОценки: — по 0 отзывам — цель ≥ 4,0\nSyllabus Clinic: 1 из 2500 (0.0%) — цель ≥ 60%\nЯвка: 1 из 1\nМатериалы: 0 из 1 проведённых\n\n⚠️ Слотов на неделе: 1 · норматив п. 8.1.5 ~4\n\n<b>Цикл</b>: замкнут у 0 из 6 предметов",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Менторки",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       }
+      ],
+      [
+       {
+        "text": "Люди",
+        "callback_data": "dash:people"
+       },
+       {
+        "text": "Долги",
+        "callback_data": "dash:debts"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       }
+      ],
+      [
+       {
+        "text": "📥 Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040000
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Цикл по предметам</b>\nм — материал · с — слот · п — проведена · о — форма ОС · б — Банк\n\n<pre>Предмет        м с п о б\n-------------- ---------\nCalculus 1     · ✓ ✓ · ·\nDiscrete Math  · · · · ·\nEnglish        · · · · ·\nICT            · · · · ·\nLinear Algebra · · · · ·\nProgramming    · · · · ·</pre>",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Менторки",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       }
+      ],
+      [
+       {
+        "text": "Люди",
+        "callback_data": "dash:people"
+       },
+       {
+        "text": "Долги",
+        "callback_data": "dash:debts"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       }
+      ],
+      [
+       {
+        "text": "📥 Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040001
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Долги</b>\nФорма ОС: 0 из 1 проведённых\n\n<b>Проведены без материалов (1):</b>\n· #1 · 05.11",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Менторки",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       }
+      ],
+      [
+       {
+        "text": "Люди",
+        "callback_data": "dash:people"
+       },
+       {
+        "text": "Долги",
+        "callback_data": "dash:debts"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       }
+      ],
+      [
+       {
+        "text": "📥 Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040002
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Люди</b>\nВ реестре менторов: 2\nБез роли на этот триместр: 1\nПерегруз (больше 3 слотов на неделе): 0\n\n<b>Не сдали отчёт за эту неделю (2):</b>\n· @user100500\n· @demo_mentor",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Менторки",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       }
+      ],
+      [
+       {
+        "text": "Люди",
+        "callback_data": "dash:people"
+       },
+       {
+        "text": "Долги",
+        "callback_data": "dash:debts"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       }
+      ],
+      [
+       {
+        "text": "📥 Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040003
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторки · 3 за триместр</b>\n✅ #1 · 05.11 · Syllabus Clinic\n     записей 1 · ОС 0 · материалов 0\n🕒 #2 · 10.11 · Консультация 1-на-1\n     записей 0 · ОС 0 · материалов 0\n🕒 #3 · 11.11 · Консультация 1-на-1\n     записей 0 · ОС 0 · материалов 0",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Менторки",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       }
+      ],
+      [
+       {
+        "text": "Люди",
+        "callback_data": "dash:people"
+       },
+       {
+        "text": "Долги",
+        "callback_data": "dash:debts"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       }
+      ],
+      [
+       {
+        "text": "📥 Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040004
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 0,
+    "text": "/dashboard"
+   },
+   {
+    "after": 2,
+    "text": "→ Цикл по предметам"
+   },
+   {
+    "after": 3,
+    "text": "→ Долги"
+   },
+   {
+    "after": 4,
+    "text": "→ Люди"
+   },
+   {
+    "after": 5,
+    "text": "→ Менторки"
+   }
+  ]
+ }
+}

@@ -1,0 +1,474 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "⏰ <b>SLA просрочен</b>: по обращению HM-0001 (⚠️ Серьёзное сообщение) нет первого ответа уже 10ч 0м.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Открыть HM-0001",
+        "callback_data": "tk:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794040031
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Сводка · bulk, неделя 4</b>\n07.11.2026 13:27 · Asia/Almaty\n\n<b>Требует внимания · 4</b>\n🔴 обращение #1 просрочено по SLA\n🟡 4 менторок без формы ОС\n🟡 22 менторок без материалов в Банке\n🟡 15 не сдали отчёт: @mentor16, @mentor17, @mentor18, @mentor19\n\n<b>KPI против цели</b>\nОтчёты: 15 из 30 — цель 100%\nОценки: 3.99 по 90 отзывам — цель ≥ 4,0\nSyllabus Clinic: 45 из 2500 (1.8%) — цель ≥ 60%\nЯвка: 145 из 236\nМатериалы: 18 из 40 проведённых\n\n✅ Слотов на неделе: 10 · норматив п. 8.1.5 ~4\n\n<b>Цикл</b>: замкнут у 6 из 6 предметов",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Менторки",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       }
+      ],
+      [
+       {
+        "text": "Люди",
+        "callback_data": "dash:people"
+       },
+       {
+        "text": "Долги",
+        "callback_data": "dash:debts"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       }
+      ],
+      [
+       {
+        "text": "📥 Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040033
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторки · 100 за триместр</b>\n🕒 #35 · 03.12 · Консультация 1-на-1\n     записей 1 · ОС 0 · материалов 0\n🕒 #80 · 03.12 · Групповой интенсив\n     записей 3 · ОС 0 · материалов 0\n🕒 #44 · 04.12 · Syllabus Clinic\n     записей 1 · ОС 0 · материалов 0\n🕒 #89 · 04.12 · Syllabus Clinic\n     записей 3 · ОС 0 · материалов 0\n🕒 #54 · 07.12 · Консультация 1-на-1\n     записей 1 · ОС 0 · материалов 0\n🕒 #9 · 07.12 · Консультация 1-на-1\n     записей 1 · ОС 0 · материалов 0\n🕒 #99 · 07.12 · Групповой интенсив\n     записей 3 · ОС 0 · материалов 0\n🕒 #18 · 08.12 · Групповой интенсив\n     записей 4 · ОС 0 · материалов 0\n🕒 #63 · 08.12 · How to start assignment\n     записей 0 · ОС 0 · материалов 0\n🕒 #27 · 09.12 · Разбор Mock-экзамена\n     записей 1 · ОС 0 · материалов 0\n🕒 #72 · 09.12 · Разбор Mock-экзамена\n     записей 6 · ОС 0 · материалов 0\n🕒 #81 · 10.12 · Групповой интенсив\n     записей 5 · ОС 0 · материалов 0\n🕒 #36 · 10.12 · How to start assignment\n     записей 3 · ОС 0 · материалов 0\n🕒 #45 · 11.12 · Syllabus Clinic\n     записей 0 · ОС 0 · материалов 0\n🕒 #90 · 11.12 · Групповой интенсив\n     записей 3 · ОС 0 · материалов 0\n…ещё 85",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Менторки",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       }
+      ],
+      [
+       {
+        "text": "Люди",
+        "callback_data": "dash:people"
+       },
+       {
+        "text": "Долги",
+        "callback_data": "dash:debts"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       }
+      ],
+      [
+       {
+        "text": "📥 Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040034
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Долги</b>\nФорма ОС: 36 из 40 проведённых\n\n<b>Проведены без материалов (22):</b>\n· #46 · 12.10\n· #19 · 14.10\n· #73 · 15.10\n· #82 · 16.10\n· #2 · 19.10\n· #47 · 19.10\n· #92 · 19.10\n· #20 · 21.10\n· #29 · 22.10\n· #38 · 23.10\n· #83 · 23.10\n· #48 · 26.10\n· #3 · 26.10\n· #66 · 28.10\n· #21 · 28.10\n· #75 · 29.10\n· #84 · 30.10\n· #39 · 30.10\n· #94 · 02.11\n· #49 · 02.11\n\n<b>Отменено: 5</b>\n· #1 · Ведущий заболел\n· #100 · Ведущий заболел\n· #56 · Ведущий заболел\n· #12 · Ведущий заболел\n· #67 · Ведущий заболел",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Менторки",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       }
+      ],
+      [
+       {
+        "text": "Люди",
+        "callback_data": "dash:people"
+       },
+       {
+        "text": "Долги",
+        "callback_data": "dash:debts"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       }
+      ],
+      [
+       {
+        "text": "📥 Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040035
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>KPI · bulk, неделя 4</b>\nМенторы 1–10 из 30\n\n· @mentor1: менторки 2/4 · записи 8 · материалы 1 · оценки 3.92\n· @mentor2: менторки 2/4 · записи 10 · материалы 0 · оценки 3.93\n· @mentor3: менторки 2/4 · записи 9 · материалы 1 · оценки 3.67\n· @mentor4: менторки 3/4 · записи 5 · материалы 2 · оценки 4.13\n· @mentor5: менторки 1/4 · записи 13 · материалы 1 · оценки 4.33\n· @mentor6: менторки 1/4 · записи 19 · материалы 0 · оценки 3.34\n· @mentor7: менторки 1/4 · записи 15 · материалы 1 · оценки —\n· @mentor8: менторки 1/4 · записи 19 · материалы 0 · оценки 4.22\n· @mentor9: менторки 1/4 · записи 10 · материалы 0 · оценки 3.45\n· @mentor10: менторки 2/4 · записи 11 · материалы 2 · оценки 3.93",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Вперёд →",
+        "callback_data": "kpi:1"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040036
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>KPI · bulk, неделя 4</b>\nМенторы 11–20 из 30\n\n· @mentor11: менторки 1/3 · записи 9 · материалы 1 · оценки 3.83\n· @mentor12: менторки 0/3 · записи 13 · материалы 0 · оценки —\n· @mentor13: менторки 2/3 · записи 14 · материалы 1 · оценки 4.1\n· @mentor14: менторки 1/3 · записи 2 · материалы 1 · оценки 3.67\n· @mentor15: менторки 1/3 · записи 5 · материалы 0 · оценки 4.33\n· @mentor16: менторки 2/3 · записи 10 · материалы 1 · оценки 4.5\n· @mentor17: менторки 1/3 · записи 5 · материалы 0 · оценки 4.0\n· @mentor18: менторки 1/3 · записи 8 · материалы 0 · оценки 3.67\n· @mentor19: менторки 2/3 · записи 15 · материалы 0 · оценки 4.0\n· @mentor20: менторки 1/3 · записи 5 · материалы 0 · оценки 4.67",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "← Назад",
+        "callback_data": "kpi:0"
+       },
+       {
+        "text": "Вперёд →",
+        "callback_data": "kpi:2"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040037
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>KPI · bulk, неделя 4</b>\nМенторы 21–30 из 30\n\n· @mentor21: менторки 1/3 · записи 11 · материалы 0 · оценки 4.11\n· @mentor22: менторки 2/3 · записи 13 · материалы 0 · оценки 4.33\n· @mentor23: менторки 1/3 · записи 12 · материалы 0 · оценки 4.33\n· @mentor24: менторки 1/3 · записи 9 · материалы 0 · оценки 3.93\n· @mentor25: менторки 2/3 · записи 10 · материалы 2 · оценки 3.78\n· @mentor26: менторки 0/3 · записи 11 · материалы 0 · оценки —\n· @mentor27: менторки 1/3 · записи 6 · материалы 1 · оценки 3.67\n· @mentor28: менторки 2/3 · записи 7 · материалы 2 · оценки 3.17\n· @mentor29: менторки 1/3 · записи 15 · материалы 0 · оценки 4.67\n· @mentor30: менторки 1/3 · записи 12 · материалы 1 · оценки 4.17",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "← Назад",
+        "callback_data": "kpi:1"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040037
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Отчёты менторов · 02.11.2026–08.11.2026</b>\nСдали: <b>15/30</b>\nНе сдали: Ментор 16, Ментор 17, Ментор 18, Ментор 19, Ментор 20, Ментор 21, Ментор 22, Ментор 23 и ещё 7",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📝 Ментор 15",
+        "callback_data": "ms:mentorreportview:15"
+       }
+      ],
+      [
+       {
+        "text": "📝 Ментор 14",
+        "callback_data": "ms:mentorreportview:14"
+       }
+      ],
+      [
+       {
+        "text": "📝 Ментор 13",
+        "callback_data": "ms:mentorreportview:13"
+       }
+      ],
+      [
+       {
+        "text": "📝 Ментор 12",
+        "callback_data": "ms:mentorreportview:12"
+       }
+      ],
+      [
+       {
+        "text": "📝 Ментор 11",
+        "callback_data": "ms:mentorreportview:11"
+       }
+      ],
+      [
+       {
+        "text": "📝 Ментор 10",
+        "callback_data": "ms:mentorreportview:10"
+       }
+      ],
+      [
+       {
+        "text": "📝 Ментор 9",
+        "callback_data": "ms:mentorreportview:9"
+       }
+      ],
+      [
+       {
+        "text": "📝 Ментор 8",
+        "callback_data": "ms:mentorreportview:8"
+       }
+      ],
+      [
+       {
+        "text": "▶️",
+        "callback_data": "ms:mentorreports:0:1"
+       }
+      ],
+      [
+       {
+        "text": "Эта неделя",
+        "callback_data": "ms:mentorreports:0:0"
+       },
+       {
+        "text": "Прошлая неделя",
+        "callback_data": "ms:mentorreports:-1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040038
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Менторки</b>\n\nВыберите предмет, тему и удобное занятие. Перед менторкой можно задать вопрос, заполнить чек-лист и прочитать рекап-гайд.\n\nЗаписи на занятия <b>именные</b>. Обращения и их анонимность — отдельный раздел /feedback.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📅 Доступные занятия",
+        "callback_data": "ms:subjects:schedule:0"
+       }
+      ],
+      [
+       {
+        "text": "📝 Мои записи",
+        "callback_data": "ms:list:bookings:0:0"
+       }
+      ],
+      [
+       {
+        "text": "📚 Банк материалов",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ],
+      [
+       {
+        "text": "⚙️ Управление",
+        "callback_data": "ms:admin"
+       }
+      ]
+     ]
+    },
+    "at": 1794040039
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Выберите предмет</b>",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Calculus 1",
+        "callback_data": "ms:topics:schedule:1:0"
+       }
+      ],
+      [
+       {
+        "text": "Discrete Math",
+        "callback_data": "ms:topics:schedule:3:0"
+       }
+      ],
+      [
+       {
+        "text": "English",
+        "callback_data": "ms:topics:schedule:6:0"
+       }
+      ],
+      [
+       {
+        "text": "ICT",
+        "callback_data": "ms:topics:schedule:4:0"
+       }
+      ],
+      [
+       {
+        "text": "Linear Algebra",
+        "callback_data": "ms:topics:schedule:2:0"
+       }
+      ],
+      [
+       {
+        "text": "Programming",
+        "callback_data": "ms:topics:schedule:5:0"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794040040
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Calculus 1</b>\nВыберите тему.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Интегралы",
+        "callback_data": "ms:list:upcoming:2:0"
+       }
+      ],
+      [
+       {
+        "text": "Пределы",
+        "callback_data": "ms:list:upcoming:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Предметы",
+        "callback_data": "ms:subjects:schedule:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794040040
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 1,
+    "text": "/dashboard"
+   },
+   {
+    "after": 2,
+    "text": "→ Менторки"
+   },
+   {
+    "after": 3,
+    "text": "→ Долги"
+   },
+   {
+    "after": 4,
+    "text": "/kpi"
+   },
+   {
+    "after": 5,
+    "text": "→ Вперёд"
+   },
+   {
+    "after": 6,
+    "text": "→ Вперёд"
+   },
+   {
+    "after": 7,
+    "text": "/mentorreports"
+   },
+   {
+    "after": 8,
+    "text": "/sessions"
+   },
+   {
+    "after": 9,
+    "text": "→ 📅 Доступные занятия"
+   },
+   {
+    "after": 10,
+    "text": "→ Calculus 1"
+   }
+  ]
+ }
+}

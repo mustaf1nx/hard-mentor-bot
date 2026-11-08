@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Копия production PostgreSQL — проверка 7.11.2026</title>
+<style>
+:root{--ink:#14273a;--muted:#4b6172;--blue:#0c4a8e;--paper:#f6f9fb;--line:#cddae3;--green:#12634b;--amber:#855600;--red:#a5272e}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:#07569a;text-underline-offset:3px}header{background:#103754;color:#fff;padding:44px max(24px,calc((100vw - 980px)/2)) 36px}
+header p{color:#dbeaf3;max-width:74ch}h1{font-size:clamp(1.9rem,4.5vw,3rem);line-height:1.1;margin:0 0 14px;max-width:24ch}
+main{max-width:980px;margin:auto;padding:0 24px 70px}section{padding:32px 0;border-bottom:1px solid var(--line)}section:last-child{border:0}
+h2{margin:0 0 14px;line-height:1.25}h3{margin:24px 0 8px}li{margin:7px 0}
+.lead{font-size:1.15rem;max-width:74ch}.note{background:#e4eff5;border-left:4px solid var(--blue);padding:16px 20px;margin:18px 0}
+.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:680px;background:#fff}
+th,td{border-bottom:1px solid var(--line);padding:11px 13px;text-align:left;vertical-align:top}th{background:#e9f1f6;font-size:.84rem;letter-spacing:.02em;text-transform:uppercase}
+.status{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.78rem;font-weight:700;white-space:nowrap}
+.done{background:#dcefe7;color:#0d543f}.partial{background:#fff0d2;color:#6f4700}.open{background:#f3dcde;color:#8a1f26}
+code{background:#eaf1f5;padding:1px 5px;font-size:.9em}.small{color:var(--muted);font-size:.9rem}
+pre{background:#0f2436;color:#e8f2f8;padding:16px 18px;overflow-x:auto;font-size:.88rem;line-height:1.5}
+footer{padding:26px 0;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<header>
+<h1>Копия production: что проверено</h1>
+<p>Дамп Railway (PostgreSQL 18.6) восстановлен локально: read-only аудит, миграции <code>0001 → 0011</code>, запуск бота и тесты. Живой Railway не затрагивался.</p>
+</header>
+<main>
+
+<section>
+<h2>Коротко</h2>
+<p class="lead">Дамп production восстановлен в отдельную локальную базу PostgreSQL 18.6. Перед миграцией: 537 пользователей, 108 менторов, 11 занятий, 172 записи, 9 материалов, 31 обращение. После миграций <code>0001 → 0011</code> все количества сохранились; бот запускается; тесты на отдельной пустой базе — <strong>201 passed</strong>.</p>
+<p><strong>Главная находка:</strong> в рабочей базе не было <code>terms</code>, <code>mentor_roles</code>, <code>session_feedback</code>, <code>mentor_final_reports</code> и <code>alembic_version</code>. После миграции они созданы, но пустые. Все 11 старых занятий получили <code>format='one_on_one'</code> и <code>format_confirmed=NULL</code> — это исторический дефолт, а не подтверждённый формат. Сначала нужно завести триместр и роли, иначе сводка и автоотмена работают не на реальных данных.</p>
+<div class="note"><strong>Вывод:</strong> технически обновление на копии production проходит. До включения для реальной команды нужно настроить триместр/роли, подтвердить старые форматы, проверить права и только затем решать вопрос деплоя. Живой Railway не менялся.</div>
+</section>
+
+<section>
+<h2>Что уже есть</h2>
+<div class="tablewrap"><table>
+<thead><tr><th>Ресурс</th><th>Статус</th><th>Что это значит</th></tr></thead>
+<tbody>
+<tr><td>Дамп production</td><td><span class="status done">получен</span></td><td><code>hard_mentor_prod_2026-11-07.dump</code>, PostgreSQL 18.6, база 9398 kB. Содержит реальные данные; хранится локально и не коммитится.</td></tr>
+<tr><td>Локальный PostgreSQL 18.6</td><td><span class="status done">использован</span></td><td>Восстановление, аудит, миграции и smoke-запуск бота выполнены на копии.</td></tr>
+<tr><td>Railway CLI / токен / живой <code>DATABASE_URL</code></td><td><span class="status open">нет</span></td><td>Живой Railway не подключался. Для деплоя и production backup доступ всё ещё нужен отдельно.</td></tr>
+<tr><td>Локальный PostgreSQL 16</td><td><span class="status done">использован ранее</span></td><td>Синтетические тесты, миграции и restore тестового дампа; не production.</td></tr>
+<tr><td>Docker API</td><td><span class="status open">не понадобился</span></td><td>Production PostgreSQL 18.6, локальный сервер и клиент тоже 18.6 — совместимость есть.</td></tr>
+</tbody></table></div>
+</section>
+
+<section>
+<h2>Восстановление и миграция</h2>
+<p>Дамп восстановлен в <code>hm_prod_audit_20261107</code> (чистая копия для аудита) и <code>hm_prod_migrate_20261107</code> (копия для миграции). Рабочая база Railway, исходный дамп и production не изменялись.</p>
+<p><code>alembic_version</code> в дампе отсутствовала. Выполнен <code>alembic upgrade head</code>: прошли все ревизии <code>0001 → 0011</code>; итоговая ревизия <code>0011</code>, ошибок нет.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Таблица</th><th>До миграции</th><th>После миграции</th></tr></thead>
+<tbody>
+<tr><td>users</td><td>537</td><td>537</td></tr>
+<tr><td>mentors</td><td>108</td><td>108</td></tr>
+<tr><td>mentor_subjects / mentor_topics</td><td>4 / 11</td><td>4 / 11</td></tr>
+<tr><td>mentoring_sessions</td><td>11</td><td>11</td></tr>
+<tr><td>session_bookings</td><td>172</td><td>172</td></tr>
+<tr><td>learning_materials</td><td>9</td><td>9</td></tr>
+<tr><td>mentor_weekly_reports</td><td>0</td><td>0</td></tr>
+<tr><td>tickets</td><td>31</td><td>31</td></tr>
+<tr><td>terms / mentor_roles / session_feedback / mentor_final_reports</td><td>таблиц не было</td><td>0 / 0 / 0 / 0</td></tr>
+<tr><td>staff_members / responsibility_assignments / staff_history / session_format_changes</td><td>таблиц не было</td><td>0 / 0 / 0 / 0</td></tr>
+</tbody></table></div>
+<p class="small">Размер базы вырос с 9622 kB до 10166 kB — это новые таблицы и индексы, не потери данных.</p>
+</section>
+
+<section>
+<h2>Что показал аудит</h2>
+<h3>Схема</h3>
+<p>До миграции не было <code>terms</code>, <code>mentor_roles</code>, <code>session_feedback</code>, <code>mentor_final_reports</code> и <code>alembic_version</code>; не было полей <code>format</code>, <code>format_confirmed</code>, <code>author_id</code>, <code>term_id</code>, <code>tried</code>, <code>self_rating</code> и полей методпроверки. После миграции все ожидаемые таблицы и колонки на месте, лишних изменений нет.</p>
+<h3>Данные</h3>
+<ul>
+<li><strong>Все 11 занятий</strong> после миграции получили <code>format='one_on_one'</code> и <code>format_confirmed=NULL</code>. Это не подтверждённый 1-на-1: бот не будет отменять такие слоты по порогу и не посчитает их в Syllabus Clinic. Формат нужно подтвердить вручную.</li>
+<li><strong>Ни у одного занятия нет <code>term_id</code> и <code>author_id</code></strong>: триместр и триместр-роли в базе отсутствовали. Без триместра сводка показывает всю базу, а автоотмена отключена.</li>
+<li><strong>172 записи</strong>: 35 «присутствовал», 20 «отсутствовал», 98 «не отмечено», 19 отозваны. Полей «что пробовал» и самооценки в старой схеме не было; после миграции они пустые.</li>
+<li><strong>9 материалов</strong>: у всех <code>review_status=NULL</code> и <code>cycle_stage=NULL</code>; 7 не привязаны к занятию. Старые материалы не получают автоматически статус проверки и не должны считаться новыми публикациями.</li>
+<li><strong>0 отзывов, 0 недельных и 0 итоговых отчётов, 0 профилей стаффа, 0 назначений</strong>. Сводка «цикл» по реальным данным пока не может быть закрыта.</li>
+<li><strong>108 менторов и 537 пользователей</strong>; поле <code>cohort</code> ни у кого не заполнено. Список <code>/staff</code> показывает менторов, но профили, статусы и назначения пусты.</li>
+</ul>
+</section>
+
+<section>
+<h2>Что проверено</h2>
+<ul>
+<li><strong>Восстановление:</strong> <code>pg_restore</code> 18.6 в две отдельные базы; количество строк до и после миграции совпало.</li>
+<li><strong>Миграции:</strong> <code>0001 → 0011</code> на копии production; ревизия <code>0011</code>; все колонки, таблицы стаффа, история форматов, медиа материалов и частичные индексы созданы. <code>learning_materials.media_type</code> добавлена: 9 старых материалов остались <code>document</code>.</li>
+<li><strong>Запуск бота:</strong> реальный процесс с фейковым Telegram и базой-копией; <code>/start</code>, <code>/dashboard</code>, <code>/staff</code>, <code>/term</code> ответили. <code>/staff</code> читает 108 менторов без ошибок; данные не публиковались.</li>
+<li><strong>Тесты на отдельной пустой PostgreSQL 18.6:</strong> 201 passed, 0 skipped. На SQLite — 199 passed, 2 skipped.</li>
+<li><strong>Read-only аудит:</strong> <code>tools/audit_pg_copy.py</code>; не выводит имена, вопросы и тексты. Для схемы после <code>0006</code> остаётся <code>sql/verify_before_0007.sql</code>.</li>
+</ul>
+<p class="small">Pytest запускался только на отдельной пустой базе: фикстура тестов удаляет строки, её нельзя запускать на копии данных.</p>
+</section>
+
+<section>
+<h2>Что это значит перед деплоем</h2>
+<ol>
+<li><strong>Завести триместр</strong> (название, понедельник старта, число недель, поток) и <strong>роли на предмет</strong>. Без этого сводка не знает неделю, автоотмена отключена, а карточки стаффа не покажут роли.</li>
+<li><strong>Подтвердить форматы старых занятий.</strong> Не считать <code>one_on_one</code> фактом: 11 записей получили его только как default миграции. Иначе неверно поведёт себя правило 1-на-1 и охват Clinic.</li>
+<li><strong>Проверить старые материалы.</strong> У них нет статуса методпроверки; они не должны автоматически считаться проверенными. Решить, какие из 9 остаются доступны студентам.</li>
+<li><strong>Заполнить стафф.</strong> 108 менторов уже видны в <code>/staff</code>, но профили, статусы и зоны ответственности пусты. Реальный состав и источники переноса всё ещё нужно получить.</li>
+<li><strong>Сделать production backup</strong> и только затем решать деплой. Живой Railway и рабочая база пока не менялись.</li>
+</ol>
+</section>
+
+<section>
+<h2>Что ещё нужно от владельца</h2>
+<ul>
+<li>Подтверждение, что можно перейти к деплою после настройки триместра/ролей; доступ к Railway для деплоя и production backup.</li>
+<li>Решение по старым форматам и материалам: какие записи считать подтверждёнными, какие материалы оставить студентам.</li>
+<li>Реальный состав стаффа и источники переноса; без них единая база остаётся первым срезом, а не эксплуатацией.</li>
+<li>Кого из руководства школы добавить в <code>COORDINATOR_IDS</code>/<code>LEAD_IDS</code>.</li>
+</ul>
+<p>Подробный общий статус — <a href="owner-report.html">owner-report.html</a>; реестр стаффа — <a href="staff-directory-report.html">staff-directory-report.html</a>.</p>
+</section>
+
+<footer>Проверка локальной копии production 7.11.2026. Живой Railway, production-база и реальные пользователи не изменялись. Коммит не делался.</footer>
+</main>
+</body>
+</html>

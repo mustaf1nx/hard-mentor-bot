@@ -1,0 +1,14 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "mentor": 100500 },
+  "steps": [
+    { "command": "/mysessions", "as": "mentor", "expect_button": "Я веду" },
+    { "tap_label": "🎓 Я веду", "as": "mentor", "expect_button": "Менторки" },
+    { "tap_first": 0, "as": "mentor", "expect": "Менторка" },
+    { "tap_label": "⚙️ Управление занятием", "as": "mentor", "expect": "Управление менторкой" },
+    { "tap_label": "✍️ Назначить Автора", "as": "mentor", "expect": "Назначьте Автора" },
+    { "tap_label": "User100500", "as": "mentor", "expect": "Автор назначен",
+      "expect_db": "select count(*) from mentoring_sessions where author_id=100500", "equals": [1] }
+  ]
+}

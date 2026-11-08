@@ -1,0 +1,820 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Предмет</b>\nВыберите существующий или напишите название нового.\n/cancel — отменить заполнение.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Calculus 1",
+        "callback_data": "ms:picksub:1"
+       }
+      ],
+      [
+       {
+        "text": "Discrete Math",
+        "callback_data": "ms:picksub:3"
+       }
+      ],
+      [
+       {
+        "text": "English",
+        "callback_data": "ms:picksub:6"
+       }
+      ],
+      [
+       {
+        "text": "ICT",
+        "callback_data": "ms:picksub:4"
+       }
+      ],
+      [
+       {
+        "text": "Linear Algebra",
+        "callback_data": "ms:picksub:2"
+       }
+      ],
+      [
+       {
+        "text": "Programming",
+        "callback_data": "ms:picksub:5"
+       }
+      ]
+     ]
+    },
+    "at": 1794142310
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Тема · Calculus 1</b>\nВыберите тему или напишите новую.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Интегралы",
+        "callback_data": "ms:picktopic:2"
+       }
+      ],
+      [
+       {
+        "text": "Пределы",
+        "callback_data": "ms:picktopic:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794142311
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Какой это документ?",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📖 Рекап-гайд — до занятия",
+        "callback_data": "ms:kind:recap"
+       }
+      ],
+      [
+       {
+        "text": "📎 Материал / конспект занятия",
+        "callback_data": "ms:kind:material"
+       }
+      ]
+     ]
+    },
+    "at": 1794142311
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Кому доступен документ?</b>\nОтветы к мокам можно оставить только команде.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Студентам и команде",
+        "callback_data": "ms:visibility:students"
+       }
+      ],
+      [
+       {
+        "text": "Только менторам и координаторам",
+        "callback_data": "ms:visibility:staff"
+       }
+      ]
+     ]
+    },
+    "at": 1794142312
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Отправьте <b>фотографию заметок, PDF или DOCX</b> до 20 МиБ.\nИмя файла или фото станет названием в банке. Студентам материал доступен после фиксации проверки Лектором (проект Положения, п. 8.1.8).\n/cancel — отмена.",
+    "markup": null,
+    "at": 1794142313
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "✅ <b>Материал сохранён.</b> Ожидает фиксации проверки Лектором; студентам пока недоступен.\n\nМожно <b>сразу отправить следующий файл или фото</b> — он получит те же настройки.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "➕ Загрузить ещё",
+        "callback_data": "ms:materialmore"
+       }
+      ],
+      [
+       {
+        "text": "🔄 Изменить тип / доступ",
+        "callback_data": "ms:materialsettings"
+       }
+      ],
+      [
+       {
+        "text": "📚 Открыть банк темы",
+        "callback_data": "ms:bank:1:0"
+       }
+      ],
+      [
+       {
+        "text": "✅ Готово",
+        "callback_data": "ms:stop"
+       }
+      ]
+     ]
+    },
+    "at": 1794142314
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Банк · Calculus 1 · Пределы</b>\nДоступных документов: 1. Чек-лист: 2 пунктов.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "☑️ Посмотреть чек-лист темы",
+        "callback_data": "ms:templateview:1"
+       }
+      ],
+      [
+       {
+        "text": "📖 ⏳ limits-guide.pdf",
+        "callback_data": "ms:file:1"
+       }
+      ],
+      [
+       {
+        "text": "➕ Документ",
+        "callback_data": "ms:materialtopic:1"
+       },
+       {
+        "text": "☑️ Изменить чек-лист",
+        "callback_data": "ms:templatetopic:1"
+       }
+      ],
+      [
+       {
+        "text": "📅 Занятия по теме",
+        "callback_data": "ms:list:upcoming:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Предметы",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142320
+   },
+   {
+    "kind": "sendDocument",
+    "chat_id": 100500,
+    "text": "📎 limits-guide.pdf\nCalculus 1 · Пределы",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Зафиксировать проверку Лектором",
+        "callback_data": "ms:review:1"
+       }
+      ],
+      [
+       {
+        "text": "Убрать из банка",
+        "callback_data": "ms:archive:1:ask"
+       }
+      ],
+      [
+       {
+        "text": "← Материалы темы",
+        "callback_data": "ms:bank:1:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142320
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Зафиксируйте фактическую проверку Лектором Hard. Вы отвечаете за достоверность записи.\nОтправьте имя или ID Лектора и дату проверки через точку с запятой: Имя; ДД.ММ.ГГГГ.\n/cancel — отмена.",
+    "markup": null,
+    "at": 1794142321
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Проверка Лектором зафиксирована. Доступ соответствует настройкам документа.",
+    "markup": null,
+    "at": 1794142322
+   }
+  ],
+  "100501": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "<b>Менторки</b>\n\nВыберите предмет, тему и удобное занятие. Перед менторкой можно задать вопрос, заполнить чек-лист и прочитать рекап-гайд.\n\nЗаписи на занятия <b>именные</b>. Обращения и их анонимность — отдельный раздел /feedback.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📅 Доступные занятия",
+        "callback_data": "ms:subjects:schedule:0"
+       }
+      ],
+      [
+       {
+        "text": "📝 Мои записи",
+        "callback_data": "ms:list:bookings:0:0"
+       }
+      ],
+      [
+       {
+        "text": "📚 Банк материалов",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142315
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100501,
+    "text": "<b>Выберите предмет</b>",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Calculus 1",
+        "callback_data": "ms:topics:schedule:1:0"
+       }
+      ],
+      [
+       {
+        "text": "Discrete Math",
+        "callback_data": "ms:topics:schedule:3:0"
+       }
+      ],
+      [
+       {
+        "text": "English",
+        "callback_data": "ms:topics:schedule:6:0"
+       }
+      ],
+      [
+       {
+        "text": "ICT",
+        "callback_data": "ms:topics:schedule:4:0"
+       }
+      ],
+      [
+       {
+        "text": "Linear Algebra",
+        "callback_data": "ms:topics:schedule:2:0"
+       }
+      ],
+      [
+       {
+        "text": "Programming",
+        "callback_data": "ms:topics:schedule:5:0"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794142316
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100501,
+    "text": "<b>Calculus 1</b>\nВыберите тему.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Интегралы",
+        "callback_data": "ms:list:upcoming:2:0"
+       }
+      ],
+      [
+       {
+        "text": "Пределы",
+        "callback_data": "ms:list:upcoming:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Предметы",
+        "callback_data": "ms:subjects:schedule:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142316
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100501,
+    "text": "<b>Доступные занятия</b> · всего 1\nВыберите занятие.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "#3 · 12.11.2026 17:51 · Calculus 1: Пределы",
+        "callback_data": "ms:view:3"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы этой темы",
+        "callback_data": "ms:bank:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794142317
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100501,
+    "text": "<b>Менторка #3</b> · Запланировано\n<b>Calculus 1 · Пределы</b>\nФормат: Консультация 1-на-1\n🕒 12.11.2026 17:51 · 60 мин.\nЧасовой пояс: Asia/Almaty\n🎓 Ментор: Демо Ментор\n📍 C1.3.233 (демо)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📝 Записаться",
+        "callback_data": "ms:join:3"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы темы",
+        "callback_data": "ms:bank:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794142318
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100501,
+    "text": "<b>Банк · Calculus 1 · Пределы</b>\nДоступных документов: 0. Чек-лист: 2 пунктов.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "☑️ Посмотреть чек-лист темы",
+        "callback_data": "ms:templateview:1"
+       }
+      ],
+      [
+       {
+        "text": "📅 Занятия по теме",
+        "callback_data": "ms:list:upcoming:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Предметы",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142319
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "<b>Менторки</b>\n\nВыберите предмет, тему и удобное занятие. Перед менторкой можно задать вопрос, заполнить чек-лист и прочитать рекап-гайд.\n\nЗаписи на занятия <b>именные</b>. Обращения и их анонимность — отдельный раздел /feedback.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📅 Доступные занятия",
+        "callback_data": "ms:subjects:schedule:0"
+       }
+      ],
+      [
+       {
+        "text": "📝 Мои записи",
+        "callback_data": "ms:list:bookings:0:0"
+       }
+      ],
+      [
+       {
+        "text": "📚 Банк материалов",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142324
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100501,
+    "text": "<b>Выберите предмет</b>",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Calculus 1",
+        "callback_data": "ms:topics:schedule:1:0"
+       }
+      ],
+      [
+       {
+        "text": "Discrete Math",
+        "callback_data": "ms:topics:schedule:3:0"
+       }
+      ],
+      [
+       {
+        "text": "English",
+        "callback_data": "ms:topics:schedule:6:0"
+       }
+      ],
+      [
+       {
+        "text": "ICT",
+        "callback_data": "ms:topics:schedule:4:0"
+       }
+      ],
+      [
+       {
+        "text": "Linear Algebra",
+        "callback_data": "ms:topics:schedule:2:0"
+       }
+      ],
+      [
+       {
+        "text": "Programming",
+        "callback_data": "ms:topics:schedule:5:0"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794142324
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100501,
+    "text": "<b>Calculus 1</b>\nВыберите тему.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Интегралы",
+        "callback_data": "ms:list:upcoming:2:0"
+       }
+      ],
+      [
+       {
+        "text": "Пределы",
+        "callback_data": "ms:list:upcoming:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Предметы",
+        "callback_data": "ms:subjects:schedule:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142325
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100501,
+    "text": "<b>Доступные занятия</b> · всего 1\nВыберите занятие.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "#3 · 12.11.2026 17:51 · Calculus 1: Пределы",
+        "callback_data": "ms:view:3"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы этой темы",
+        "callback_data": "ms:bank:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794142326
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100501,
+    "text": "<b>Менторка #3</b> · Запланировано\n<b>Calculus 1 · Пределы</b>\nФормат: Консультация 1-на-1\n🕒 12.11.2026 17:51 · 60 мин.\nЧасовой пояс: Asia/Almaty\n🎓 Ментор: Демо Ментор\n📍 C1.3.233 (демо)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📝 Записаться",
+        "callback_data": "ms:join:3"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы темы",
+        "callback_data": "ms:bank:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794142327
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100501,
+    "text": "<b>Банк · Calculus 1 · Пределы</b>\nДоступных документов: 1. Чек-лист: 2 пунктов.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "☑️ Посмотреть чек-лист темы",
+        "callback_data": "ms:templateview:1"
+       }
+      ],
+      [
+       {
+        "text": "📖 limits-guide.pdf",
+        "callback_data": "ms:file:1"
+       }
+      ],
+      [
+       {
+        "text": "📅 Занятия по теме",
+        "callback_data": "ms:list:upcoming:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Предметы",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142328
+   },
+   {
+    "kind": "sendDocument",
+    "chat_id": 100501,
+    "text": "📎 limits-guide.pdf\nCalculus 1 · Пределы",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "← Материалы темы",
+        "callback_data": "ms:bank:1:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142328
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 0,
+    "text": "/addmaterial",
+    "step": 1,
+    "role": "mentor",
+    "until": 1
+   },
+   {
+    "after": 1,
+    "text": "→ Calculus 1",
+    "step": 2,
+    "role": "mentor",
+    "until": 2
+   },
+   {
+    "after": 2,
+    "text": "→ Пределы",
+    "step": 3,
+    "role": "mentor",
+    "until": 3
+   },
+   {
+    "after": 3,
+    "text": "→ 📖 Рекап-гайд — до занятия",
+    "step": 4,
+    "role": "mentor",
+    "until": 4
+   },
+   {
+    "after": 4,
+    "text": "→ Студентам и команде",
+    "step": 5,
+    "role": "mentor",
+    "until": 5
+   },
+   {
+    "after": 5,
+    "text": "📎 limits-guide.pdf",
+    "step": 6,
+    "role": "mentor",
+    "until": 6
+   },
+   {
+    "after": 6,
+    "text": "→ 📚 Открыть банк темы",
+    "step": 13,
+    "role": "mentor",
+    "until": 7
+   },
+   {
+    "after": 7,
+    "text": "→ 📖 ⏳ limits-guide.pdf",
+    "step": 14,
+    "role": "mentor",
+    "until": 8
+   },
+   {
+    "after": 8,
+    "text": "→ Зафиксировать проверку Лектором",
+    "step": 15,
+    "role": "mentor",
+    "until": 9
+   },
+   {
+    "after": 9,
+    "text": "Лектор Тест; 01.01.2026",
+    "step": 16,
+    "role": "mentor",
+    "until": 10
+   }
+  ],
+  "100501": [
+   {
+    "after": 0,
+    "text": "/sessions",
+    "step": 7,
+    "role": "student",
+    "until": 1
+   },
+   {
+    "after": 1,
+    "text": "→ 📅 Доступные занятия",
+    "step": 8,
+    "role": "student",
+    "until": 2
+   },
+   {
+    "after": 2,
+    "text": "→ Calculus 1",
+    "step": 9,
+    "role": "student",
+    "until": 3
+   },
+   {
+    "after": 3,
+    "text": "→ Пределы",
+    "step": 10,
+    "role": "student",
+    "until": 4
+   },
+   {
+    "after": 4,
+    "text": "→ #3 · 12.11.2026 17:51 · Calculus 1: Пределы",
+    "step": 11,
+    "role": "student",
+    "until": 5
+   },
+   {
+    "after": 5,
+    "text": "→ 📚 Материалы темы",
+    "step": 12,
+    "role": "student",
+    "until": 6
+   },
+   {
+    "after": 6,
+    "text": "/sessions",
+    "step": 18,
+    "role": "student",
+    "until": 7
+   },
+   {
+    "after": 7,
+    "text": "→ 📅 Доступные занятия",
+    "step": 19,
+    "role": "student",
+    "until": 8
+   },
+   {
+    "after": 8,
+    "text": "→ Calculus 1",
+    "step": 20,
+    "role": "student",
+    "until": 9
+   },
+   {
+    "after": 9,
+    "text": "→ Пределы",
+    "step": 21,
+    "role": "student",
+    "until": 10
+   },
+   {
+    "after": 10,
+    "text": "→ #3 · 12.11.2026 17:51 · Calculus 1: Пределы",
+    "step": 22,
+    "role": "student",
+    "until": 11
+   },
+   {
+    "after": 11,
+    "text": "→ 📚 Материалы темы",
+    "step": 23,
+    "role": "student",
+    "until": 12
+   },
+   {
+    "after": 12,
+    "text": "→ 📖 limits-guide.pdf",
+    "step": 24,
+    "role": "student",
+    "until": 13
+   }
+  ]
+ }
+}

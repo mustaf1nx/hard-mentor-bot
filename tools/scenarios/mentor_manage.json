@@ -1,0 +1,13 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "mentor": 100500 },
+  "steps": [
+    { "command": "/mysessions", "as": "mentor", "expect_button": "Я веду" },
+    { "tap_label": "🎓 Я веду", "as": "mentor", "expect_button": "Менторки" },
+    { "tap_first": 0, "as": "mentor", "expect": "Менторка" },
+    { "tap_label": "⚙️ Управление занятием", "as": "mentor", "expect": "Управление менторкой" },
+    { "tap_label": "👥 Участники и вопросы", "as": "mentor", "expect": "Участники" },
+    { "tap_label": "← К занятию", "as": "mentor", "expect": "Менторка" }
+  ]
+}

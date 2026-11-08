@@ -1,0 +1,769 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "⏰ <b>SLA просрочен</b>: по обращению HM-0001 (⚠️ Серьёзное сообщение) нет первого ответа уже 10ч 0м.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Открыть HM-0001",
+        "callback_data": "tk:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794142412
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Люди и назначения · 31</b>\nСтраница 1/4\nПрофиль, роли и фактические назначения. Незаполненное отмечено явно.\n\n<b>User100500</b> · администратор школы\nне заполнено\n\n<b>Ментор 1</b> · ментор\nне заполнено\n\n<b>Ментор 10</b> · ментор\nне заполнено\n\n<b>Ментор 11</b> · ментор\nне заполнено\n\n<b>Ментор 12</b> · ментор\nне заполнено\n\n<b>Ментор 13</b> · ментор\nне заполнено\n\n<b>Ментор 14</b> · ментор\nне заполнено\n\n<b>Ментор 15</b> · ментор\nне заполнено",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "User100500",
+        "callback_data": "dirl:view:100500:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 1",
+        "callback_data": "dirl:view:500001:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 10",
+        "callback_data": "dirl:view:500010:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 11",
+        "callback_data": "dirl:view:500011:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 12",
+        "callback_data": "dirl:view:500012:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 13",
+        "callback_data": "dirl:view:500013:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 14",
+        "callback_data": "dirl:view:500014:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 15",
+        "callback_data": "dirl:view:500015:0"
+       }
+      ],
+      [
+       {
+        "text": "▶️",
+        "callback_data": "dirl:list:1"
+       }
+      ],
+      [
+       {
+        "text": "👥 Зоны ответственности",
+        "callback_data": "dirl:zones"
+       }
+      ],
+      [
+       {
+        "text": "🗂 История без аккаунта",
+        "callback_data": "dirl:unlinked:0"
+       }
+      ],
+      [
+       {
+        "text": "➕ Добавить человека",
+        "callback_data": "dirl:add"
+       }
+      ],
+      [
+       {
+        "text": "← Управление",
+        "callback_data": "ms:admin"
+       }
+      ]
+     ]
+    },
+    "at": 1794142414
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Зоны ответственности</b>\nПервая версия: предмет, расписание, материалы. Пустая зона показана как «не назначен».\n\n<b>Расписание</b>: не назначен\n<b>Материалы</b>: не назначен\n\n<b>Предметы</b>\n• Calculus 1 — не назначен\n• Discrete Math — не назначен\n• English — не назначен\n• ICT — не назначен\n• Linear Algebra — не назначен\n• Programming — не назначен",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "👥 Люди",
+        "callback_data": "dirl:list:0"
+       },
+       {
+        "text": "➕ Назначить",
+        "callback_data": "dirl:assign"
+       }
+      ],
+      [
+       {
+        "text": "🏁 Завершить назначение",
+        "callback_data": "dirl:end:0"
+       }
+      ],
+      [
+       {
+        "text": "← Управление",
+        "callback_data": "ms:admin"
+       }
+      ]
+     ]
+    },
+    "at": 1794142415
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Кому назначить ответственность?</b>",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Предмет",
+        "callback_data": "dirl:assign:zone:subject"
+       }
+      ],
+      [
+       {
+        "text": "Расписание",
+        "callback_data": "dirl:assign:zone:schedule"
+       }
+      ],
+      [
+       {
+        "text": "Материалы",
+        "callback_data": "dirl:assign:zone:materials"
+       }
+      ],
+      [
+       {
+        "text": "← Зоны",
+        "callback_data": "dirl:zones"
+       }
+      ]
+     ]
+    },
+    "at": 1794142416
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Ответственный: Расписание</b>\nСтраница 1/4\nВыберите человека из стаффа или менторов.\n• User100500 — не заполнено\n• Ментор 1 — не заполнено\n• Ментор 10 — не заполнено\n• Ментор 11 — не заполнено\n• Ментор 12 — не заполнено\n• Ментор 13 — не заполнено\n• Ментор 14 — не заполнено\n• Ментор 15 — не заполнено",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "User100500",
+        "callback_data": "dirl:assign:pick:schedule:0:100500"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 1",
+        "callback_data": "dirl:assign:pick:schedule:0:500001"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 10",
+        "callback_data": "dirl:assign:pick:schedule:0:500010"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 11",
+        "callback_data": "dirl:assign:pick:schedule:0:500011"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 12",
+        "callback_data": "dirl:assign:pick:schedule:0:500012"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 13",
+        "callback_data": "dirl:assign:pick:schedule:0:500013"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 14",
+        "callback_data": "dirl:assign:pick:schedule:0:500014"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 15",
+        "callback_data": "dirl:assign:pick:schedule:0:500015"
+       }
+      ],
+      [
+       {
+        "text": "▶️",
+        "callback_data": "dirl:assign:people:schedule:0:1"
+       }
+      ],
+      [
+       {
+        "text": "← Зоны",
+        "callback_data": "dirl:zones"
+       }
+      ]
+     ]
+    },
+    "at": 1794142417
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Подтвердите назначение</b>\nЗона: Расписание\nСейчас: не назначен\nСтанет: User100500",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Подтвердить",
+        "callback_data": "dirl:assign:apply:schedule:0:100500"
+       }
+      ],
+      [
+       {
+        "text": "← Зоны",
+        "callback_data": "dirl:zones"
+       }
+      ]
+     ]
+    },
+    "at": 1794142418
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "✅ Назначено: User100500.\n\n<b>Зоны ответственности</b>\nПервая версия: предмет, расписание, материалы. Пустая зона показана как «не назначен».\n\n<b>Расписание</b>: @user100500 · с 08.11.2026\n<b>Материалы</b>: не назначен\n\n<b>Предметы</b>\n• Calculus 1 — не назначен\n• Discrete Math — не назначен\n• English — не назначен\n• ICT — не назначен\n• Linear Algebra — не назначен\n• Programming — не назначен",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "👥 Люди",
+        "callback_data": "dirl:list:0"
+       },
+       {
+        "text": "➕ Назначить",
+        "callback_data": "dirl:assign"
+       }
+      ],
+      [
+       {
+        "text": "🏁 Завершить назначение",
+        "callback_data": "dirl:end:0"
+       }
+      ],
+      [
+       {
+        "text": "← Управление",
+        "callback_data": "ms:admin"
+       }
+      ]
+     ]
+    },
+    "at": 1794142418
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Завершить назначение</b>\nСтраница 1/1\nЗавершённое назначение остаётся в истории.\n\n#1 · Расписание\nUser100500 · с 08.11.2026",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Завершить #1",
+        "callback_data": "dirl:end:ask:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Зоны",
+        "callback_data": "dirl:zones"
+       }
+      ]
+     ]
+    },
+    "at": 1794142419
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Завершить назначение?</b>\nРасписание\nUser100500 · с 08.11.2026\n\nЗапись останется в истории; текущая зона станет свободной.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Завершить",
+        "callback_data": "dirl:end:apply:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Зоны",
+        "callback_data": "dirl:zones"
+       }
+      ]
+     ]
+    },
+    "at": 1794142420
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "✅ Назначение завершено.\n\n<b>Зоны ответственности</b>\nПервая версия: предмет, расписание, материалы. Пустая зона показана как «не назначен».\n\n<b>Расписание</b>: не назначен\n<b>Материалы</b>: не назначен\n\n<b>Предметы</b>\n• Calculus 1 — не назначен\n• Discrete Math — не назначен\n• English — не назначен\n• ICT — не назначен\n• Linear Algebra — не назначен\n• Programming — не назначен",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "👥 Люди",
+        "callback_data": "dirl:list:0"
+       },
+       {
+        "text": "➕ Назначить",
+        "callback_data": "dirl:assign"
+       }
+      ],
+      [
+       {
+        "text": "🏁 Завершить назначение",
+        "callback_data": "dirl:end:0"
+       }
+      ],
+      [
+       {
+        "text": "← Управление",
+        "callback_data": "ms:admin"
+       }
+      ]
+     ]
+    },
+    "at": 1794142421
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Люди и назначения · 31</b>\nСтраница 1/4\nПрофиль, роли и фактические назначения. Незаполненное отмечено явно.\n\n<b>User100500</b> · администратор школы\nне заполнено\n\n<b>Ментор 1</b> · ментор\nне заполнено\n\n<b>Ментор 10</b> · ментор\nне заполнено\n\n<b>Ментор 11</b> · ментор\nне заполнено\n\n<b>Ментор 12</b> · ментор\nне заполнено\n\n<b>Ментор 13</b> · ментор\nне заполнено\n\n<b>Ментор 14</b> · ментор\nне заполнено\n\n<b>Ментор 15</b> · ментор\nне заполнено",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "User100500",
+        "callback_data": "dirl:view:100500:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 1",
+        "callback_data": "dirl:view:500001:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 10",
+        "callback_data": "dirl:view:500010:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 11",
+        "callback_data": "dirl:view:500011:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 12",
+        "callback_data": "dirl:view:500012:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 13",
+        "callback_data": "dirl:view:500013:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 14",
+        "callback_data": "dirl:view:500014:0"
+       }
+      ],
+      [
+       {
+        "text": "Ментор 15",
+        "callback_data": "dirl:view:500015:0"
+       }
+      ],
+      [
+       {
+        "text": "▶️",
+        "callback_data": "dirl:list:1"
+       }
+      ],
+      [
+       {
+        "text": "👥 Зоны ответственности",
+        "callback_data": "dirl:zones"
+       }
+      ],
+      [
+       {
+        "text": "🗂 История без аккаунта",
+        "callback_data": "dirl:unlinked:0"
+       }
+      ],
+      [
+       {
+        "text": "➕ Добавить человека",
+        "callback_data": "dirl:add"
+       }
+      ],
+      [
+       {
+        "text": "← Управление",
+        "callback_data": "ms:admin"
+       }
+      ]
+     ]
+    },
+    "at": 1794142422
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>User100500</b>\n@user100500 · <code>100500</code>\nСтатус: не заполнено\nКонтур: не заполнено\nДолжность: не заполнено\nВ реестре менторов: нет\nАдминистратор школы: да\n\n<b>Роль и предметы</b>\nне заполнено\n\n<b>Текущие зоны ответственности</b>\nне назначено\n\n<b>Связанные данные в боте</b>\nЗанятия: Ведущий 0 · Автор 0\nМатериалы: 0 · отчёты: недельных 0, итоговых 0\n\nИсточник: users, mentors, mentor_roles и связанные записи бота. Незаполненные поля не означают, что человек не работал.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "✏️ Изменить профиль",
+        "callback_data": "dirl:edit:100500:0"
+       }
+      ],
+      [
+       {
+        "text": "📜 История зон",
+        "callback_data": "dirl:history:100500:0"
+       },
+       {
+        "text": "📅 Занятия",
+        "callback_data": "dirl:sessions:100500:0"
+       }
+      ],
+      [
+       {
+        "text": "📝 Отчёты",
+        "callback_data": "dirl:reports:100500:0"
+       }
+      ],
+      [
+       {
+        "text": "➕ Назначить зону",
+        "callback_data": "dirl:assign"
+       }
+      ],
+      [
+       {
+        "text": "← Люди",
+        "callback_data": "dirl:list:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142423
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Профиль · User100500</b>\nСтатус: не заполнено\nКонтур: не заполнено\nДолжность: не заполнено\n\nИзменения сохраняются только после подтверждения. Имя и Telegram берутся из профиля Telegram.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Статус участия",
+        "callback_data": "dirl:field:100500:status:0"
+       }
+      ],
+      [
+       {
+        "text": "Контур команды",
+        "callback_data": "dirl:field:100500:team:0"
+       }
+      ],
+      [
+       {
+        "text": "Должность",
+        "callback_data": "dirl:title:100500:0"
+       }
+      ],
+      [
+       {
+        "text": "← Карточка",
+        "callback_data": "dirl:view:100500:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142424
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Выберите значение</b>",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Активен",
+        "callback_data": "dirl:preview:100500:status:active:0"
+       }
+      ],
+      [
+       {
+        "text": "Приостановлен",
+        "callback_data": "dirl:preview:100500:status:paused:0"
+       }
+      ],
+      [
+       {
+        "text": "Вышел",
+        "callback_data": "dirl:preview:100500:status:left:0"
+       }
+      ],
+      [
+       {
+        "text": "← Профиль",
+        "callback_data": "dirl:edit:100500:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142425
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Подтвердите изменение</b>\nЧеловек: <code>100500</code>\nПоле: статус участия\nБыло: не заполнено\nСтанет: Активен\n\nПосле сохранения карточка обновится. История назначений не меняется.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Подтвердить",
+        "callback_data": "dirl:apply:100500:status:active:0"
+       }
+      ],
+      [
+       {
+        "text": "← Профиль",
+        "callback_data": "dirl:edit:100500:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142426
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "✅ Изменение сохранено.\n\n<b>User100500</b>\n@user100500 · <code>100500</code>\nСтатус: Активен\nКонтур: не заполнено\nДолжность: не заполнено\nВ реестре менторов: нет\nАдминистратор школы: да\n\n<b>Роль и предметы</b>\nне заполнено\n\n<b>Текущие зоны ответственности</b>\nне назначено\n\n<b>Связанные данные в боте</b>\nЗанятия: Ведущий 0 · Автор 0\nМатериалы: 0 · отчёты: недельных 0, итоговых 0\n\nИсточник: users, mentors, mentor_roles и связанные записи бота. Незаполненные поля не означают, что человек не работал.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "✏️ Изменить профиль",
+        "callback_data": "dirl:edit:100500:0"
+       }
+      ],
+      [
+       {
+        "text": "📜 История зон",
+        "callback_data": "dirl:history:100500:0"
+       },
+       {
+        "text": "📅 Занятия",
+        "callback_data": "dirl:sessions:100500:0"
+       }
+      ],
+      [
+       {
+        "text": "📝 Отчёты",
+        "callback_data": "dirl:reports:100500:0"
+       }
+      ],
+      [
+       {
+        "text": "➕ Назначить зону",
+        "callback_data": "dirl:assign"
+       }
+      ],
+      [
+       {
+        "text": "← Люди",
+        "callback_data": "dirl:list:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142427
+   }
+  ],
+  "600001": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 600001,
+    "text": "Команда доступна координатору и руководителю программы.",
+    "markup": null,
+    "at": 1794142427
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 1,
+    "text": "/staff",
+    "step": 1,
+    "role": "admin",
+    "until": 2
+   },
+   {
+    "after": 2,
+    "text": "→ 👥 Зоны ответственности",
+    "step": 2,
+    "role": "admin",
+    "until": 3
+   },
+   {
+    "after": 3,
+    "text": "→ ➕ Назначить",
+    "step": 4,
+    "role": "admin",
+    "until": 4
+   },
+   {
+    "after": 4,
+    "text": "→ Расписание",
+    "step": 5,
+    "role": "admin",
+    "until": 5
+   },
+   {
+    "after": 5,
+    "text": "→ User100500",
+    "step": 6,
+    "role": "admin",
+    "until": 6
+   },
+   {
+    "after": 6,
+    "text": "→ Подтвердить",
+    "step": 7,
+    "role": "admin",
+    "until": 7
+   },
+   {
+    "after": 7,
+    "text": "→ 🏁 Завершить назначение",
+    "step": 8,
+    "role": "admin",
+    "until": 8
+   },
+   {
+    "after": 8,
+    "text": "→ Завершить #1",
+    "step": 9,
+    "role": "admin",
+    "until": 9
+   },
+   {
+    "after": 9,
+    "text": "→ Завершить",
+    "step": 10,
+    "role": "admin",
+    "until": 10
+   },
+   {
+    "after": 10,
+    "text": "→ 👥 Люди",
+    "step": 12,
+    "role": "admin",
+    "until": 11
+   },
+   {
+    "after": 11,
+    "text": "→ User100500",
+    "step": 13,
+    "role": "admin",
+    "until": 12
+   },
+   {
+    "after": 12,
+    "text": "→ ✏️ Изменить профиль",
+    "step": 14,
+    "role": "admin",
+    "until": 13
+   },
+   {
+    "after": 13,
+    "text": "→ Статус участия",
+    "step": 15,
+    "role": "admin",
+    "until": 14
+   },
+   {
+    "after": 14,
+    "text": "→ Активен",
+    "step": 16,
+    "role": "admin",
+    "until": 15
+   },
+   {
+    "after": 15,
+    "text": "→ Подтвердить",
+    "step": 17,
+    "role": "admin",
+    "until": 16
+   }
+  ],
+  "600001": [
+   {
+    "after": 0,
+    "text": "/staff",
+    "step": 18,
+    "role": "student",
+    "until": 1
+   }
+  ]
+ }
+}

@@ -6,7 +6,7 @@ from aiogram.fsm.storage.memory import MemoryStorage, SimpleEventIsolation
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from .config import Settings
-from .handlers import common, fallback, feedback, mentoring, staff, status
+from .handlers import common, directory, fallback, feedback, mentoring, staff, status
 from .middleware import ViewerMiddleware
 from .ratelimit import DailyCounter
 
@@ -23,6 +23,6 @@ def build_dispatcher(settings: Settings, sm: async_sessionmaker) -> Dispatcher:
     dp.include_router(common.router)
     # Global session navigation must also work while composing a ticket reply/comment.
     dp.include_router(mentoring.entry_router)
-    for module in (status, staff, mentoring, feedback, fallback):
+    for module in (status, staff, directory, mentoring, feedback, fallback):
         dp.include_router(module.router)
     return dp

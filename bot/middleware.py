@@ -35,11 +35,13 @@ class ViewerMiddleware(BaseMiddleware):
                 detect_lang(tg_user.language_code),
             )
             role = await repo.effective_role(session, self.settings, user.telegram_id)
+            member = await repo.is_mentor(session, user.telegram_id)
         data["viewer"] = repo.Viewer(
             id=user.telegram_id,
             role=role,
             lang=user.lang,
             name=user.display_name,
             username=user.username,
+            mentor=member,
         )
         return await handler(event, data)

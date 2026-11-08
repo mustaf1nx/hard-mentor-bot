@@ -26,6 +26,8 @@ class Viewer:
     lang: str
     name: str
     username: str | None = None
+    # Состоит ли в реестре менторов: админ может не вести ни одного предмета.
+    mentor: bool = False
 
     @property
     def is_staff(self) -> bool:

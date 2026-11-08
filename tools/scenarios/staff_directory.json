@@ -1,0 +1,31 @@
+{
+  "admin": 100500,
+  "seed_script": "tools/seed_bulk.py",
+  "seed_args": ["--mentors", "30", "--sessions", "100"],
+  "warmup": 8.0,
+  "users": { "admin": 100500, "student": 600001 },
+  "steps": [
+    { "command": "/staff", "as": "admin", "expect": "Люди и назначения",
+      "expect_button": "Зоны ответственности" },
+    { "tap_label": "Зоны ответственности", "as": "admin", "expect": "Расписание" },
+    { "expect": "не назначен", "as": "admin" },
+    { "tap_label": "Назначить", "as": "admin", "expect": "Кому назначить" },
+    { "tap_label": "Расписание", "as": "admin", "expect": "Ответственный: Расписание" },
+    { "tap_prefix": "dirl:assign:pick:", "as": "admin", "expect": "Подтвердите назначение" },
+    { "tap_label": "Подтвердить", "as": "admin", "expect": "Назначено",
+      "expect_db": "select count(*) from responsibility_assignments where ended_at is null", "equals": [1] },
+    { "tap_label": "Завершить назначение", "as": "admin", "expect": "Завершить назначение" },
+    { "tap_prefix": "dirl:end:ask:", "as": "admin", "expect": "Завершить назначение?" },
+    { "tap_label": "Завершить", "as": "admin", "expect": "Назначение завершено",
+      "expect_db": "select count(*) from responsibility_assignments", "equals": [1] },
+    { "expect_db": "select count(*) from responsibility_assignments where ended_at is null", "equals": [0] },
+    { "tap_label": "Люди", "as": "admin", "expect": "Люди и назначения" },
+    { "tap_prefix": "dirl:view:", "as": "admin", "expect": "Роль и предметы" },
+    { "tap_label": "Изменить профиль", "as": "admin", "expect_button": "Статус участия" },
+    { "tap_label": "Статус участия", "as": "admin", "expect": "Выберите значение" },
+    { "tap_label": "Активен", "as": "admin", "expect": "Подтвердите изменение" },
+    { "tap_label": "Подтвердить", "as": "admin", "expect": "Изменение сохранено",
+      "expect_db": "select count(*) from staff_members where status='active'", "equals": [1] },
+    { "command": "/staff", "as": "student", "expect": "координатору" }
+  ]
+}

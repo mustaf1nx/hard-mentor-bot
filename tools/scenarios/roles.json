@@ -1,0 +1,17 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "admin": 100500 },
+  "steps": [
+    { "command": "/start", "as": "admin", "expect": "Hard-менторство" },
+    { "command": "/term", "as": "admin", "expect": "неделя" },
+    { "command": "/role", "as": "admin", "expect": "Кому назначить" },
+    { "tap_prefix": "rl:view", "as": "admin", "expect": "Как смотреть" },
+    { "tap_prefix": "rl:sub", "as": "admin", "expect": "Выберите предмет" },
+    { "tap_prefix": "rl:view", "as": "admin" },
+    { "tap_prefix": "rl:pick:0", "as": "admin", "expect": "Кому назначить" },
+    { "command": "/kpi", "as": "admin", "expect": "KPI" },
+    { "command": "/role @user100500 ведущий Calculus 1", "as": "admin", "expect": "Ведущий" },
+    { "expect_db": "select role from mentor_roles", "equals": [["lead"]], "as": "admin" }
+  ]
+}

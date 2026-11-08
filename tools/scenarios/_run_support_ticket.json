@@ -1,0 +1,547 @@
+{
+ "messages": {
+  "100501": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "Чем хотите поделиться?",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "❓ Вопрос",
+        "callback_data": "cat:question"
+       },
+       {
+        "text": "😠 Жалоба",
+        "callback_data": "cat:complaint"
+       }
+      ],
+      [
+       {
+        "text": "💡 Предложение",
+        "callback_data": "cat:suggestion"
+       },
+       {
+        "text": "👍 Благодарность",
+        "callback_data": "cat:praise"
+       }
+      ],
+      [
+       {
+        "text": "⚠️ Сообщить о серьёзном",
+        "callback_data": "cat:serious"
+       }
+      ],
+      [
+       {
+        "text": "❌ Отмена",
+        "callback_data": "fb:cancel"
+       }
+      ]
+     ]
+    },
+    "at": 1794138105
+   },
+   {
+    "kind": "editMessageReplyMarkup",
+    "chat_id": 100501,
+    "text": "",
+    "markup": null,
+    "at": 1794138106
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "К какому курсу или ментору это относится? Напишите текстом или выберите ментора. Необязательно — можно пропустить.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "🎓 Вы (координатор)",
+        "callback_data": "rel:m:100500"
+       },
+       {
+        "text": "🎓 Демо Ментор",
+        "callback_data": "rel:m:900001"
+       }
+      ],
+      [
+       {
+        "text": "👤 Это про координатора",
+        "callback_data": "rel:coord"
+       }
+      ],
+      [
+       {
+        "text": "Пропустить",
+        "callback_data": "rel:skip"
+       }
+      ],
+      [
+       {
+        "text": "⬅️ Назад",
+        "callback_data": "fb:back"
+       },
+       {
+        "text": "❌ Отмена",
+        "callback_data": "fb:cancel"
+       }
+      ]
+     ]
+    },
+    "at": 1794138106
+   },
+   {
+    "kind": "editMessageReplyMarkup",
+    "chat_id": 100501,
+    "text": "",
+    "markup": null,
+    "at": 1794138106
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "Опишите своими словами, что произошло или что вы хотите сказать.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "⬅️ Назад",
+        "callback_data": "fb:back"
+       },
+       {
+        "text": "❌ Отмена",
+        "callback_data": "fb:cancel"
+       }
+      ]
+     ]
+    },
+    "at": 1794138106
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "Хотите приложить скриншот или файл? Отправьте его сюда одним сообщением или нажмите «Пропустить».",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Пропустить",
+        "callback_data": "att:skip"
+       }
+      ],
+      [
+       {
+        "text": "⬅️ Назад",
+        "callback_data": "fb:back"
+       },
+       {
+        "text": "❌ Отмена",
+        "callback_data": "fb:cancel"
+       }
+      ]
+     ]
+    },
+    "at": 1794138107
+   },
+   {
+    "kind": "editMessageReplyMarkup",
+    "chat_id": 100501,
+    "text": "",
+    "markup": null,
+    "at": 1794138108
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "Отправить с вашим именем или анонимно?\n\n<b>Анонимно</b> значит, что бот не сохранит ваш Telegram ID рядом с обращением. Раскрыть автора потом невозможно — даже чтобы ответить вам. Уведомления не придут, но статус и ответы можно будет посмотреть по секретному коду.\nЕсли хотите, чтобы с вами связались, можно самому оставить контакт в тексте.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "С моим именем",
+        "callback_data": "anon:0"
+       },
+       {
+        "text": "Анонимно",
+        "callback_data": "anon:1"
+       }
+      ],
+      [
+       {
+        "text": "⬅️ Назад",
+        "callback_data": "fb:back"
+       },
+       {
+        "text": "❌ Отмена",
+        "callback_data": "fb:cancel"
+       }
+      ]
+     ]
+    },
+    "at": 1794138108
+   },
+   {
+    "kind": "editMessageReplyMarkup",
+    "chat_id": 100501,
+    "text": "",
+    "markup": null,
+    "at": 1794138108
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "Принято — обращение <b>HM-0001</b>. Координатор посмотрит его в течение 48 часов.\nСтатус можно проверить в любой момент: /status",
+    "markup": {
+     "keyboard": [
+      [
+       {
+        "text": "🗓 Менторки"
+       },
+       {
+        "text": "📚 Банк материалов"
+       }
+      ],
+      [
+       {
+        "text": "✍️ Оставить обращение"
+       }
+      ],
+      [
+       {
+        "text": "📋 Мои обращения"
+       },
+       {
+        "text": "ℹ️ Помощь"
+       }
+      ]
+     ],
+     "is_persistent": true,
+     "resize_keyboard": true
+    },
+    "at": 1794138108
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "Ответ по обращению <b>HM-0001</b>:\n\nРазобрались: разбор перенесли на субботу, ментор предупреждён.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "✏️ Дополнить",
+        "callback_data": "cm:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794138111
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "<b>Ваши обращения</b>",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "😠 HM-0001 · Новое",
+        "callback_data": "my:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794138112
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100501,
+    "text": "😠 <b>HM-0001</b> · Жалоба\nСтатус: <b>Новое</b>\n\nНа занятии не было обещанного разбора задачи, хотя я записался заранее.\n\n<b>Переписка</b>\n<b>Команда программы</b>, 08.11: Разобрались: разбор перенесли на субботу, ментор предупреждён.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "✏️ Дополнить",
+        "callback_data": "cm:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794138113
+   }
+  ],
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "📝 Как прошла менторка #1? Оцените её. Ментор увидит средние оценки и тексты без вашего имени; в базе отзыв связан с занятием и вашей записью.\n\nCalculus 1 · Интегралы\n06.11.2026 15:41 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Оставить отзыв",
+        "callback_data": "ms:fb:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794138105
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "🆕 Новое обращение\n😠 <b>HM-0001</b> · Жалоба\nСтатус: <b>Новое</b> · Возраст: 0м\nОт: User100501 (@user100501)\nНазначено: —\n\nНа занятии не было обещанного разбора задачи, хотя я записался заранее.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Открыть HM-0001",
+        "callback_data": "tk:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794138108
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "📥 <b>Очередь</b> · Все · Открытые · всего 1\n\n😠 <b>HM-0001</b> · Новое · 0м · 👤 —",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "😠 HM-0001",
+        "callback_data": "tk:1"
+       }
+      ],
+      [
+       {
+        "text": "• Все",
+        "callback_data": "q:all:open:0"
+       },
+       {
+        "text": "❓",
+        "callback_data": "q:question:open:0"
+       },
+       {
+        "text": "😠",
+        "callback_data": "q:complaint:open:0"
+       },
+       {
+        "text": "💡",
+        "callback_data": "q:suggestion:open:0"
+       },
+       {
+        "text": "👍",
+        "callback_data": "q:praise:open:0"
+       },
+       {
+        "text": "⚠️",
+        "callback_data": "q:serious:open:0"
+       }
+      ],
+      [
+       {
+        "text": "• Открытые",
+        "callback_data": "q:all:open:0"
+       },
+       {
+        "text": "Новое",
+        "callback_data": "q:all:new:0"
+       },
+       {
+        "text": "Решено",
+        "callback_data": "q:all:resolved:0"
+       },
+       {
+        "text": "Все",
+        "callback_data": "q:all:all:0"
+       }
+      ],
+      [
+       {
+        "text": "🔄 Обновить",
+        "callback_data": "q:all:open:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794138109
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "😠 <b>HM-0001</b> · Жалоба\nСтатус: <b>Новое</b> · Возраст: 0м\nОт: User100501 (@user100501)\nНазначено: —\n\nНа занятии не было обещанного разбора задачи, хотя я записался заранее.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "На рассмотрении",
+        "callback_data": "st:1:in_review"
+       },
+       {
+        "text": "В работе",
+        "callback_data": "st:1:in_progress"
+       }
+      ],
+      [
+       {
+        "text": "Решено",
+        "callback_data": "st:1:resolved"
+       },
+       {
+        "text": "Закрыто",
+        "callback_data": "st:1:closed"
+       }
+      ],
+      [
+       {
+        "text": "💬 Ответить",
+        "callback_data": "rp:1"
+       },
+       {
+        "text": "📝 Заметка",
+        "callback_data": "nt:1"
+       }
+      ],
+      [
+       {
+        "text": "👤 Назначить",
+        "callback_data": "as:1"
+       }
+      ],
+      [
+       {
+        "text": "⬅️ К очереди",
+        "callback_data": "q:all:open:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794138110
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Напишите ответ по HM-0001 — заявитель его увидит. /cancel — отмена.",
+    "markup": null,
+    "at": 1794138111
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Ответ по HM-0001 отправлен заявителю.",
+    "markup": null,
+    "at": 1794138111
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "😠 <b>HM-0001</b> · Жалоба\nСтатус: <b>Новое</b> · Возраст: 0м\nОт: User100501 (@user100501)\nНазначено: —\n\nНа занятии не было обещанного разбора задачи, хотя я записался заранее.\n\n— История —\n💬 <b>User100500 (ответ)</b>, 08.11 11:41: Разобрались: разбор перенесли на субботу, ментор предупреждён.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "На рассмотрении",
+        "callback_data": "st:1:in_review"
+       },
+       {
+        "text": "В работе",
+        "callback_data": "st:1:in_progress"
+       }
+      ],
+      [
+       {
+        "text": "Решено",
+        "callback_data": "st:1:resolved"
+       },
+       {
+        "text": "Закрыто",
+        "callback_data": "st:1:closed"
+       }
+      ],
+      [
+       {
+        "text": "💬 Ответить",
+        "callback_data": "rp:1"
+       },
+       {
+        "text": "📝 Заметка",
+        "callback_data": "nt:1"
+       }
+      ],
+      [
+       {
+        "text": "👤 Назначить",
+        "callback_data": "as:1"
+       }
+      ],
+      [
+       {
+        "text": "⬅️ К очереди",
+        "callback_data": "q:all:open:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794138111
+   }
+  ]
+ },
+ "inputs": {
+  "100501": [
+   {
+    "after": 0,
+    "text": "/feedback"
+   },
+   {
+    "after": 1,
+    "text": "→ cat:complaint"
+   },
+   {
+    "after": 3,
+    "text": "→ rel:skip"
+   },
+   {
+    "after": 5,
+    "text": "На занятии не было обещанного разбора задачи, хотя я записался заранее."
+   },
+   {
+    "after": 6,
+    "text": "→ att:skip"
+   },
+   {
+    "after": 8,
+    "text": "→ anon:0"
+   },
+   {
+    "after": 11,
+    "text": "/status"
+   },
+   {
+    "after": 12,
+    "text": "→ my:…"
+   }
+  ],
+  "100500": [
+   {
+    "after": 2,
+    "text": "/queue"
+   },
+   {
+    "after": 3,
+    "text": "→ tk:…"
+   },
+   {
+    "after": 4,
+    "text": "→ rp:…"
+   },
+   {
+    "after": 5,
+    "text": "Разобрались: разбор перенесли на субботу, ментор предупреждён."
+   }
+  ]
+ }
+}

@@ -1,0 +1,19 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "student": 100501, "admin": 100500 },
+  "steps": [
+    { "command": "/feedback", "as": "student", "expect": "Чем хотите" },
+    { "tap_prefix": "cat:complaint", "as": "student", "expect": "К какому курсу" },
+    { "tap_prefix": "rel:skip", "as": "student", "expect": "Опишите" },
+    { "say": "На занятии не было обещанного разбора задачи, хотя я записался заранее.", "as": "student", "expect": "приложить" },
+    { "tap_prefix": "att:skip", "as": "student", "expect": "анонимно" },
+    { "tap_prefix": "anon:0", "as": "student", "expect": "Принято" },
+    { "command": "/queue", "as": "admin", "expect": "Очередь" },
+    { "tap_prefix": "tk:", "as": "admin", "expect": "Жалоба" },
+    { "tap_prefix": "rp:", "as": "admin", "expect": "ответ" },
+    { "say": "Разобрались: разбор перенесли на субботу, ментор предупреждён.", "as": "admin", "expect": "Ответ" },
+    { "command": "/status", "as": "student", "expect": "Ваши обращения" },
+    { "tap_prefix": "my:", "as": "student", "expect": "перенесли на субботу" }
+  ]
+}

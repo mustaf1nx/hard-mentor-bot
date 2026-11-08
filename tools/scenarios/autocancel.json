@@ -1,0 +1,21 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "admin": 100500 },
+  "warmup": 4.0,
+  "env": { "REMINDER_INTERVAL": "2" },
+  "steps": [
+    { "command": "/newsession", "as": "admin", "expect": "Предмет" },
+    { "say": "Calculus 1", "as": "admin", "expect": "Тема" },
+    { "say": "Пределы", "as": "admin", "expect": "Формат занятия" },
+    { "tap_label": "Групповой интенсив", "as": "admin", "expect": "ментора" },
+    { "tap_label": "@user100500", "as": "admin", "expect": "Формат: ДД" },
+    { "say": "{{now+4h}}", "as": "admin", "expect": "лительность" },
+    { "say": "60", "as": "admin", "expect": "место" },
+    { "say": "C1.3.233", "as": "admin" },
+    { "tap_prefix": "ms:create:", "as": "admin", "expect": "создан" },
+    { "sleep": 12 },
+    { "expect": "отменена", "as": "admin", "timeout": 20,
+      "expect_db": "select count(*) from mentoring_sessions where status='cancelled'", "equals": [1] }
+  ]
+}

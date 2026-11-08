@@ -1,0 +1,732 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "📝 Как прошла менторка #1? Оцените её. Ментор увидит средние оценки и тексты без вашего имени; в базе отзыв связан с занятием и вашей записью.\n\nCalculus 1 · Интегралы\n06.11.2026 15:36 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Оставить отзыв",
+        "callback_data": "ms:fb:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794137820
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Сводка · demo, неделя 4</b>\nНеделя 02.11–08.11.2026\nДанные бота на 08.11.2026 16:37 · Asia/Almaty\nПоказаны только сведения, внесённые в бот.\n\n<b>Итоги недели</b>\nПроведено 1 · в расписании 0 · отменено 0\nАктивных записей: 1; явка отмечена у 1, пришли 1\nЦикл закрыт: 0 из 1 проведённых занятий\nОтзывов о проведённых занятиях за неделю пока нет.\n\n<b>Главные проблемы · 3</b>\nЗанятия за триместр, отчёты за неделю и текущие обращения.\nНеподтверждённых форматов: 0 — список всех таких занятий в отдельном разделе.\n🟡 1 занятие без письменного отзыва\n🟡 1 занятие без подтверждённого итогового материала\n🟡 Не сдали отчёт за неделю: 2\n\nПодробности: занятия недели, цикл, люди и KPI — кнопками ниже.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Занятия недели",
+        "callback_data": "dash:week"
+       },
+       {
+        "text": "Требует внимания",
+        "callback_data": "dash:attention"
+       }
+      ],
+      [
+       {
+        "text": "Все занятия",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Неподтверждённые форматы",
+        "callback_data": "dash:unconfirmed"
+       }
+      ],
+      [
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       },
+       {
+        "text": "Люди и отчёты",
+        "callback_data": "dash:people"
+       }
+      ],
+      [
+       {
+        "text": "Долги по занятиям",
+        "callback_data": "dash:debts"
+       },
+       {
+        "text": "KPI и цели",
+        "callback_data": "dash:kpi"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       },
+       {
+        "text": "Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "Обновить сводку",
+        "callback_data": "dash:overview"
+       }
+      ],
+      [
+       {
+        "text": "← Главное меню менторок",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137821
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторки · 3</b>\nза триместр\nВремя: Asia/Almaty · страница 1/1\nПериод: весь триместр · Предмет: все предметы · Ведущий: все ведущие\n\n🕒 #3 · 12.11 16:36 · Calculus 1\n     Консультация 1-на-1\n     записей 0 · отзывов 0 (письменных 0) · итогов после проверки 0\n\n🕒 #2 · 11.11 16:36 · Calculus 1\n     Консультация 1-на-1\n     записей 0 · отзывов 0 (письменных 0) · итогов после проверки 0\n\n✅ #1 · 06.11 15:36 · Calculus 1\n     Syllabus Clinic\n     записей 1 · отзывов 0 (письменных 0) · итогов после проверки 0\n\nВыберите занятие ниже, чтобы увидеть его цикл.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Занятие #3 · 12.11 16:36",
+        "callback_data": "dash:lesson:3:s:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Занятие #2 · 11.11 16:36",
+        "callback_data": "dash:lesson:2:s:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Занятие #1 · 06.11 15:36",
+        "callback_data": "dash:lesson:1:s:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "⚙ Фильтры",
+        "callback_data": "dash:filters:s:0:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "← Сводка",
+        "callback_data": "dash:overview"
+       }
+      ],
+      [
+       {
+        "text": "← Главное меню менторок",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137821
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Фильтры · Все занятия</b>\nПериод: весь триместр\nПредмет: все предметы\nВедущий: все ведущие\nНайдено занятий: 3\n\nВыберите фильтр кнопками ниже. Сброс вернёт все занятия.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "весь триместр",
+        "callback_data": "dash:setf:period:a:s:0:0:a:0:0"
+       },
+       {
+        "text": "сегодня",
+        "callback_data": "dash:setf:period:d:s:0:0:a:0:0"
+       },
+       {
+        "text": "текущая неделя",
+        "callback_data": "dash:setf:period:w:s:0:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "30 дней до/после",
+        "callback_data": "dash:setf:period:m:s:0:0:a:0:0"
+       },
+       {
+        "text": "прошедшие",
+        "callback_data": "dash:setf:period:p:s:0:0:a:0:0"
+       },
+       {
+        "text": "предстоящие",
+        "callback_data": "dash:setf:period:f:s:0:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Предмет: все предметы",
+        "callback_data": "dash:pick:subject:s:0:0:a:0:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Ведущий: все ведущие",
+        "callback_data": "dash:pick:mentor:s:0:0:a:0:0:0"
+       }
+      ],
+      [
+       {
+        "text": "✖ Сбросить фильтры",
+        "callback_data": "dash:sessions:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "← К списку",
+        "callback_data": "dash:sessions:0:a:0:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137822
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Фильтры · Все занятия</b>\nПериод: 30 дней до/после\nПредмет: все предметы\nВедущий: все ведущие\nНайдено занятий: 3\n\nВыберите фильтр кнопками ниже. Сброс вернёт все занятия.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "весь триместр",
+        "callback_data": "dash:setf:period:a:s:0:0:m:0:0"
+       },
+       {
+        "text": "сегодня",
+        "callback_data": "dash:setf:period:d:s:0:0:m:0:0"
+       },
+       {
+        "text": "текущая неделя",
+        "callback_data": "dash:setf:period:w:s:0:0:m:0:0"
+       }
+      ],
+      [
+       {
+        "text": "30 дней до/после",
+        "callback_data": "dash:setf:period:m:s:0:0:m:0:0"
+       },
+       {
+        "text": "прошедшие",
+        "callback_data": "dash:setf:period:p:s:0:0:m:0:0"
+       },
+       {
+        "text": "предстоящие",
+        "callback_data": "dash:setf:period:f:s:0:0:m:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Предмет: все предметы",
+        "callback_data": "dash:pick:subject:s:0:0:m:0:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Ведущий: все ведущие",
+        "callback_data": "dash:pick:mentor:s:0:0:m:0:0:0"
+       }
+      ],
+      [
+       {
+        "text": "✖ Сбросить фильтры",
+        "callback_data": "dash:sessions:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "← К списку",
+        "callback_data": "dash:sessions:0:m:0:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137823
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Выберите предмет</b>\nСейчас: все предметы\nСтраница 1/1",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Calculus 1",
+        "callback_data": "dash:pickv:subject:1:s:0:0:m:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Linear Algebra",
+        "callback_data": "dash:pickv:subject:2:s:0:0:m:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Discrete Math",
+        "callback_data": "dash:pickv:subject:3:s:0:0:m:0:0"
+       }
+      ],
+      [
+       {
+        "text": "ICT",
+        "callback_data": "dash:pickv:subject:4:s:0:0:m:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Programming",
+        "callback_data": "dash:pickv:subject:5:s:0:0:m:0:0"
+       }
+      ],
+      [
+       {
+        "text": "English",
+        "callback_data": "dash:pickv:subject:6:s:0:0:m:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Все предметы",
+        "callback_data": "dash:pickv:subject:0:s:0:0:m:0:0"
+       }
+      ],
+      [
+       {
+        "text": "← Фильтры",
+        "callback_data": "dash:filters:s:0:0:m:0:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137824
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Фильтры · Все занятия</b>\nПериод: 30 дней до/после\nПредмет: Calculus 1\nВедущий: все ведущие\nНайдено занятий: 3\n\nВыберите фильтр кнопками ниже. Сброс вернёт все занятия.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "весь триместр",
+        "callback_data": "dash:setf:period:a:s:0:0:m:1:0"
+       },
+       {
+        "text": "сегодня",
+        "callback_data": "dash:setf:period:d:s:0:0:m:1:0"
+       },
+       {
+        "text": "текущая неделя",
+        "callback_data": "dash:setf:period:w:s:0:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "30 дней до/после",
+        "callback_data": "dash:setf:period:m:s:0:0:m:1:0"
+       },
+       {
+        "text": "прошедшие",
+        "callback_data": "dash:setf:period:p:s:0:0:m:1:0"
+       },
+       {
+        "text": "предстоящие",
+        "callback_data": "dash:setf:period:f:s:0:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "Предмет: Calculus 1",
+        "callback_data": "dash:pick:subject:s:0:0:m:1:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Ведущий: все ведущие",
+        "callback_data": "dash:pick:mentor:s:0:0:m:1:0:0"
+       }
+      ],
+      [
+       {
+        "text": "✖ Сбросить фильтры",
+        "callback_data": "dash:sessions:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "← К списку",
+        "callback_data": "dash:sessions:0:m:1:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137825
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторки · 3</b>\nза триместр\nВремя: Asia/Almaty · страница 1/1\nПериод: 30 дней до/после · Предмет: Calculus 1 · Ведущий: все ведущие\n\n🕒 #3 · 12.11 16:36 · Calculus 1\n     Консультация 1-на-1\n     записей 0 · отзывов 0 (письменных 0) · итогов после проверки 0\n\n🕒 #2 · 11.11 16:36 · Calculus 1\n     Консультация 1-на-1\n     записей 0 · отзывов 0 (письменных 0) · итогов после проверки 0\n\n✅ #1 · 06.11 15:36 · Calculus 1\n     Syllabus Clinic\n     записей 1 · отзывов 0 (письменных 0) · итогов после проверки 0\n\nВыберите занятие ниже, чтобы увидеть его цикл.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Занятие #3 · 12.11 16:36",
+        "callback_data": "dash:lesson:3:s:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "Занятие #2 · 11.11 16:36",
+        "callback_data": "dash:lesson:2:s:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "Занятие #1 · 06.11 15:36",
+        "callback_data": "dash:lesson:1:s:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "⚙ Фильтры",
+        "callback_data": "dash:filters:s:0:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "✖ Сбросить фильтры",
+        "callback_data": "dash:sessions:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "← Сводка",
+        "callback_data": "dash:overview"
+       }
+      ],
+      [
+       {
+        "text": "← Главное меню менторок",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137825
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Занятие #3 · Calculus 1</b>\nПределы\n12.11 16:36 · Asia/Almaty · В расписании\nКонсультация 1-на-1 · C1.3.233 (демо)\nВедущий: @demo_mentor · Автор: [__] — не назначен\n\nАктивных записей: 0\nЯвка отмечена: 0 из 0; пришли 0\n\nМатериалы и отзывы появятся после занятия. Цикл ещё не оценивается.\n\nИсточник: сведения этого занятия в боте. Наличие подготовительного файла не подтверждает выдачу студентам до занятия. Респондент в чатах не блокирует цикл.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "← Назад",
+        "callback_data": "dash:sessions:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "👥 Участники",
+        "callback_data": "ms:people:3:0"
+       }
+      ],
+      [
+       {
+        "text": "📎 Материалы занятия",
+        "callback_data": "ms:upload:3"
+       }
+      ],
+      [
+       {
+        "text": "← Все занятия",
+        "callback_data": "dash:sessions"
+       }
+      ],
+      [
+       {
+        "text": "← Сводка",
+        "callback_data": "dash:overview"
+       }
+      ],
+      [
+       {
+        "text": "← Главное меню менторок",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137826
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторки · 3</b>\nза триместр\nВремя: Asia/Almaty · страница 1/1\nПериод: 30 дней до/после · Предмет: Calculus 1 · Ведущий: все ведущие\n\n🕒 #3 · 12.11 16:36 · Calculus 1\n     Консультация 1-на-1\n     записей 0 · отзывов 0 (письменных 0) · итогов после проверки 0\n\n🕒 #2 · 11.11 16:36 · Calculus 1\n     Консультация 1-на-1\n     записей 0 · отзывов 0 (письменных 0) · итогов после проверки 0\n\n✅ #1 · 06.11 15:36 · Calculus 1\n     Syllabus Clinic\n     записей 1 · отзывов 0 (письменных 0) · итогов после проверки 0\n\nВыберите занятие ниже, чтобы увидеть его цикл.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Занятие #3 · 12.11 16:36",
+        "callback_data": "dash:lesson:3:s:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "Занятие #2 · 11.11 16:36",
+        "callback_data": "dash:lesson:2:s:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "Занятие #1 · 06.11 15:36",
+        "callback_data": "dash:lesson:1:s:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "⚙ Фильтры",
+        "callback_data": "dash:filters:s:0:0:m:1:0"
+       }
+      ],
+      [
+       {
+        "text": "✖ Сбросить фильтры",
+        "callback_data": "dash:sessions:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "← Сводка",
+        "callback_data": "dash:overview"
+       }
+      ],
+      [
+       {
+        "text": "← Главное меню менторок",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137827
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторки · 3</b>\nза триместр\nВремя: Asia/Almaty · страница 1/1\nПериод: весь триместр · Предмет: все предметы · Ведущий: все ведущие\n\n🕒 #3 · 12.11 16:36 · Calculus 1\n     Консультация 1-на-1\n     записей 0 · отзывов 0 (письменных 0) · итогов после проверки 0\n\n🕒 #2 · 11.11 16:36 · Calculus 1\n     Консультация 1-на-1\n     записей 0 · отзывов 0 (письменных 0) · итогов после проверки 0\n\n✅ #1 · 06.11 15:36 · Calculus 1\n     Syllabus Clinic\n     записей 1 · отзывов 0 (письменных 0) · итогов после проверки 0\n\nВыберите занятие ниже, чтобы увидеть его цикл.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Занятие #3 · 12.11 16:36",
+        "callback_data": "dash:lesson:3:s:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Занятие #2 · 11.11 16:36",
+        "callback_data": "dash:lesson:2:s:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "Занятие #1 · 06.11 15:36",
+        "callback_data": "dash:lesson:1:s:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "⚙ Фильтры",
+        "callback_data": "dash:filters:s:0:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "← Сводка",
+        "callback_data": "dash:overview"
+       }
+      ],
+      [
+       {
+        "text": "← Главное меню менторок",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137828
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Сводка · demo, неделя 4</b>\nНеделя 02.11–08.11.2026\nДанные бота на 08.11.2026 16:37 · Asia/Almaty\nПоказаны только сведения, внесённые в бот.\n\n<b>Итоги недели</b>\nПроведено 1 · в расписании 0 · отменено 0\nАктивных записей: 1; явка отмечена у 1, пришли 1\nЦикл закрыт: 0 из 1 проведённых занятий\nОтзывов о проведённых занятиях за неделю пока нет.\n\n<b>Главные проблемы · 3</b>\nЗанятия за триместр, отчёты за неделю и текущие обращения.\nНеподтверждённых форматов: 0 — список всех таких занятий в отдельном разделе.\n🟡 1 занятие без письменного отзыва\n🟡 1 занятие без подтверждённого итогового материала\n🟡 Не сдали отчёт за неделю: 2\n\nПодробности: занятия недели, цикл, люди и KPI — кнопками ниже.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Занятия недели",
+        "callback_data": "dash:week"
+       },
+       {
+        "text": "Требует внимания",
+        "callback_data": "dash:attention"
+       }
+      ],
+      [
+       {
+        "text": "Все занятия",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Неподтверждённые форматы",
+        "callback_data": "dash:unconfirmed"
+       }
+      ],
+      [
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       },
+       {
+        "text": "Люди и отчёты",
+        "callback_data": "dash:people"
+       }
+      ],
+      [
+       {
+        "text": "Долги по занятиям",
+        "callback_data": "dash:debts"
+       },
+       {
+        "text": "KPI и цели",
+        "callback_data": "dash:kpi"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       },
+       {
+        "text": "Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "Обновить сводку",
+        "callback_data": "dash:overview"
+       }
+      ],
+      [
+       {
+        "text": "← Главное меню менторок",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137829
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Неподтверждённые форматы · 0</b>\nза триместр\nВремя: Asia/Almaty · страница 1/1\nПоказаны все занятия с format_confirmed=NULL, а не только ближайшие 24 часа.\nСтарое значение «1-на-1» не считается подтверждённым форматом.\nПериод: весь триместр · Предмет: все предметы · Ведущий: все ведущие\nЗанятий с неподтверждённым форматом нет.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "⚙ Фильтры",
+        "callback_data": "dash:filters:u:0:0:a:0:0"
+       }
+      ],
+      [
+       {
+        "text": "← Сводка",
+        "callback_data": "dash:overview"
+       }
+      ],
+      [
+       {
+        "text": "← Главное меню менторок",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137829
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 0,
+    "text": "/dashboard"
+   },
+   {
+    "after": 2,
+    "text": "→ Все занятия"
+   },
+   {
+    "after": 3,
+    "text": "→ ⚙ Фильтры"
+   },
+   {
+    "after": 4,
+    "text": "→ 30 дней до/после"
+   },
+   {
+    "after": 5,
+    "text": "→ Предмет: все предметы"
+   },
+   {
+    "after": 6,
+    "text": "→ dash:pickv:subject:…"
+   },
+   {
+    "after": 7,
+    "text": "→ ← К списку"
+   },
+   {
+    "after": 8,
+    "text": "→ dash:lesson:…"
+   },
+   {
+    "after": 9,
+    "text": "→ ← Назад"
+   },
+   {
+    "after": 10,
+    "text": "→ ✖ Сбросить фильтры"
+   },
+   {
+    "after": 11,
+    "text": "→ ← Сводка"
+   },
+   {
+    "after": 12,
+    "text": "→ Неподтверждённые форматы"
+   }
+  ]
+ }
+}

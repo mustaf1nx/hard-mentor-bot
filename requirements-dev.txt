@@ -2,3 +2,4 @@
 aiosqlite
 pytest
 pytest-asyncio
+alembic

@@ -21,6 +21,7 @@ from sqlalchemy import delete
 from bot.app import build_dispatcher
 from bot.config import Settings, normalize_db_url
 from bot.db import Base, init_db, make_engine, make_sessionmaker
+from bot.db import User as DbUser
 
 COORD, LEAD, MENTOR, ALICE, BOB = 100, 200, 300, 1001, 1002
 # По умолчанию — SQLite в памяти. Чтобы прогнать то же самое на Postgres:
@@ -176,3 +177,15 @@ async def h(_stand: Harness):
         await _stand.say(uid, "/start")
     _stand.clear()
     return _stand
+
+
+async def ensure_users(session, *uids: int) -> None:
+    """Строки users нужны там, где тест создаёт запись в обход чата.
+
+    SQLite не проверяет внешние ключи, Postgres проверяет — без этого помощника
+    бронирование «от лица» ALICE падает на FK.
+    """
+    for uid in uids:
+        if await session.get(DbUser, uid) is None:
+            session.add(DbUser(telegram_id=uid, display_name=f"User{uid}", username=f"user{uid}"))
+    await session.flush()

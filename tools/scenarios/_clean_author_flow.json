@@ -1,0 +1,285 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Мои занятия\n\nВыберите, что показать.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "🎓 Я веду / готовлю",
+        "callback_data": "ms:list:teaching:0:0"
+       }
+      ],
+      [
+       {
+        "text": "📝 Я записан",
+        "callback_data": "ms:list:bookings:0:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142177
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Мои занятия</b> · всего 1\nВыберите занятие.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "#2 · 11.11.2026 17:49 · Calculus 1: Интегралы",
+        "callback_data": "ms:view:2"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794142178
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторка #2</b> · Запланировано\n<b>Calculus 1 · Интегралы</b>\nФормат: Консультация 1-на-1\n🕒 11.11.2026 17:49 · 60 мин.\nЧасовой пояс: Asia/Almaty\n🎓 Ментор: User100500\n📍 C1.3.233 (демо)\nЗаписано: <b>0</b>\n\n<b>Что дальше:</b> Следующий шаг: посмотрите участников и подготовьтесь к занятию.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "👥 Участники",
+        "callback_data": "ms:people:2:0"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ],
+      [
+       {
+        "text": "⚙️ Управление занятием",
+        "callback_data": "ms:manage:2"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794142179
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Управление менторкой #2</b>\nCalculus 1 · Интегралы\nСтатус: Запланировано\nАвтор: не назначен\n\nЧто сделать?",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "👥 Участники и вопросы",
+        "callback_data": "ms:people:2:0"
+       }
+      ],
+      [
+       {
+        "text": "📊 Понимание тем",
+        "callback_data": "ms:summary:2"
+       }
+      ],
+      [
+       {
+        "text": "✅ Посещаемость",
+        "callback_data": "ms:attendance:2:0"
+       }
+      ],
+      [
+       {
+        "text": "📎 Загрузить материалы занятия",
+        "callback_data": "ms:upload:2"
+       }
+      ],
+      [
+       {
+        "text": "✍️ Назначить Автора",
+        "callback_data": "ms:authors:2:0"
+       }
+      ],
+      [
+       {
+        "text": "☑️ Обновить чек-лист из банка",
+        "callback_data": "ms:refresh:2"
+       }
+      ],
+      [
+       {
+        "text": "🏁 Завершить занятие",
+        "callback_data": "ms:complete:2:ask"
+       }
+      ],
+      [
+       {
+        "text": "🕒 Перенести",
+        "callback_data": "ms:edit:2:start"
+       },
+       {
+        "text": "📍 Место",
+        "callback_data": "ms:edit:2:location"
+       }
+      ],
+      [
+       {
+        "text": "🎓 Сменить ментора",
+        "callback_data": "ms:edit:2:mentor"
+       }
+      ],
+      [
+       {
+        "text": "❌ Отменить занятие",
+        "callback_data": "ms:cancel:2"
+       }
+      ],
+      [
+       {
+        "text": "← К занятию",
+        "callback_data": "ms:view:2"
+       }
+      ]
+     ]
+    },
+    "at": 1794142179
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Назначьте Автора занятия. Выберите ментора.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "User100500",
+        "callback_data": "ms:author:2:100500"
+       }
+      ],
+      [
+       {
+        "text": "Демо Ментор",
+        "callback_data": "ms:author:2:900001"
+       }
+      ],
+      [
+       {
+        "text": "← К занятию",
+        "callback_data": "ms:view:2"
+       }
+      ]
+     ]
+    },
+    "at": 1794142180
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Автор назначен.",
+    "markup": null,
+    "at": 1794142181
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторка #2</b> · Запланировано\n<b>Calculus 1 · Интегралы</b>\nФормат: Консультация 1-на-1\n🕒 11.11.2026 17:49 · 60 мин.\nЧасовой пояс: Asia/Almaty\n🎓 Ментор: User100500\n📍 C1.3.233 (демо)\nЗаписано: <b>0</b>\n\n<b>Что дальше:</b> Следующий шаг: посмотрите участников и подготовьтесь к занятию.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "👥 Участники",
+        "callback_data": "ms:people:2:0"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ],
+      [
+       {
+        "text": "📎 Загрузить материал занятия",
+        "callback_data": "ms:upload:2"
+       }
+      ],
+      [
+       {
+        "text": "⚙️ Управление занятием",
+        "callback_data": "ms:manage:2"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794142181
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 0,
+    "text": "/mysessions",
+    "step": 1,
+    "role": "mentor",
+    "until": 1
+   },
+   {
+    "after": 1,
+    "text": "→ 🎓 Я веду / готовлю",
+    "step": 2,
+    "role": "mentor",
+    "until": 2
+   },
+   {
+    "after": 2,
+    "text": "→ #2 · 11.11.2026 17:49 · Calculus 1: Интегралы",
+    "step": 3,
+    "role": "mentor",
+    "until": 3
+   },
+   {
+    "after": 3,
+    "text": "→ ⚙️ Управление занятием",
+    "step": 4,
+    "role": "mentor",
+    "until": 4
+   },
+   {
+    "after": 4,
+    "text": "→ ✍️ Назначить Автора",
+    "step": 5,
+    "role": "mentor",
+    "until": 5
+   },
+   {
+    "after": 5,
+    "text": "→ User100500",
+    "step": 6,
+    "role": "mentor",
+    "until": 7
+   }
+  ]
+ }
+}

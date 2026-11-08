@@ -1,0 +1,351 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Мои занятия\n\nВыберите, что показать.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "🎓 Я веду",
+        "callback_data": "ms:list:teaching:0:0"
+       }
+      ],
+      [
+       {
+        "text": "📝 Я записан",
+        "callback_data": "ms:list:bookings:0:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794039956
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "📝 Как прошла менторка #1? Оцените её — это анонимно для ментора, он увидит только средние оценки и тексты без имени.\n\nCalculus 1 · Интегралы\n05.11.2026 12:25 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Оставить отзыв",
+        "callback_data": "ms:fb:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794039956
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Мои записи</b> · всего 1\nВыберите занятие.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "✅ #1 · 05.11.2026 12:25 · Calculus 1: Интегралы",
+        "callback_data": "ms:view:1"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794039957
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторка #1</b> · Проведено\n<b>Calculus 1 · Интегралы</b>\nФормат: Syllabus Clinic\n🕒 05.11.2026 12:25 · 60 мин.\nЧасовой пояс: Asia/Almaty\n🎓 Ментор: Демо Ментор\n📍 C1.3.233 (демо)\nЗаписано: <b>1</b>\n✅ Вы записаны.\nВаш вопрос: Не понимаю, как выбрать подстановку в интеграле\nЧек-лист: 0/1\nПосещаемость: Присутствовал",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📝 Оставить отзыв о занятии",
+        "callback_data": "ms:fb:1"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ],
+      [
+       {
+        "text": "⚙️ Управление занятием",
+        "callback_data": "ms:manage:1"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794039957
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Отзыв · занятие #1</b>\n\nШаг 1 из 5.\n<b>Насколько ясно и методически доступно ментор объяснил материал?</b>\n1 — совсем непонятно · 5 — сложные вещи стали простыми",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "5 · всё понятно",
+        "callback_data": "ms:fbc:5"
+       }
+      ],
+      [
+       {
+        "text": "4 · почти всё понятно",
+        "callback_data": "ms:fbc:4"
+       }
+      ],
+      [
+       {
+        "text": "3 · частично",
+        "callback_data": "ms:fbc:3"
+       }
+      ],
+      [
+       {
+        "text": "2 · мало что понял",
+        "callback_data": "ms:fbc:2"
+       }
+      ],
+      [
+       {
+        "text": "1 · ничего не понял",
+        "callback_data": "ms:fbc:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794039958
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Шаг 2 из 5. Результат и честность</b>\n\n<b>Помогло ли занятие продвинуться в задании?</b> — верхний ряд.\n<b>Соблюдал ли ментор академическую честность?</b> — нижний ряд.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Продвинулся",
+        "callback_data": "ms:fbp:yes"
+       },
+       {
+        "text": "Частично",
+        "callback_data": "ms:fbp:partial"
+       },
+       {
+        "text": "Нет",
+        "callback_data": "ms:fbp:no"
+       }
+      ],
+      [
+       {
+        "text": "Помогал понять",
+        "callback_data": "ms:fbh:ok"
+       },
+       {
+        "text": "Дал готовое",
+        "callback_data": "ms:fbh:violation"
+       }
+      ]
+     ]
+    },
+    "at": 1794039959
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Шаг 2 из 5. Результат и честность</b>\n\n<b>Помогло ли занятие продвинуться в задании?</b> — верхний ряд.\n<b>Соблюдал ли ментор академическую честность?</b> — нижний ряд.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Продвинулся",
+        "callback_data": "ms:fbp:yes"
+       },
+       {
+        "text": "✅ Частично",
+        "callback_data": "ms:fbp:partial"
+       },
+       {
+        "text": "Нет",
+        "callback_data": "ms:fbp:no"
+       }
+      ],
+      [
+       {
+        "text": "Помогал понять",
+        "callback_data": "ms:fbh:ok"
+       },
+       {
+        "text": "Дал готовое",
+        "callback_data": "ms:fbh:violation"
+       }
+      ]
+     ]
+    },
+    "at": 1794039960
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Шаг 3 из 5.\n<b>Что было наиболее ценным на занятии?</b>\n\nЭто увидит ментор — без вашего имени. Можно пропустить.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Пропустить",
+        "callback_data": "ms:fbs:skip"
+       }
+      ]
+     ]
+    },
+    "at": 1794039960
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Шаг 4 из 5.\n<b>Какие темы разобрать на следующих слотах?</b>\n\nМожно пропустить.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Пропустить",
+        "callback_data": "ms:fbn:skip"
+       }
+      ]
+     ]
+    },
+    "at": 1794039961
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Шаг 5 из 5.\n<b>Общая оценка занятия</b>",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "5 · отлично",
+        "callback_data": "ms:fbo:5"
+       }
+      ],
+      [
+       {
+        "text": "4 · хорошо",
+        "callback_data": "ms:fbo:4"
+       }
+      ],
+      [
+       {
+        "text": "3 · нормально",
+        "callback_data": "ms:fbo:3"
+       }
+      ],
+      [
+       {
+        "text": "2 · слабо",
+        "callback_data": "ms:fbo:2"
+       }
+      ],
+      [
+       {
+        "text": "1 · плохо",
+        "callback_data": "ms:fbo:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794039962
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "✅ <b>Спасибо за отзыв.</b>\n\nОн ушёл ментору как оценка без вашего имени и попал в общую статистику качества.",
+    "markup": null,
+    "at": 1794039963
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>KPI · demo, неделя 4</b>\nМенторы 1–2 из 2\n\n· @user100500: менторки 0/1 · записи 0 · материалы 0 · оценки —\n· @demo_mentor: менторки 1/2 · записи 1 · материалы 0 · оценки 4.67",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794039964
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 0,
+    "text": "/mysessions"
+   },
+   {
+    "after": 2,
+    "text": "→ 📝 Я записан"
+   },
+   {
+    "after": 3,
+    "text": "→ кнопка #0"
+   },
+   {
+    "after": 4,
+    "text": "→ 📝 Оставить отзыв о занятии"
+   },
+   {
+    "after": 5,
+    "text": "→ 4 · почти всё понятно"
+   },
+   {
+    "after": 6,
+    "text": "→ Частично"
+   },
+   {
+    "after": 7,
+    "text": "→ Помогал понять"
+   },
+   {
+    "after": 8,
+    "text": "Разобрали именно мою задачу с подстановкой"
+   },
+   {
+    "after": 9,
+    "text": "→ Пропустить"
+   },
+   {
+    "after": 10,
+    "text": "→ 5 · отлично"
+   },
+   {
+    "after": 11,
+    "text": "/kpi"
+   }
+  ]
+ }
+}

@@ -1,0 +1,21 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "student": 100501 },
+  "warmup": 5.0,
+  "steps": [
+    { "command": "/start", "as": "student", "expect": "Hard-менторство" },
+    { "command": "/sessions", "as": "student", "expect_button": "Доступные занятия" },
+    { "tap_label": "📅 Доступные занятия", "as": "student", "expect_button": "Calculus 1" },
+    { "tap_label": "Calculus 1", "as": "student", "expect": "Выберите тему" },
+    { "tap_label": "Пределы", "as": "student", "expect": "Доступные занятия" },
+    { "tap_first": 0, "as": "student", "expect_button": "Записаться" },
+    { "tap_label": "📝 Записаться", "as": "student", "expect": "Шаг 1 из 3" },
+    { "say": "Не понимаю, как раскрывать неопределённость 0/0", "as": "student", "expect": "Шаг 2 из 3" },
+    { "say": "Прочитал лекцию и разобрал два примера, но на третьем застрял.", "as": "student", "expect": "Шаг 3 из 3" },
+    { "tap_label": "2 · понимаю условие, не знаю с чего начать", "as": "student", "expect_button": "Убрать мою запись" },
+    { "tap_label": "Убрать мою запись", "as": "student", "expect": "Убрать вашу запись" },
+    { "tap_label": "Да, убрать запись", "as": "student", "expect_button": "Записаться",
+      "expect_db": "select count(*) from session_bookings where status='active' and student_id=100501", "equals": [0] }
+  ]
+}

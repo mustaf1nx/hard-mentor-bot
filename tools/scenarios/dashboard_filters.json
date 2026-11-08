@@ -1,0 +1,20 @@
+﻿{
+  "admin": 100500,
+  "seed": true,
+  "users": { "admin": 100500 },
+  "steps": [
+    { "command": "/dashboard", "as": "admin", "expect": "Сводка", "expect_button": "Неподтверждённые форматы" },
+    { "tap_label": "Все занятия", "as": "admin", "expect": "Менторки" },
+    { "tap_label": "⚙ Фильтры", "as": "admin", "expect": "Фильтры" },
+    { "tap_label": "30 дней до/после", "as": "admin", "expect": "Период: 30 дней до/после" },
+    { "tap_label": "Предмет: все предметы", "as": "admin", "expect": "Выберите предмет" },
+    { "tap_prefix": "dash:pickv:subject:", "as": "admin", "expect": "Предмет:" },
+    { "tap_label": "← К списку", "as": "admin", "expect": "Менторки" },
+    { "tap_prefix": "dash:lesson:", "as": "admin", "expect": "Занятие #" },
+    { "tap_label": "← Назад", "as": "admin", "expect": "Период: 30 дней до/после" },
+    { "tap_label": "✖ Сбросить фильтры", "as": "admin", "expect": "Период: весь триместр" },
+    { "tap_label": "← Сводка", "as": "admin", "expect": "Сводка" },
+    { "tap_label": "Неподтверждённые форматы", "as": "admin", "expect": "Неподтверждённые форматы" }
+  ]
+}
+

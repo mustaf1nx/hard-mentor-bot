@@ -1,0 +1,418 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "📎 Материалы занятия #1\nПредмет: Calculus 1\nТема: Интегралы",
+    "markup": null,
+    "at": 1794137955
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Для чего этот материал занятия?",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Подготовительный",
+        "callback_data": "ms:kind:preparation"
+       }
+      ],
+      [
+       {
+        "text": "Итоговый",
+        "callback_data": "ms:kind:final"
+       }
+      ]
+     ]
+    },
+    "at": 1794137955
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "📝 Как прошла менторка #1? Оцените её. Ментор увидит средние оценки и тексты без вашего имени; в базе отзыв связан с занятием и вашей записью.\n\nCalculus 1 · Интегралы\n06.11.2026 15:39 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Оставить отзыв",
+        "callback_data": "ms:fb:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794137955
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Кому доступен документ?</b>\nОтветы к мокам можно оставить только команде.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Студентам и команде",
+        "callback_data": "ms:visibility:students"
+       }
+      ],
+      [
+       {
+        "text": "Только менторам и координаторам",
+        "callback_data": "ms:visibility:staff"
+       }
+      ]
+     ]
+    },
+    "at": 1794137955
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Отправьте <b>фотографию заметок, PDF или DOCX</b> до 20 МиБ.\nИмя файла или фото станет названием в банке. Студентам материал доступен после фиксации проверки Лектором (проект Положения, п. 8.1.8).\n/cancel — отмена.",
+    "markup": null,
+    "at": 1794137956
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "✅ <b>Материал сохранён.</b> Ожидает фиксации проверки Лектором; студентам пока недоступен.\n\nМожно <b>сразу отправить следующий файл или фото</b> — он получит те же настройки.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "➕ Загрузить ещё",
+        "callback_data": "ms:materialmore"
+       }
+      ],
+      [
+       {
+        "text": "🔄 Изменить тип / доступ",
+        "callback_data": "ms:materialsettings"
+       }
+      ],
+      [
+       {
+        "text": "📚 Открыть банк темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ],
+      [
+       {
+        "text": "✅ Готово",
+        "callback_data": "ms:stop"
+       }
+      ]
+     ]
+    },
+    "at": 1794137957
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Банк · Calculus 1 · Интегралы</b>\nДоступных документов: 1. Чек-лист: 2 пунктов.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "☑️ Посмотреть чек-лист темы",
+        "callback_data": "ms:templateview:2"
+       }
+      ],
+      [
+       {
+        "text": "🖼 ⏳ photo-photo-uniq1.jpg",
+        "callback_data": "ms:file:1"
+       }
+      ],
+      [
+       {
+        "text": "➕ Документ",
+        "callback_data": "ms:materialtopic:2"
+       },
+       {
+        "text": "☑️ Изменить чек-лист",
+        "callback_data": "ms:templatetopic:2"
+       }
+      ],
+      [
+       {
+        "text": "📅 Занятия по теме",
+        "callback_data": "ms:list:upcoming:2:0"
+       }
+      ],
+      [
+       {
+        "text": "← Предметы",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137959
+   },
+   {
+    "kind": "sendPhoto",
+    "chat_id": 100500,
+    "text": "🖼 photo-photo-uniq1.jpg\nCalculus 1 · Интегралы",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Зафиксировать проверку Лектором",
+        "callback_data": "ms:review:1"
+       }
+      ],
+      [
+       {
+        "text": "Убрать из банка",
+        "callback_data": "ms:archive:1:ask"
+       }
+      ],
+      [
+       {
+        "text": "← Материалы темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137959
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Зафиксируйте фактическую проверку Лектором Hard. Вы отвечаете за достоверность записи.\nОтправьте имя или ID Лектора и дату проверки через точку с запятой: Имя; ДД.ММ.ГГГГ.\n/cancel — отмена.",
+    "markup": null,
+    "at": 1794137960
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Проверка Лектором зафиксирована. Доступ соответствует настройкам документа.",
+    "markup": null,
+    "at": 1794137961
+   }
+  ],
+  "900002": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 900002,
+    "text": "<b>Менторки</b>\n\nВыберите предмет, тему и удобное занятие. Перед менторкой можно задать вопрос, заполнить чек-лист и прочитать рекап-гайд.\n\nЗаписи на занятия <b>именные</b>. Обращения и их анонимность — отдельный раздел /feedback.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📅 Доступные занятия",
+        "callback_data": "ms:subjects:schedule:0"
+       }
+      ],
+      [
+       {
+        "text": "📝 Мои записи",
+        "callback_data": "ms:list:bookings:0:0"
+       }
+      ],
+      [
+       {
+        "text": "📚 Банк материалов",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137962
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 900002,
+    "text": "<b>Выберите предмет</b>",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Calculus 1",
+        "callback_data": "ms:topics:bank:1:0"
+       }
+      ],
+      [
+       {
+        "text": "Discrete Math",
+        "callback_data": "ms:topics:bank:3:0"
+       }
+      ],
+      [
+       {
+        "text": "English",
+        "callback_data": "ms:topics:bank:6:0"
+       }
+      ],
+      [
+       {
+        "text": "ICT",
+        "callback_data": "ms:topics:bank:4:0"
+       }
+      ],
+      [
+       {
+        "text": "Linear Algebra",
+        "callback_data": "ms:topics:bank:2:0"
+       }
+      ],
+      [
+       {
+        "text": "Programming",
+        "callback_data": "ms:topics:bank:5:0"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137963
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 900002,
+    "text": "<b>Calculus 1</b>\nВыберите тему.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Интегралы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ],
+      [
+       {
+        "text": "Пределы",
+        "callback_data": "ms:bank:1:0"
+       }
+      ],
+      [
+       {
+        "text": "← Предметы",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137963
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 900002,
+    "text": "<b>Банк · Calculus 1 · Интегралы</b>\nДоступных документов: 1. Чек-лист: 2 пунктов.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "☑️ Посмотреть чек-лист темы",
+        "callback_data": "ms:templateview:2"
+       }
+      ],
+      [
+       {
+        "text": "🖼 photo-photo-uniq1.jpg",
+        "callback_data": "ms:file:1"
+       }
+      ],
+      [
+       {
+        "text": "📅 Занятия по теме",
+        "callback_data": "ms:list:upcoming:2:0"
+       }
+      ],
+      [
+       {
+        "text": "← Предметы",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137964
+   },
+   {
+    "kind": "sendPhoto",
+    "chat_id": 900002,
+    "text": "🖼 photo-photo-uniq1.jpg\nCalculus 1 · Интегралы",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "← Материалы темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137965
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 0,
+    "text": "→ ms:upload:1"
+   },
+   {
+    "after": 3,
+    "text": "→ Итоговый"
+   },
+   {
+    "after": 4,
+    "text": "→ Студентам и команде"
+   },
+   {
+    "after": 5,
+    "text": "🖼 board.jpg"
+   },
+   {
+    "after": 6,
+    "text": "→ 📚 Открыть банк темы"
+   },
+   {
+    "after": 7,
+    "text": "→ ms:file:…"
+   },
+   {
+    "after": 8,
+    "text": "→ Зафиксировать проверку Лектором"
+   },
+   {
+    "after": 9,
+    "text": "Лектор Тест; 08.11.2026"
+   }
+  ],
+  "900002": [
+   {
+    "after": 0,
+    "text": "/sessions"
+   },
+   {
+    "after": 1,
+    "text": "→ 📚 Банк материалов"
+   },
+   {
+    "after": 2,
+    "text": "→ Calculus 1"
+   },
+   {
+    "after": 3,
+    "text": "→ Интегралы"
+   },
+   {
+    "after": 4,
+    "text": "→ ms:file:…"
+   }
+  ]
+ }
+}

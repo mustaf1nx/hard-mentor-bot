@@ -1,0 +1,25 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "first": 100501, "second": 100502 },
+  "steps": [
+    { "command": "/start", "as": "first", "expect": "Hard-менторство" },
+    { "command": "/sessions", "as": "first", "expect_button": "Доступные занятия" },
+    { "tap_label": "📅 Доступные занятия", "as": "first", "expect_button": "Calculus 1" },
+    { "tap_label": "Calculus 1", "as": "first", "expect": "Выберите тему" },
+    { "tap_label": "Пределы", "as": "first", "expect": "Доступные занятия" },
+    { "tap_first": 0, "as": "first", "expect_button": "Записаться" },
+    { "tap_label": "📝 Записаться", "as": "first", "expect": "Шаг 1 из 3" },
+    { "say": "Не понимаю, как раскрывать неопределённость 0/0", "as": "first", "expect": "Шаг 2 из 3" },
+    { "say": "Прочитал лекцию и разобрал два примера, но на третьем застрял.", "as": "first", "expect": "Шаг 3 из 3" },
+    { "tap_label": "2 · понимаю условие, не знаю с чего начать", "as": "first", "expect_button": "Убрать мою запись",
+      "expect_db": "select count(*) from session_bookings where session_id=3 and status='active'", "equals": [1] },
+    { "command": "/start", "as": "second", "expect": "Hard-менторство" },
+    { "command": "/sessions", "as": "second", "expect_button": "Доступные занятия" },
+    { "tap_label": "📅 Доступные занятия", "as": "second", "expect_button": "Calculus 1" },
+    { "tap_label": "Calculus 1", "as": "second", "expect": "Выберите тему" },
+    { "tap_label": "Пределы", "as": "second", "expect": "Доступные занятия" },
+    { "tap_first": 0, "as": "second", "expect": "место занято", "expect_no_button": "Записаться" },
+    { "expect_db": "select count(*) from session_bookings where session_id=3 and status='active'", "equals": [1] }
+  ]
+}

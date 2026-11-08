@@ -1,0 +1,12 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "mentor": 100500 },
+  "steps": [
+    { "command": "/mentorreport", "as": "mentor", "expect": "За какую неделю" },
+    { "tap_label": "Эта неделя", "as": "mentor", "expect": "Шаг 1 из 2" },
+    { "say": "Студенты путают подстановку и замену переменной, бросают на третьем шаге.", "as": "mentor", "expect": "Шаг 2 из 2" },
+    { "say": "Разобрать два примера с подстановкой и выдать чек-лист шагов.", "as": "mentor", "expect": "Отчёт ментора сохранён", "expect_db": "select insights like '%подстановк%' and focus like '%чек-лист%' from mentor_weekly_reports", "equals": [1] },
+    { "command": "/mentorreports", "as": "mentor", "expect": "отчёт" }
+  ]
+}

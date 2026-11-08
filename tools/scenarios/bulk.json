@@ -1,0 +1,23 @@
+{
+  "admin": 100500,
+  "seed_script": "tools/seed_bulk.py",
+  "seed_args": ["--mentors", "30", "--sessions", "100"],
+  "warmup": 8.0,
+  "users": { "admin": 100500 },
+  "steps": [
+    { "command": "/dashboard", "as": "admin", "expect": "Сводка", "expect_button": "Цикл по предметам",
+      "expect_db": "select count(*) > 90 from mentoring_sessions", "equals": [1] },
+    { "tap_label": "Все занятия", "as": "admin", "expect": "за триместр", "expect_button": "Далее" },
+    { "expect": "страница 1/", "as": "admin" },
+    { "tap_label": "Далее", "as": "admin", "expect": "страница 2/" },
+    { "tap_label": "← Сводка", "as": "admin", "expect": "Сводка" },
+    { "tap_label": "Долги по занятиям", "as": "admin", "expect": "Долги" },
+    { "command": "/kpi", "as": "admin", "expect": "Менторы 1–10 из 30", "expect_button": "Вперёд" },
+    { "tap_label": "Вперёд", "as": "admin", "expect": "Менторы 11–20 из 30" },
+    { "tap_label": "Вперёд", "as": "admin", "expect": "Менторы 21–30 из 30" },
+    { "command": "/mentorreports", "as": "admin" },
+    { "command": "/sessions", "as": "admin", "expect_button": "Доступные занятия" },
+    { "tap_label": "📅 Доступные занятия", "as": "admin", "expect": "Выберите предмет" },
+    { "tap_label": "Calculus 1", "as": "admin", "expect": "Выберите тему" }
+  ]
+}

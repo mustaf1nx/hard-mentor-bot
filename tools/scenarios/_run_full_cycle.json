@@ -1,0 +1,896 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторка #4</b> · Запланировано\n<b>Calculus 1 · Интегралы</b>\nФормат: Ошибки недели\n🕒 08.11.2026 14:38 · 60 мин.\nЧасовой пояс: Asia/Almaty\n🎓 Ментор: User100500\n📍 C1.3.233 (цикл)\nЗаписано: <b>1</b>\n\n<b>Что дальше:</b> Следующий шаг: отметьте посещаемость каждого участника.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "✅ Отметить посещаемость",
+        "callback_data": "ms:attendance:4:0"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ],
+      [
+       {
+        "text": "⚙️ Управление занятием",
+        "callback_data": "ms:manage:4"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137894
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "✅ Время менторки #4 закончилось. Отметьте посещаемость, завершите занятие и загрузите материалы.\n\nCalculus 1 · Интегралы\n08.11.2026 14:38 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Посещаемость",
+        "callback_data": "ms:attendance:4:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137894
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "📝 Как прошла менторка #1? Оцените её. Ментор увидит средние оценки и тексты без вашего имени; в базе отзыв связан с занятием и вашей записью.\n\nCalculus 1 · Интегралы\n06.11.2026 15:38 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Оставить отзыв",
+        "callback_data": "ms:fb:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794137895
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Посещаемость · занятие #4</b>\nАктивных записей: 1",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Демо Студент · Не отмечен",
+        "callback_data": "ms:person:2:attendance"
+       }
+      ],
+      [
+       {
+        "text": "🏁 Завершить после всех отметок",
+        "callback_data": "ms:complete:4:ask"
+       }
+      ],
+      [
+       {
+        "text": "← К занятию",
+        "callback_data": "ms:view:4"
+       }
+      ]
+     ]
+    },
+    "at": 1794137895
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Демо Студент</b> · занятие #4\nСейчас: Не отмечен",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Не отмечен",
+        "callback_data": "ms:mark:2:unknown"
+       }
+      ],
+      [
+       {
+        "text": "Присутствовал",
+        "callback_data": "ms:mark:2:present"
+       }
+      ],
+      [
+       {
+        "text": "Отсутствовал",
+        "callback_data": "ms:mark:2:absent"
+       }
+      ],
+      [
+       {
+        "text": "← Посещаемость",
+        "callback_data": "ms:attendance:4:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137896
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Посещаемость · занятие #4</b>\nАктивных записей: 1",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Демо Студент · Присутствовал",
+        "callback_data": "ms:person:2:attendance"
+       }
+      ],
+      [
+       {
+        "text": "🏁 Завершить после всех отметок",
+        "callback_data": "ms:complete:4:ask"
+       }
+      ],
+      [
+       {
+        "text": "← К занятию",
+        "callback_data": "ms:view:4"
+       }
+      ]
+     ]
+    },
+    "at": 1794137897
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Завершить занятие? Все участники должны быть отмечены в посещаемости.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Завершить",
+        "callback_data": "ms:complete:4:yes"
+       }
+      ],
+      [
+       {
+        "text": "← К занятию",
+        "callback_data": "ms:view:4"
+       }
+      ]
+     ]
+    },
+    "at": 1794137898
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "✅ Занятие завершено. Добавьте материалы: фото, PDF или DOCX.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📎 Загрузить материалы",
+        "callback_data": "ms:upload:4"
+       }
+      ]
+     ]
+    },
+    "at": 1794137898
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Менторка #4</b> · Проведено\n<b>Calculus 1 · Интегралы</b>\nФормат: Ошибки недели\n🕒 08.11.2026 14:38 · 60 мин.\nЧасовой пояс: Asia/Almaty\n🎓 Ментор: User100500\n📍 C1.3.233 (цикл)\nЗаписано: <b>1</b>\nОтзывы: 0 · письменных: 0\nОтзывов пока нет.\n\n<b>Что дальше:</b> Следующий шаг: загрузите итоговый материал и дождитесь методпроверки.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📎 Итоговый материал",
+        "callback_data": "ms:upload:4"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ],
+      [
+       {
+        "text": "⚙️ Управление занятием",
+        "callback_data": "ms:manage:4"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137898
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "📎 Материалы занятия #4\nПредмет: Calculus 1\nТема: Интегралы",
+    "markup": null,
+    "at": 1794137899
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Для чего этот материал занятия?",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Подготовительный",
+        "callback_data": "ms:kind:preparation"
+       }
+      ],
+      [
+       {
+        "text": "Итоговый",
+        "callback_data": "ms:kind:final"
+       }
+      ]
+     ]
+    },
+    "at": 1794137899
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Кому доступен документ?</b>\nОтветы к мокам можно оставить только команде.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Студентам и команде",
+        "callback_data": "ms:visibility:students"
+       }
+      ],
+      [
+       {
+        "text": "Только менторам и координаторам",
+        "callback_data": "ms:visibility:staff"
+       }
+      ]
+     ]
+    },
+    "at": 1794137900
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Отправьте <b>фотографию заметок, PDF или DOCX</b> до 20 МиБ.\nИмя файла или фото станет названием в банке. Студентам материал доступен после фиксации проверки Лектором (проект Положения, п. 8.1.8).\n/cancel — отмена.",
+    "markup": null,
+    "at": 1794137901
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "✅ <b>Материал сохранён.</b> Ожидает фиксации проверки Лектором; студентам пока недоступен.\n\nМожно <b>сразу отправить следующий файл или фото</b> — он получит те же настройки.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "➕ Загрузить ещё",
+        "callback_data": "ms:materialmore"
+       }
+      ],
+      [
+       {
+        "text": "🔄 Изменить тип / доступ",
+        "callback_data": "ms:materialsettings"
+       }
+      ],
+      [
+       {
+        "text": "📚 Открыть банк темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ],
+      [
+       {
+        "text": "✅ Готово",
+        "callback_data": "ms:stop"
+       }
+      ]
+     ]
+    },
+    "at": 1794137902
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Банк · Calculus 1 · Интегралы</b>\nДоступных документов: 1. Чек-лист: 2 пунктов.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "☑️ Посмотреть чек-лист темы",
+        "callback_data": "ms:templateview:2"
+       }
+      ],
+      [
+       {
+        "text": "📎 ⏳ final.pdf",
+        "callback_data": "ms:file:1"
+       }
+      ],
+      [
+       {
+        "text": "➕ Документ",
+        "callback_data": "ms:materialtopic:2"
+       },
+       {
+        "text": "☑️ Изменить чек-лист",
+        "callback_data": "ms:templatetopic:2"
+       }
+      ],
+      [
+       {
+        "text": "📅 Занятия по теме",
+        "callback_data": "ms:list:upcoming:2:0"
+       }
+      ],
+      [
+       {
+        "text": "← Предметы",
+        "callback_data": "ms:subjects:bank:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137902
+   },
+   {
+    "kind": "sendDocument",
+    "chat_id": 100500,
+    "text": "📎 final.pdf\nCalculus 1 · Интегралы",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Зафиксировать проверку Лектором",
+        "callback_data": "ms:review:1"
+       }
+      ],
+      [
+       {
+        "text": "Убрать из банка",
+        "callback_data": "ms:archive:1:ask"
+       }
+      ],
+      [
+       {
+        "text": "← Материалы темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794137903
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Зафиксируйте фактическую проверку Лектором Hard. Вы отвечаете за достоверность записи.\nОтправьте имя или ID Лектора и дату проверки через точку с запятой: Имя; ДД.ММ.ГГГГ.\n/cancel — отмена.",
+    "markup": null,
+    "at": 1794137904
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Проверка Лектором зафиксирована. Доступ соответствует настройкам документа.",
+    "markup": null,
+    "at": 1794137905
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Сводка · demo, неделя 4</b>\nНеделя 02.11–08.11.2026\nДанные бота на 08.11.2026 16:38 · Asia/Almaty\nПоказаны только сведения, внесённые в бот.\n\n<b>Итоги недели</b>\nПроведено 2 · в расписании 0 · отменено 0\nАктивных записей: 2; явка отмечена у 2, пришли 2\nЦикл закрыт: 1 из 2 проведённых занятий\nОценка: 4.67 по 1 отзывам; письменных: 1\n\n<b>Главные проблемы · 3</b>\nЗанятия за триместр, отчёты за неделю и текущие обращения.\nНеподтверждённых форматов: 0 — список всех таких занятий в отдельном разделе.\n🟡 1 занятие без письменного отзыва\n🟡 1 занятие без подтверждённого итогового материала\n🟡 Не сдали отчёт за неделю: 2\n\nПодробности: занятия недели, цикл, люди и KPI — кнопками ниже.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Занятия недели",
+        "callback_data": "dash:week"
+       },
+       {
+        "text": "Требует внимания",
+        "callback_data": "dash:attention"
+       }
+      ],
+      [
+       {
+        "text": "Все занятия",
+        "callback_data": "dash:sessions"
+       },
+       {
+        "text": "Неподтверждённые форматы",
+        "callback_data": "dash:unconfirmed"
+       }
+      ],
+      [
+       {
+        "text": "Цикл по предметам",
+        "callback_data": "dash:cycle"
+       },
+       {
+        "text": "Люди и отчёты",
+        "callback_data": "dash:people"
+       }
+      ],
+      [
+       {
+        "text": "Долги по занятиям",
+        "callback_data": "dash:debts"
+       },
+       {
+        "text": "KPI и цели",
+        "callback_data": "dash:kpi"
+       }
+      ],
+      [
+       {
+        "text": "Обращения",
+        "callback_data": "dash:tickets"
+       },
+       {
+        "text": "Выгрузить CSV",
+        "callback_data": "dash:csv"
+       }
+      ],
+      [
+       {
+        "text": "Обновить сводку",
+        "callback_data": "dash:overview"
+       }
+      ],
+      [
+       {
+        "text": "← Главное меню менторок",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137913
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Цикл по предметам</b>\nЦикл — закрыто / проведено; нужны свой проверенный итоговый материал и ≥1 письменный отзыв.\n✓ — условие выполнено · — пока нет.\nза триместр\nСтраница 1/1\n\n• Calculus 1 — закрыто 1/2; занятия ✓, письменный отзыв ·, итог в Банке ·\n• Discrete Math — в этом триместре проведённых занятий нет\n• English — в этом триместре проведённых занятий нет\n• ICT — в этом триместре проведённых занятий нет\n• Linear Algebra — в этом триместре проведённых занятий нет\n• Programming — в этом триместре проведённых занятий нет\nВыберите предмет ниже, чтобы открыть занятия.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Calculus 1",
+        "callback_data": "dash:subject:1:0"
+       }
+      ],
+      [
+       {
+        "text": "Discrete Math",
+        "callback_data": "dash:subject:3:0"
+       }
+      ],
+      [
+       {
+        "text": "English",
+        "callback_data": "dash:subject:6:0"
+       }
+      ],
+      [
+       {
+        "text": "ICT",
+        "callback_data": "dash:subject:4:0"
+       }
+      ],
+      [
+       {
+        "text": "Linear Algebra",
+        "callback_data": "dash:subject:2:0"
+       }
+      ],
+      [
+       {
+        "text": "Programming",
+        "callback_data": "dash:subject:5:0"
+       }
+      ],
+      [
+       {
+        "text": "← Сводка",
+        "callback_data": "dash:overview"
+       }
+      ],
+      [
+       {
+        "text": "← Главное меню менторок",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137914
+   }
+  ],
+  "900002": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 900002,
+    "text": "📝 Как прошла менторка #4? Оцените её. Ментор увидит средние оценки и тексты без вашего имени; в базе отзыв связан с занятием и вашей записью.\n\nCalculus 1 · Интегралы\n08.11.2026 14:38 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Оставить отзыв",
+        "callback_data": "ms:fb:4"
+       }
+      ]
+     ]
+    },
+    "at": 1794137895
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 900002,
+    "text": "<b>Мои записи</b> · всего 1\nВыберите занятие.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "✅ #4 · 08.11.2026 14:38 · Calculus 1: Интегралы",
+        "callback_data": "ms:view:4"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137906
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 900002,
+    "text": "<b>Менторка #4</b> · Проведено\n<b>Calculus 1 · Интегралы</b>\nФормат: Ошибки недели\n🕒 08.11.2026 14:38 · 60 мин.\nЧасовой пояс: Asia/Almaty\n🎓 Ментор: User100500\n📍 C1.3.233 (цикл)\nЗаписано: <b>1</b>\n✅ Вы записаны.\nВаш вопрос: Не понимаю разбор ошибки недели\nЧек-лист: 0/1\nПосещаемость: Присутствовал",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📝 Оставить отзыв о занятии",
+        "callback_data": "ms:fb:4"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы темы",
+        "callback_data": "ms:bank:2:0"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794137906
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 900002,
+    "text": "<b>Отзыв · занятие #4</b>\n\nВаше имя не показывается ментору, но комментарий может раскрыть его. Отзыв связан с вашим аккаунтом в базе.\n\nШаг 1 из 5.\n<b>Насколько ясно и методически доступно ментор объяснил материал?</b>\n1 — совсем непонятно · 5 — сложные вещи стали простыми",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "5 · всё понятно",
+        "callback_data": "ms:fbc:5"
+       }
+      ],
+      [
+       {
+        "text": "4 · почти всё понятно",
+        "callback_data": "ms:fbc:4"
+       }
+      ],
+      [
+       {
+        "text": "3 · частично",
+        "callback_data": "ms:fbc:3"
+       }
+      ],
+      [
+       {
+        "text": "2 · мало что понял",
+        "callback_data": "ms:fbc:2"
+       }
+      ],
+      [
+       {
+        "text": "1 · ничего не понял",
+        "callback_data": "ms:fbc:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794137907
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 900002,
+    "text": "<b>Шаг 2 из 5. Результат и честность</b>\n\n<b>Помогло ли занятие продвинуться в задании?</b> — верхний ряд.\n<b>Соблюдал ли ментор академическую честность?</b> — нижний ряд.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Продвинулся",
+        "callback_data": "ms:fbp:yes"
+       },
+       {
+        "text": "Частично",
+        "callback_data": "ms:fbp:partial"
+       },
+       {
+        "text": "Нет",
+        "callback_data": "ms:fbp:no"
+       }
+      ],
+      [
+       {
+        "text": "Помогал понять",
+        "callback_data": "ms:fbh:ok"
+       },
+       {
+        "text": "Дал готовое",
+        "callback_data": "ms:fbh:violation"
+       }
+      ]
+     ]
+    },
+    "at": 1794137908
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 900002,
+    "text": "<b>Шаг 2 из 5. Результат и честность</b>\n\n<b>Помогло ли занятие продвинуться в задании?</b> — верхний ряд.\n<b>Соблюдал ли ментор академическую честность?</b> — нижний ряд.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Продвинулся",
+        "callback_data": "ms:fbp:yes"
+       },
+       {
+        "text": "✅ Частично",
+        "callback_data": "ms:fbp:partial"
+       },
+       {
+        "text": "Нет",
+        "callback_data": "ms:fbp:no"
+       }
+      ],
+      [
+       {
+        "text": "Помогал понять",
+        "callback_data": "ms:fbh:ok"
+       },
+       {
+        "text": "Дал готовое",
+        "callback_data": "ms:fbh:violation"
+       }
+      ]
+     ]
+    },
+    "at": 1794137909
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 900002,
+    "text": "Шаг 3 из 5 · <b>обязательный</b>\n<b>Что вам понравилось или что можно улучшить?</b>\n\nНапишите 1–2 предложения своими словами. Без текста отзыв не отправится. Ментор увидит текст без вашего имени; в базе отзыв связан с вашим аккаунтом.\n\nОтмена — /cancel.",
+    "markup": {
+     "inline_keyboard": []
+    },
+    "at": 1794137910
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 900002,
+    "text": "Шаг 4 из 5.\n<b>Какие темы разобрать на следующих слотах?</b>\n\nМожно пропустить.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Пропустить",
+        "callback_data": "ms:fbn:skip"
+       }
+      ]
+     ]
+    },
+    "at": 1794137910
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 900002,
+    "text": "Шаг 5 из 5.\n<b>Общая оценка занятия</b>",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "5 · отлично",
+        "callback_data": "ms:fbo:5"
+       }
+      ],
+      [
+       {
+        "text": "4 · хорошо",
+        "callback_data": "ms:fbo:4"
+       }
+      ],
+      [
+       {
+        "text": "3 · нормально",
+        "callback_data": "ms:fbo:3"
+       }
+      ],
+      [
+       {
+        "text": "2 · слабо",
+        "callback_data": "ms:fbo:2"
+       }
+      ],
+      [
+       {
+        "text": "1 · плохо",
+        "callback_data": "ms:fbo:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794137911
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 900002,
+    "text": "✅ <b>Спасибо за отзыв.</b>\n\nОценки и письменный комментарий сохранены. Ментор видит их без вашего имени; в базе отзыв связан с занятием и вашим аккаунтом.",
+    "markup": null,
+    "at": 1794137912
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 0,
+    "text": "→ ms:view:4"
+   },
+   {
+    "after": 3,
+    "text": "→ ✅ Отметить посещаемость"
+   },
+   {
+    "after": 4,
+    "text": "→ ms:person:…"
+   },
+   {
+    "after": 5,
+    "text": "→ Присутствовал"
+   },
+   {
+    "after": 6,
+    "text": "→ 🏁 Завершить после всех отметок"
+   },
+   {
+    "after": 7,
+    "text": "→ Завершить"
+   },
+   {
+    "after": 9,
+    "text": "→ 📎 Загрузить материалы"
+   },
+   {
+    "after": 11,
+    "text": "→ Итоговый"
+   },
+   {
+    "after": 12,
+    "text": "→ Студентам и команде"
+   },
+   {
+    "after": 13,
+    "text": "📎 final.pdf"
+   },
+   {
+    "after": 14,
+    "text": "→ 📚 Открыть банк темы"
+   },
+   {
+    "after": 15,
+    "text": "→ ms:file:…"
+   },
+   {
+    "after": 16,
+    "text": "→ Зафиксировать проверку Лектором"
+   },
+   {
+    "after": 17,
+    "text": "Лектор Тест; 08.11.2026"
+   },
+   {
+    "after": 18,
+    "text": "/dashboard"
+   },
+   {
+    "after": 19,
+    "text": "→ Цикл по предметам"
+   }
+  ],
+  "900002": [
+   {
+    "after": 1,
+    "text": "/mysessions"
+   },
+   {
+    "after": 2,
+    "text": "→ ms:view:…"
+   },
+   {
+    "after": 3,
+    "text": "→ 📝 Оставить отзыв о занятии"
+   },
+   {
+    "after": 4,
+    "text": "→ 4 · почти всё понятно"
+   },
+   {
+    "after": 5,
+    "text": "→ Частично"
+   },
+   {
+    "after": 6,
+    "text": "→ Помогал понять"
+   },
+   {
+    "after": 7,
+    "text": "Разобрали мою ошибку, стало понятнее."
+   },
+   {
+    "after": 8,
+    "text": "→ Пропустить"
+   },
+   {
+    "after": 9,
+    "text": "→ 5 · отлично"
+   }
+  ]
+ }
+}

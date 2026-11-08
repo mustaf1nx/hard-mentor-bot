@@ -1,6 +1,7 @@
 """Full dispatcher tests. Require requirements-dev.txt and a working async driver."""
 from datetime import timedelta
 
+import pytest
 from aiogram.methods import SendDocument
 from aiogram.types import Document
 from sqlalchemy import delete, select
@@ -21,6 +22,7 @@ async def create_through_chat(h):
     await h.say(COORD, '/newsession')
     await h.say(COORD, 'Calculus')
     await h.say(COORD, 'Integrals')
+    await h.tap(COORD, 'ms:setformat:one_on_one')
     await h.tap(COORD, f'ms:pickmentor:{MENTOR}')
     await h.say(COORD, svc.local_time(utcnow() + timedelta(days=4), SETTINGS))
     await h.say(COORD, '60')
@@ -33,8 +35,11 @@ async def create_through_chat(h):
 
 
 async def book_through_chat(h, lesson, uid=ALICE):
+    """Входной билет по п. 8.1.4: вопрос → что пробовал → самооценка 1–5."""
     await h.tap(uid, f'ms:join:{lesson.id}')
     await h.say(uid, 'Как выбрать подстановку?')
+    await h.say(uid, 'Пробовал выразить через t, но интеграл не упрощается.')
+    await h.tap(uid, 'ms:rate:3')
     async with h.sm() as s:
         booking = await svc.own_booking(s, lesson.id, uid)
     assert booking is not None and booking.status == 'active'
@@ -44,6 +49,9 @@ async def book_through_chat(h, lesson, uid=ALICE):
 async def test_coordinator_creation_student_booking_checklist_and_mentor_summary(h):
     lesson = await create_through_chat(h)
     booking = await book_through_chat(h, lesson)
+    assert 'Вы записаны' in h.texts_to(ALICE)[-1]
+    assert f'ms:check:{booking.id}:next' in h.buttons(h.last_to(ALICE))
+    await h.tap(ALICE, f'ms:check:{booking.id}:next')
     await h.tap(ALICE, f'ms:answer:{booking.id}:0:2')
     await h.tap(ALICE, f'ms:answer:{booking.id}:1:1')
     assert 'заполнен' in h.texts_to(ALICE)[-1]
@@ -62,6 +70,42 @@ async def test_sessions_are_separate_from_feedback_tickets(h):
     async with h.sm() as s:
         assert len(list(await s.scalars(select(Ticket)))) == 1
         assert len(list(await s.scalars(select(SessionBooking)))) == 1
+
+
+async def test_completion_does_not_offer_upload_to_lead_when_another_author_is_assigned(h):
+    lesson = await create_through_chat(h)
+    booking = await book_through_chat(h, lesson)
+    await h.say(BOB, '/start')
+    await h.say(COORD, f'/addmentor {BOB}')
+    async with h.sm() as s:
+        saved = await s.get(MentoringSession, lesson.id)
+        saved.author_id = BOB
+        saved.starts_at = utcnow() - timedelta(hours=2)
+        saved.ends_at = utcnow() - timedelta(hours=1)
+        (await s.get(SessionBooking, booking.id)).attendance = 'present'
+        await s.commit()
+    h.clear()
+    await h.tap(MENTOR, f'ms:complete:{lesson.id}:yes')
+    assert any('назначенный Автор' in text for text in h.texts_to(MENTOR))
+    assert all(f'ms:upload:{lesson.id}' not in h.buttons(call) for call in h.sent_to(MENTOR))
+
+
+async def test_assigned_author_can_open_completed_session_but_unrelated_student_cannot(h):
+    lesson = await create_through_chat(h)
+    await h.say(BOB, '/start')
+    await h.say(COORD, f'/addmentor {BOB}')
+    async with h.sm() as s:
+        saved = await s.get(MentoringSession, lesson.id)
+        saved.author_id = BOB
+        saved.starts_at = utcnow() - timedelta(hours=2)
+        saved.ends_at = utcnow() - timedelta(hours=1)
+        saved.status = 'completed'
+        await s.commit()
+    h.clear()
+    await h.tap(BOB, f'ms:view:{lesson.id}')
+    assert any(f'ms:upload:{lesson.id}' in h.buttons(call) for call in h.sent_to(BOB))
+    await h.tap(ALICE, f'ms:view:{lesson.id}')
+    assert any('недоступно' in text for text in h.texts_to(ALICE))
 
 
 async def test_new_menu_interrupts_old_ticket_comment_without_saving_it(h):
@@ -99,6 +143,35 @@ async def test_student_cannot_create_read_roster_mark_attendance_or_view_report(
         assert (await s.get(SessionBooking, booking.id)).attendance == 'unknown'
 
 
+async def test_photo_material_requires_review_and_is_visible_after(h):
+    lesson = await create_through_chat(h)
+    admin = repo.Viewer(id=COORD, role='coordinator', lang='ru', name='Coord')
+    student = repo.Viewer(id=ALICE, role='mentee', lang='ru', name='Alice')
+    async with h.sm() as s:
+        material = await svc.add_material(
+            s, admin, topic_id=lesson.topic_id, kind='material', visibility='students',
+            file_id='photo-file', file_unique_id='photo-unique', file_name='board.jpg',
+            file_size=48_000, mime='image/jpeg', session_id=lesson.id,
+            cycle_stage='final', media_type='photo')
+        await s.commit()
+        assert material.media_type == 'photo'
+        assert [x.id for x in await svc.material_list(s, student, lesson.topic_id)] == []
+        with pytest.raises(svc.RuleError):
+            await svc.material_for(s, student, material.id)
+        await svc.record_material_review(s, admin, material.id, 'Лектор Тест', utcnow())
+        await s.commit()
+        assert (await svc.material_for(s, student, material.id)).media_type == 'photo'
+
+
+async def test_photo_material_rejects_non_image_and_keeps_documents(h):
+    with pytest.raises(svc.RuleError):
+        svc.validate_photo('board.pdf', 100, 'application/pdf')
+    assert svc.validate_photo('board.jpg', 100, 'image/jpeg') == 'board.jpg'
+    assert svc.validate_file('guide.pdf', 100, 'application/pdf') == 'guide.pdf'
+    assert svc.validate_file('guide.docx', 100,
+                             'application/vnd.openxmlformats-officedocument.wordprocessingml.document') == 'guide.docx'
+
+
 async def test_partial_checklist_survives_memory_storage_reset(h):
     lesson = await create_through_chat(h)
     booking = await book_through_chat(h, lesson)
@@ -123,7 +196,9 @@ async def test_bulk_mentors_still_work_and_removed_mentor_cannot_read_roster(h):
 
 async def test_material_document_flow_and_private_access(h):
     lesson = await create_through_chat(h)
+    await h.tap(COORD, f'ms:author:{lesson.id}:{MENTOR}')
     await h.tap(MENTOR, f'ms:upload:{lesson.id}')
+    await h.tap(MENTOR, 'ms:kind:final')
     await h.tap(MENTOR, 'ms:visibility:staff')
     await h.say(MENTOR, document=Document(file_id='doc1',file_unique_id='uniq1',file_name='answers.pdf',
                                          file_size=1024,mime_type='application/pdf'))
@@ -137,9 +212,45 @@ async def test_material_document_flow_and_private_access(h):
     assert any(isinstance(c,SendDocument) for c in h.sent_to(MENTOR))
 
 
+async def test_session_author_upload_requires_recorded_lecturer_review(h):
+    lesson = await create_through_chat(h)
+    # /addmentor ищет уже известного бота пользователя: BOB должен нажать /start.
+    await h.say(BOB, '/start')
+    await h.say(COORD, f'/addmentor {BOB}')
+    await h.tap(COORD, f'ms:author:{lesson.id}:{BOB}')
+    await h.tap(MENTOR, f'ms:upload:{lesson.id}')
+    assert any('назначенный Автор' in text for text in h.texts_to(MENTOR))
+    await h.tap(BOB, f'ms:upload:{lesson.id}')
+    await h.tap(BOB, 'ms:kind:preparation')
+    await h.tap(BOB, 'ms:visibility:students')
+    await h.say(BOB, document=Document(file_id='prep', file_unique_id='prep-unique',
+                                      file_name='prep.pdf', file_size=1024, mime_type='application/pdf'))
+    async with h.sm() as s:
+        material = (await s.scalars(select(LearningMaterial))).one()
+        assert material.session_id == lesson.id and material.cycle_stage == 'preparation'
+        assert material.review_status == 'pending'
+    h.clear()
+    await h.tap(ALICE, f'ms:file:{material.id}')
+    assert not any(isinstance(c, SendDocument) for c in h.sent_to(ALICE))
+    await h.tap(BOB, f'ms:review:{material.id}')
+    async with h.sm() as s:
+        assert (await s.get(LearningMaterial, material.id)).review_status == 'pending'
+    await h.tap(COORD, f'ms:review:{material.id}')
+    await h.say(COORD, 'Лектор Тест; 01.01.2020')
+    async with h.sm() as s:
+        reviewed = await s.get(LearningMaterial, material.id)
+        assert reviewed.review_status == 'approved'
+        assert reviewed.lecturer_name == 'Лектор Тест'
+        assert reviewed.review_recorded_by == COORD and reviewed.reviewed_at.year == 2020
+    await h.tap(ALICE, f'ms:file:{material.id}')
+    assert any(isinstance(c, SendDocument) for c in h.sent_to(ALICE))
+
+
 async def test_feedback_menu_not_swallowed_by_document_upload(h):
     lesson = await create_through_chat(h)
+    await h.tap(COORD, f'ms:author:{lesson.id}:{MENTOR}')
     await h.tap(MENTOR, f'ms:upload:{lesson.id}')
+    await h.tap(MENTOR, 'ms:kind:final')
     await h.tap(MENTOR, 'ms:visibility:students')
     await h.say(MENTOR, '✍️ Оставить обращение')
     assert any(x.startswith('cat:') for x in h.buttons(h.last_to(MENTOR)))

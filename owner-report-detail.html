@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Бот Hard-менторства — отчёт владельцу, 7.11.2026</title>
+<style>
+:root{color-scheme:light;--ink:#14273a;--muted:#4b6172;--blue:#0c4a8e;--paper:#f6f9fb;--line:#cddae3;--red:#a5272e;--amber:#855600;--green:#12634b}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:#07569a;text-underline-offset:3px}a:focus-visible{outline:3px solid #ed9b38;outline-offset:3px}
+header{background:#103754;color:#fff;padding:52px max(24px,calc((100vw - 1120px)/2)) 42px}
+header p{color:#dbeaf3;max-width:74ch}h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;letter-spacing:-.03em;max-width:22ch;margin:0 0 20px}
+h2{font-size:clamp(1.55rem,3vw,2.1rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 18px}
+h3{font-size:1.14rem;line-height:1.3;margin:28px 0 8px}p{margin:0 0 16px}
+nav{background:white;border-bottom:1px solid var(--line);padding:14px max(24px,calc((100vw - 1120px)/2));display:flex;gap:10px 22px;flex-wrap:wrap}
+nav a{font-weight:650;font-size:.9rem}
+main{max-width:1120px;margin:auto;padding:0 24px 80px}
+section{padding:44px 0;border-bottom:1px solid var(--line)}section:last-child{border:0}
+.lead{font-size:1.22rem;line-height:1.55;max-width:74ch}
+.verdict{background:#e4eff5;padding:24px 28px;margin:24px 0;border-left:5px solid var(--blue)}
+.verdict strong{font-size:1.1rem}
+.meta{font-size:.9rem;color:#dbeaf3}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin:28px 0}
+.score{border-top:3px solid var(--blue);padding-top:12px}
+.score b{font-size:1.7rem;display:block;line-height:1.2}
+.small{font-size:.9rem;color:var(--muted)}
+.tag{font-size:.76rem;letter-spacing:.04em;text-transform:uppercase;font-weight:750}
+.critical{color:var(--red)}.warn{color:var(--amber)}.ok{color:var(--green)}
+.finding{padding:22px 0;border-top:1px solid var(--line);max-width:92ch}
+.finding h3{margin:4px 0 10px}.finding p:last-child{margin-bottom:0}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:720px;background:#fff}
+th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:12px 14px}
+th{background:#e9f1f6;font-size:.86rem;letter-spacing:.02em;text-transform:uppercase}
+tbody tr:last-child td{border-bottom:0}
+code{background:#eaf1f5;padding:1px 5px;font-size:.9em}
+.status{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.78rem;font-weight:700;white-space:nowrap}
+.done{background:#dcefe7;color:#0d543f}.partial{background:#fff0d2;color:#6f4700}.open{background:#f3dcde;color:#8a1f26}
+ul.compact li{margin:7px 0}
+.source{font-size:.9rem;color:var(--muted)}
+footer{padding:28px 0;color:var(--muted);font-size:.9rem}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+<h1>Бот Hard-менторства: что исправлено и что проверено</h1>
+<p>Статус после набора правок: цикл занятия, консультация 1-на-1, методическая проверка материалов, миграции, административная сводка и проверка PostgreSQL.</p>
+<div class="meta">Локальный срез · 7 ноября 2026 · отчёт для владельца · проект Положения ещё не утверждён</div>
+</header>
+<nav aria-label="Разделы отчёта">
+<a href="#short">Коротко</a><a href="#fixed">Что исправлено</a><a href="#staff">Люди и назначения</a><a href="#prod">Копия production</a><a href="#tested">Чем проверено</a><a href="postgres-verification.html">PostgreSQL и копия</a><a href="#limits">Границы</a><a href="#decisions">Решения и Положение</a><a href="#cycle">Цикл занятия</a><a href="#left">Что осталось</a><a href="#help">Что нужно от вас</a><a href="#evidence">Доказательства</a>
+</nav>
+<main>
+
+<section id="short">
+<h2>Коротко</h2>
+<p class="lead">Ошибки, найденные в прошлом аудите, исправлены и проверены локально: консультация 1-на-1 больше не отменяется при одном студенте, цикл считается по конкретному занятию и триместру, методическая проверка материала стала условием публикации, миграция <code>0007</code> проходит на старой и чистой схеме.</p>
+<div class="verdict"><strong>Вердикт: рабочая основа для управляемого пилота. Локальная проверка, PostgreSQL 16 и копия production на PostgreSQL 18.6 пройдены; живой Railway и реальные аккаунты не затрагивались.</strong>
+<p>Это не отчёт «всё готово». Ниже отдельно: что реально прошло тесты и симуляцию Telegram, что проверено на локальном PostgreSQL и копии production, а что ещё не проверено на живом Railway.</p></div>
+<div class="grid">
+<div class="score"><b>177</b><span>тестов на SQLite</span><div class="small">2 пропущены (гонки). Полный прогон вне файловой песочницы.</div></div>
+<div class="score"><b>179</b><span>тестов на PostgreSQL 18.6</span><div class="small">0 пропущено; гонки записей выполнены.</div></div>
+<div class="score"><b>12 / 12</b><span>сценариев Telegram</span><div class="small">Реальный процесс бота против фейкового Bot API.</div></div>
+<div class="score"><b>0</b><span>проверок на production</span><div class="small">Railway, живая БД и реальные аккаунты не трогались.</div></div>
+</div>
+<p class="small">Числа — это проверки, а не процент готовности продукта. Сценарии используют демонстрационные имена и локальную базу.</p>
+</section>
+
+<section id="fixed">
+<h2>Что исправлено</h2>
+<p>Таблица разделяет «сделано и проверено» и «сделано, но проверено только частично». Ссылки ведут к коду и транскриптам.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Проблема</th><th>Что сделано</th><th>Доказательство</th><th>Граница</th></tr></thead>
+<tbody>
+<tr><td><strong>Консультация 1-на-1 отменялась как группа.</strong> Порог «меньше двух записей» применялся без формата.</td>
+<td>Порог 1 действует только для <em>подтверждённого</em> 1-на-1. Неподтверждённый старый формат не считается 1-на-1. Пустой слот отменяется при любом формате; слот с одной записью при неизвестном формате не отменяется, координатор получает просьбу подтвердить формат.</td>
+<td><span class="status done">проверено</span> тесты <code>test_one_on_one_with_one_booking_is_kept</code>, <code>test_unconfirmed_format_*</code>; сценарий <a href="tools/scenarios/_run_one_on_one.json">one_on_one</a>.</td>
+<td>Живые старые записи нужно подтверждать вручную: миграция <code>0006</code> могла проставить <code>one_on_one</code> без решения. Автоподтверждения нет.</td></tr>
+<tr><td><strong>Второй студент мог записаться на 1-на-1.</strong></td>
+<td>Для подтверждённого 1-на-1 бот принимает одного студента; второму объясняет отказ. Если место занято, кнопка записи скрыта. Для неподтверждённого формата лимит не применяется — формат неизвестен.</td>
+<td><span class="status done">проверено</span> тест <code>test_confirmed_one_on_one_has_one_student_place</code>; карточка занятия в <a href="bot/mentoring/ui.py">ui.py</a>.</td>
+<td>Это следствие вашего правила «консультация рассчитана на одного студента»; отдельного пункта Положения об этом нет.</td></tr>
+<tr><td><strong>Сводка смешивала циклы разных занятий и триместров.</strong> Материал, отзыв и проведение могли прийти из разных записей.</td>
+<td>Цикл считается по каждому занятию и ограничен активным триместром. Закрытый цикл требует: занятие проведено, есть его итоговый материал после методпроверки и минимум один отзыв. Предмет показывает «закрыто N из M».</td>
+<td><span class="status done">проверено</span> тесты <code>test_cycle_*</code>; экран «Цикл по предметам» в <a href="tools/scenarios/_run_dash.json">dash</a>.</td>
+<td>Подготовительный материал не обязателен для закрытия: по вашему решению он желателен до занятия, но допустим позже.</td></tr>
+<tr><td><strong>Предупреждение обещало автоотмену в пиковую неделю.</strong></td>
+<td>Экран различает: «отменится автоматически», «пиковая неделя — не применяется», «триместр не задан — выключено», «формат не подтверждён — выключено».</td>
+<td><span class="status done">проверено</span> тесты <code>test_peak_week_*</code>, <code>test_unconfirmed_format_is_reported_*</code>; <a href="bot/dashboard.py">dashboard.py</a>.</td>
+<td>Пиковые недели 5, 9, 10 — по проекту Положения п. 8.1.3; недели 11–12 пиковыми не считаются.</td></tr>
+<tr><td><strong>Охват Syllabus Clinic считал записавшихся, а не пришедших, и включал неподтверждённый формат.</strong></td>
+<td>Охват = уникальные <em>присутствовавшие</em> ÷ размер потока. Отдельно показываются слоты, записавшиеся и отмеченная явка. Неподтверждённый <code>syllabus_clinic</code> в охват не входит. Отменённые занятия и отозванные записи исключены.</td>
+<td><span class="status done">проверено</span> тесты <code>test_clinic_coverage_*</code>.</td>
+<td>Размер потока 2500 — устное уточнение координатора, письменного источника в <code>context/</code> нет. Цель ≥60% — проект Положения п. 11.3.</td></tr>
+<tr><td><strong>Материал становился доступен студентам без методической проверки.</strong></td>
+<td>У материала появились этап (<code>preparation</code>/<code>final</code>) и статус проверки. До фиксации проверки студент не видит документ и не получает его в рекап-гайдах. Координатор вносит имя Лектора и дату; запись хранит, кто и когда её внёс.</td>
+<td><span class="status done">проверено</span> тест <code>test_session_author_upload_requires_recorded_lecturer_review</code>; сценарий <a href="tools/scenarios/_run_materials.json">materials</a>: «ожидает проверки» → студент не видит → проверка → студент видит.</td>
+<td>Запись в БД подтверждает факт внесения сведений, но не доказывает независимо, что Лектор действительно проверил материал. Ответственность за достоверность — на координаторе; это сказано в интерфейсе.</td></tr>
+<tr><td><strong>Миграция <code>0007</code> падала на схеме без некоторых таблиц.</strong></td>
+<td>Миграция проверяет наличие таблиц и колонок; добавлены <code>author_id</code>, <code>format_confirmed</code>, поля проверки материала. Тест миграций дополнен старой схемой с <code>learning_materials</code>.</td>
+<td><span class="status done">проверено</span> <code>tools/check_migrations.py</code>: 4/4 сценария на SQLite; отдельно на PostgreSQL 16 — <code>0006</code> → <code>0007</code>; на копии production 18.6 — полная цепочка <code>0001 → 0008</code>.</td>
+<td>Проверено на SQLite, PostgreSQL 16 и копии production 18.6. Базлайн <code>0001</code> намеренно пустой: полную схему создаёт <code>create_all</code> при старте бота, а не миграции.</td></tr>
+<tr><td><strong>Резервная копия: SQLite и PostgreSQL.</strong></td>
+<td>SQLite-утилита копирует через backup API, проверяет <code>integrity_check</code>, не перезаписывает назначение. Для PostgreSQL проверен цикл «дамп → отдельная база → сверка строк» на локальном PostgreSQL 16.</td>
+<td><span class="status done">проверено</span> <code>tests/test_backup_sqlite.py</code>: 8 passed; production-дамп PostgreSQL 18.6 восстановлен в отдельные базы, 537 пользователей и остальные строки сохранились. <a href="postgres-verification.html">Подробности</a>.</td>
+<td>Это не резервная копия Railway production: live-база не затрагивалась, production backup ещё не сделан. Копия проверена локально; объём и нагрузка не воспроизводились.</td></tr>
+<tr><td><strong>Административная сводка была плотной и не вела к действию.</strong></td>
+<td>Первый экран — сводка недели; дальше «Требует внимания» → предмет → занятие. У занятия есть прямые кнопки: участники, подтверждение формата, материалы, карточка. Красные пункты показываются первыми. Длинные списки — по 6 строк со страницами. CSV выгружается с русскими статусами и периодом.</td>
+<td><span class="status done">проверено</span> тесты пагинации и доступа; сценарии <a href="tools/scenarios/_run_bulk.json">bulk</a> (100 занятий, страницы 1–2), <a href="tools/scenarios/_run_dash.json">dash</a> (занятие из сводки), <a href="tools/scenarios/_run__audit_student.json">student</a> (студенту сводка запрещена).</td>
+<td>Переход «назад» из карточки занятия ведёт в общий список, а не в тот раздел, откуда пришли. Фильтров по дате и ответственным пока нет.</td></tr>
+<tr><td><strong>Найдены ошибки при проверке, а не только в аудите.</strong></td>
+<td>Исправлен <code>NameError</code> в <code>record_material_review</code> (вместо <code>utcnow</code> — <code>clock.now</code>). Исправлена тестовая фикстура: автор материала должен быть известен боту через <code>/start</code>. Подтверждение формата больше не может переписать завершённое или отменённое занятие.</td>
+<td><span class="status done">проверено</span> тесты <code>test_session_author_upload_*</code>, <code>test_confirm_format_cannot_rewrite_completed_lesson</code>.</td>
+<td>Без этих исправлений итоговый прогон был красным; сейчас зелёный.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="staff">
+<h2>Единый реестр стаффа — первая версия</h2>
+<p class="lead">В боте появился раздел <code>/staff</code>: список людей, карточка человека, статус и контур, назначения по трём зонам и история смены ответственных.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Что можно</th><th>Как это работает</th></tr></thead>
+<tbody>
+<tr><td>Открыть людей и карточку</td><td>Имя, Telegram, статус, контур, должность, роли и предметы, текущие зоны, связанные занятия/материалы/отчёты. Незаполненное отмечено «не заполнено», а не нулём.</td></tr>
+<tr><td>Изменить профиль</td><td>Статус, контур, должность. Перед сохранением показывается «было → станет». Имя и Telegram не переписываются — они берутся из Telegram.</td></tr>
+<tr><td>Назначить и сменить</td><td>Предмет, расписание, материалы. При смене старое назначение завершается и остаётся в истории; активным становится одно.</td></tr>
+<tr><td>Завершить</td><td>Зона освобождается, запись с датой окончания остаётся. Занятия, материалы и отчёты не удаляются.</td></tr>
+<tr><td>Права</td><td>Только существующие администраторы из <code>COORDINATOR_IDS</code>/<code>LEAD_IDS</code>. Проверка на сервере; студент получает отказ и по команде, и по callback.</td></tr>
+</tbody></table></div>
+<p><strong>Проверено локально:</strong> 9 новых тестов, полный SQLite и PostgreSQL, миграция <code>0008</code>, сценарий администрации в фейковом Telegram. <strong>Не перенесено:</strong> реальный состав команды и старые таблицы; источники пока <code>[__]</code>. Это первый срез, а не «база уже в эксплуатации».</p>
+<p><a href="staff-directory-report.html">Подробный отчёт по реестру стаффа</a></p>
+</section>
+
+<section id="prod">
+<h2>Копия production: что показала проверка</h2>
+<p class="lead">Дамп Railway восстановлен локально, миграции <code>0001 → 0008</code> прошли, бот запускается. Живой Railway не менялся.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Что</th><th>Результат</th></tr></thead>
+<tbody>
+<tr><td>До миграции</td><td>537 пользователей, 108 менторов, 11 занятий, 172 записи, 9 материалов, 31 обращение. Не было <code>terms</code>, <code>mentor_roles</code>, <code>session_feedback</code>, <code>mentor_final_reports</code> и <code>alembic_version</code>.</td></tr>
+<tr><td>После миграции</td><td>Все количества сохранились; ревизия <code>0008</code>; таблицы и колонки на месте. Размер вырос с 9622 kB до 10166 kB.</td></tr>
+<tr><td>Риск старых данных</td><td>Все 11 занятий получили <code>one_on_one</code> и <code>format_confirmed=NULL</code>; ни у одного нет триместра и Автора. Формат нельзя считать подтверждённым.</td></tr>
+<tr><td>Пустые разделы</td><td>0 триместров, 0 ролей, 0 отзывов, 0 отчётов, 0 профилей стаффа, 0 назначений. Старые 9 материалов без статуса методпроверки.</td></tr>
+<tr><td>Проверка</td><td>Бот: <code>/start</code>, <code>/dashboard</code>, <code>/staff</code>, <code>/term</code> на копии. Тесты на отдельной пустой PostgreSQL 18.6: 179 passed. <a href="postgres-verification.html">Подробный отчёт</a>.</td></tr>
+</tbody></table></div>
+<p><strong>До включения:</strong> завести триместр и роли, подтвердить форматы старых занятий, решить судьбу старых материалов, заполнить стафф, сделать production backup и только затем деплой. Это отдельные решения владельца.</p>
+</section>
+
+<section id="tested">
+<h2>Чем проверено</h2>
+<h3>Полный набор тестов</h3>
+<p><code>.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider</code> → <strong>177 passed, 2 skipped</strong>. Два пропущенных — тесты гонок: в SQLite блокировка строк не работает, для них нужен PostgreSQL.</p>
+<p>Внутри файловой песочницы три теста резервной копии падают на создании <code>tmp_path</code> (WinError 5). Отдельный прогон этих тестов вне песочницы: <strong>8 passed</strong>. Это ограничение среды, не кода.</p>
+<h3>PostgreSQL 18.6 (копия production)</h3>
+<p>Production-дамп восстановлен локально, миграции <code>0001 → 0008</code> прошли. Тесты на отдельной пустой PostgreSQL 18.6: <strong>179 passed, 0 skipped</strong>, включая гонки. На копии данных бот прошёл <code>/start</code>, <code>/dashboard</code>, <code>/staff</code>, <code>/term</code>; pytest на копии не запускался. Ранее те же 179 тестов прошли на PostgreSQL 16.</p>
+<p>Перед миграцией в копии было 537 пользователей, 108 менторов, 11 занятий, 172 записи, 9 материалов и 31 обращение. После миграций все количества сохранились; появились пустые таблицы триместров, ролей, отзывов, отчётов и стаффа. <a href="postgres-verification.html">Подробный отчёт о копии production</a>.</p>
+<p>Отдельно проверена миграция <code>0007</code> на схеме после <code>0006</code>: удалены новые колонки, поставлена ревизия <code>0006</code>, выполнен <code>upgrade head</code>; получены ревизия <code>0007</code>, все семь колонок и внешние ключи <code>fk_session_author</code>, <code>fk_material_review_recorder</code>.</p>
+<p>Реальный процесс <code>python -m bot</code> запущен на PostgreSQL с фейковым Telegram: <code>/start</code>, <code>/dashboard</code>, <code>/term</code> ответили. Дамп <code>hm_backup.dump</code> восстановлен в отдельную базу; 18 таблиц и количество строк совпали, пользователи читаются. Для будущей копии подготовлен read-only аудит <a href="sql/verify_before_0007.sql">sql/verify_before_0007.sql</a>: версия, схема, дубли, сироты и рискованные данные без персональных текстов. <a href="postgres-verification.html">Подробный отчёт о PostgreSQL</a>.</p>
+<h3>Миграции</h3>
+<p><code>.venv\Scripts\python.exe tools/check_migrations.py</code> → все четыре сценария: пустая база, старая схема без части таблиц, повторный <code>upgrade</code>, схема после <code>create_all</code>. На старой схеме проверено, что <code>0007</code> действительно добавляет <code>author_id</code>, <code>format_confirmed</code>, <code>cycle_stage</code>, <code>review_status</code>.</p>
+<h3>Сценарии Telegram</h3>
+<p>Каждый сценарий поднимает настоящий процесс <code>python -m bot</code> против фейкового Bot API и отдельной SQLite. Запуск бота на PostgreSQL проверен отдельно. Проверки привязаны к сообщениям после текущего действия, а не ко всей истории чата.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Сценарий</th><th>Что доказывает</th><th>Транскрипт</th></tr></thead>
+<tbody>
+<tr><td><code>one_on_one</code></td><td>Подтверждённый 1-на-1 создан, один студент записался, формат и запись сохранены.</td><td><a href="tools/scenarios/_run_one_on_one.json">открыть</a></td></tr>
+<tr><td><code>materials</code></td><td>Материал создан как «ожидает проверки»; студент его не видит; координатор фиксирует проверку Лектора; после этого студент получает документ.</td><td><a href="tools/scenarios/_run_materials.json">открыть</a></td></tr>
+<tr><td><code>ticket</code></td><td>Входной билет, отказ на «сделайте за меня», чек-лист, сохранение самооценки.</td><td><a href="tools/scenarios/_run_ticket.json">открыть</a></td></tr>
+<tr><td><code>feedback</code></td><td>Отзыв после занятия и попадание оценки в KPI.</td><td><a href="tools/scenarios/_run_feedback.json">открыть</a></td></tr>
+<tr><td><code>autocancel</code></td><td>Пустой групповой слот в обычную неделю отменяется автоматически.</td><td><a href="tools/scenarios/_run_autocancel.json">открыть</a></td></tr>
+<tr><td><code>dash</code></td><td>Сводка → разделы → конкретное занятие; карточка показывает цикл и источник данных.</td><td><a href="tools/scenarios/_run_dash.json">открыть</a></td></tr>
+<tr><td><code>bulk</code></td><td>30 менторов и 100 занятий: пагинация сводки, страницы KPI, отсутствие обрезки без продолжения.</td><td><a href="tools/scenarios/_run_bulk.json">открыть</a></td></tr>
+<tr><td><code>report</code>, <code>final</code>, <code>roles</code></td><td>Недельный и итоговый отчёты, назначение роли по предмету.</td><td><a href="tools/scenarios/_run_report.json">недельный</a> · <a href="tools/scenarios/_run_final.json">итоговый</a> · <a href="tools/scenarios/_run_roles.json">роли</a></td></tr>
+<tr><td><code>staff_directory</code></td><td>Администратор открывает людей, назначает ответственного, завершает назначение с историей, меняет профиль; студент получает отказ.</td><td><a href="tools/scenarios/_run_staff_directory.json">открыть</a></td></tr>
+<tr><td><code>student</code></td><td>Отдельный студент записался; админская сводка ему недоступна.</td><td><a href="tools/scenarios/_run__audit_student.json">открыть</a></td></tr>
+</tbody></table></div>
+<p class="small">Сценарии запускались последовательно: у них общая временная база <code>_sim.db</code>.</p>
+</section>
+
+<section id="limits">
+<h2>Что не проверено и где границы</h2>
+<ul class="compact">
+<li><strong>Живой Railway и деплой.</strong> Копия рабочей базы проверена, но сам Railway не подключался: неизвестно, какая версия кода развёрнута, какие настройки триместра и ролей заданы, включены ли backup. Это главный оставшийся пробел.</li>
+<li><strong>Реальные пользовательские данные.</strong> Копия читалась read-only для аудита и восстановления; live-база не затрагивалась. Объём небольшой (9.4 MB), поведение на реальной нагрузке не проверялось.</li>
+<li><strong>Версии клиента и сервера.</strong> Для production 18.6 локальный клиент и сервер совпали, restore прошёл. Старый тестовый PostgreSQL 16 с клиентом 18 требовал обхода <code>transaction_timeout</code> — это историческая заметка, не текущий блокер.</li>
+<li><strong>Явка и завершение занятия в симуляторе.</strong> Требуют, чтобы время занятия уже прошло. В симуляторе реальные часы, поэтому этот путь проверен тестами с виртуальными часами, а не сценарием Telegram.</li>
+<li><strong>Предметные чаты.</strong> Бот не читает чаты и не хранит вопросы/ответы Респондента. Поэтому «вопросов не было» не является долгом и не блокирует цикл; это заложено текстом карточки, но отдельной функции чата нет.</li>
+<li><strong>Единая база стаффа.</strong> Первый срез есть: профиль, статус, контур, должность, три зоны и история. Но реальный состав команды не перенесён, контакты и более широкие зоны не собирались, источники для переноса неизвестны <code>[__]</code>. Это не «готовая единая CRM» и не подтверждение, что данные уже живут в боте.</li>
+<li><strong>Методическая проверка.</strong> Бот фиксирует сведения о проверке, но не может доказать, что Лектор действительно её провёл. Это организационная ответственность координатора.</li>
+</ul>
+</section>
+
+<section id="decisions">
+<h2>Решения владельца, Положение и предложения</h2>
+<p>Ниже разделены три уровня, чтобы не выдать решение по одному участнику за норму Положения.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Уровень</th><th>Что именно</th><th>Как учтено</th></tr></thead>
+<tbody>
+<tr><td><strong>Решение владельца</strong></td><td>Консультация 1-на-1 рассчитана на одного студента; для неё не нужно административное согласование.</td><td>Порог 1 для подтверждённого 1-на-1 и лимит одного студента. Уточнение владельца от 7.11.2026.</td></tr>
+<tr><td><strong>Решение владельца</strong></td><td>«Цикл ментора» — про конкретное занятие: Автор, Ведущий, записавшиеся студенты, при вопросах — Респондент.</td><td>Цикл считается по занятию; агрегированные признаки предмета его не подтверждают.</td></tr>
+<tr><td><strong>Решение владельца</strong></td><td>Автору желательно загрузить подготовительный материал до занятия; допустимо во время или после. Итоговые материалы — в Банк.</td><td>Этап <code>preparation</code> и <code>final</code>; подготовительный не блокирует цикл.</td></tr>
+<tr><td><strong>Решение владельца</strong></td><td>Ведущий проводит занятие, отмечает явку, завершает и организует хотя бы один письменный отзыв.</td><td>Закрытие цикла требует отзыв; завершение требует отметки явки у всех активных записей.</td></tr>
+<tr><td><strong>Решение владельца</strong></td><td>Отсутствие вопросов/ответов Респондента не является долгом и не блокирует цикл занятия.</td><td>Карточка занятия прямо говорит, что Респондент в чатах не блокирует цикл.</td></tr>
+<tr><td><strong>Проект Положения</strong></td><td>п. 8.1.3 — ментор проводит занятие, отмечает явку, организует ОС и загружает конспект; п. 8.1.8 — методическая проверка Лектором до публикации в Банке.</td><td>Проверка материала до публикации реализована; проект не утверждён, поэтому формулировки — «по проекту Положения».</td></tr>
+<tr><td><strong>Предложение</strong></td><td>Недельная картина → предмет → занятие, статусы с расшифровкой, переходы к действию.</td><td>Реализована первая версия; часть фильтров и возврат в исходный раздел ещё не сделаны. Это предложение, не норма Положения.</td></tr>
+<tr><td><strong>Неизвестно</strong> <code>[__]</code></td><td>Состав и доступность существующих таблиц стаффа для переноса; как измерять «≥80% понимают шкалу оценивания»; даты эндтермов.</td><td>Не выдумывалось. В отчёте и KPI отмечено как неизвестное.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="cycle">
+<h2>Как теперь описан цикл одного занятия</h2>
+<ol>
+<li><strong>До занятия.</strong> Автор (или координатор) загружает подготовительный материал. Он виден команде, но студентам — только после фиксации методической проверки. Студенты записываются и проходят входной билет. Для 1-на-1 — один студент.</li>
+<li><strong>Занятие.</strong> Ведущий проводит его, отмечает явку каждого активного участника и завершает занятие в боте. Завершение без отметки явки запрещено.</li>
+<li><strong>После занятия.</strong> Студенты получают форму отзыва; для закрытия цикла нужен минимум один отзыв. Автор загружает итоговый материал, координатор фиксирует проверку Лектором. Материал попадает в Банк для студентов только после этого.</li>
+<li><strong>Респондент.</strong> Отвечает на реальные вопросы в чате предмета. Бот не считает отсутствие вопросов долгом. Если вопросы есть, это внешняя работа, а не блокер цикла конкретного занятия.</li>
+</ol>
+<p>На карточке занятия видно: формат (или «не подтверждён»), Ведущий, Автор, активные записи, отмеченную явку, число отзывов, число проверенных итоговых материалов и причину отмены. Источник данных подписан: «сведения этого занятия в боте».</p>
+</section>
+
+<section id="left">
+<h2>Что осталось</h2>
+<h3>Приоритет 1 — до использования сводки как управленческой</h3>
+<ul class="compact">
+<li><strong>Единая база стаффа.</strong> Первый срез реализован. Осталось: получить реальный состав людей, подтвердить поля профиля и модель зон, перенести существующие сведения после инвентаризации, проверить права на реальной команде. Источники для переноса пока неизвестны <code>[__]</code>.</li>
+<li><strong>Живой Railway и настройка данных.</strong> Копия production проверена, но live-база не менялась. До деплоя нужно завести триместр и роли, подтвердить старые форматы, решить судьбу старых материалов и сделать production backup. Это следующий шаг, а не незакрытая разработка.</li>
+<li><strong>Резервные копии production.</strong> Production-дамп восстановлен и проверен локально. Автоматический backup Railway и восстановление на его стороне ещё не подтверждены; текущая утилита не является production-backup.</li>
+</ul>
+<h3>Приоритет 2 — удобство администрации</h3>
+<ul class="compact">
+<li>Возврат из карточки занятия в тот раздел, откуда пришли (внимание / неделя / долги / предмет).</li>
+<li>Отдельный список всех занятий с неподтверждённым форматом, а не только тех, что попадают в 24-часовое окно.</li>
+<li>Фильтры по дате, предмету и ответственному; сохранение выбранного периода.</li>
+<li>Действия из очереди внимания: подтвердить формат, назначить автора, открыть участников — без промежуточной карточки.</li>
+</ul>
+<h3>Приоритет 3 — удобство студентов и менторов</h3>
+<ul class="compact">
+<li>Студенту: ближайшие занятия и дата до выбора темы; явный выбор после записи «готово / помочь ментору подготовиться».</li>
+<li>Ментору: экран «Моя работа» с ближайшим занятием, вопросами, явкой, материалом и сроком отчёта.</li>
+<li>Сохранять черновики длинных форм или честно предупреждать, что после перезапуска их придётся заполнить заново.</li>
+</ul>
+<h3>Открытые вопросы, которые нельзя решить кодом</h3>
+<ul class="compact">
+<li>Чем измерять «≥80% понимают шкалу оценивания» — в форме Приложения 11 такого вопроса нет. Нужен отдельный вопрос или опрос; решение за Директором Школы.</li>
+<li>Можно ли боту рассылать напоминания должникам и открывать менторку без материала — нужна санкция координатора на рассылку.</li>
+<li>Нужен ли администрации «светофор» (Приложение 6) в боте.</li>
+<li>Группа студента: Приложение 5 требует, бот не спрашивает; поля в БД нет.</li>
+</ul>
+</section>
+
+<section id="help">
+<h2>Что нужно от вас</h2>
+<ol>
+<li><strong>Подтвердить состав единой базы стаффа:</strong> какие поля обязательны, кто может редактировать, что делать при смене сотрудника. Без этого следующий срез будет угадыванием.</li>
+<li><strong>Дать доступ к Railway для деплоя и production backup</strong> (не для записи в базу без согласования). Копия уже проверена; теперь нужно согласовать настройку триместра/ролей на рабочей базе, сделать backup и решить вопрос обновления.</li>
+<li><strong>Решить по KPI «≥80% понимают шкалу»</strong> и по массовым напоминаниям.</li>
+<li><strong>Разрешить или запретить перенос реальных данных</strong> после инвентаризации источников; сейчас состав источников неизвестен.</li>
+</ol>
+<p>Коммит не делался: изменения лежат в рабочей папке. Для фиксации нужен отдельный разрешающий ответ.</p>
+</section>
+
+<section id="evidence">
+<h2>Доказательства и как повторить</h2>
+<details open><summary>Команды</summary>
+<p><code>.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider</code><br>
+<code>.venv\Scripts\python.exe tools/check_migrations.py</code><br>
+<code>.venv\Scripts\python.exe tools/sim.py --scenario tools/scenarios/dash.json --transcript tools/scenarios/_run_dash.json</code><br>
+<code>$env:TEST_DATABASE_URL="postgresql://…@127.0.0.1:55432/hm_verify_tests"; .venv\Scripts\python.exe -m pytest -q</code></p>
+<p>Сценарии запускать последовательно: общая временная база <code>_sim.db</code>. Тесты резервной копии требуют <code>tmp_path</code>; в файловой песочнице Windows он блокируется. Как проверялся PostgreSQL и как делать копию — в <a href="postgres-verification.html">отдельном отчёте</a>.</p>
+</details>
+<details><summary>Что означает «проверено»</summary>
+<p>Воспроизводимый прогон локального снимка на демонстрационных данных. Это не подтверждение состояния Railway и не проверка реальными людьми. Транскрипты содержат демонстрационные имена и данные.</p>
+</details>
+<details><summary>Источники правил</summary>
+<p><a href="context/00-INDEX.md">Карта источников</a> · <a href="context/03-operations.md">календарь, снимок 6.11</a> · <a href="context/07-conflicts-open.md">расхождения</a> · <a href="context/01-policy.md">конспект проекта Положения</a> · <a href="prompt-project.md">память проекта</a>. Проект Положения не утверждён.</p>
+</details>
+<footer>Подготовлено по локальному состоянию репозитория 7.11.2026. Оценки удобства — экспертное суждение, не исследование пользователей. Копия production PostgreSQL 18.6 проверена локально; живой Railway и реальные аккаунты не затрагивались.</footer>
+</section>
+
+</main>
+</body>
+</html>

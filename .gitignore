@@ -4,3 +4,15 @@ __pycache__/
 .pytest_cache/
 .venv/
 *.db
+pytest-cache-files-*/
+alembic-dev.db
+_sim*
+_probe*
+_p_*.log
+_fake_api_calls.log
+_sim_out.json
+shots/
+_sim_ticket.json
+hm_backup.dump
+*.dump
+_prod_smoke*

@@ -15,7 +15,9 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from ..config import Settings
+from .. import clock
 from ..db import MentoringNotification, utcnow
+from . import service as svc
 from . import ui
 from .jobs import generate_due, prepare
 
@@ -24,8 +26,10 @@ log = logging.getLogger(__name__)
 
 async def check_once(bot: Bot, sm: async_sessionmaker, settings: Settings,
                      now: datetime | None = None) -> int:
-    now = now or utcnow()
+    now = now or clock.now()
     async with sm() as s:
+        # Правило 24 часов (п. 8.1.3): слот без двух билетов аннулируется до напоминаний.
+        await svc.autocancel_low_demand(s, settings, now)
         await generate_due(s, settings, now)
         # A crash leaves a short lease rather than permanently losing the notification.
         await s.execute(update(MentoringNotification).where(MentoringNotification.status == 'sending',
@@ -84,4 +88,4 @@ async def reminder_loop(bot: Bot, sm: async_sessionmaker, settings: Settings) ->
         except Exception:
             # No student identifiers, answers or questions in logs.
             log.error('Ошибка цикла напоминаний менторок; повтор при следующей проверке.')
-        await asyncio.sleep(60)
+        await asyncio.sleep(settings.reminder_interval)

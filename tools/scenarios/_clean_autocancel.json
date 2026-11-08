@@ -1,0 +1,327 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Предмет</b>\nВыберите существующий или напишите название нового.\n/cancel — отменить заполнение.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Calculus 1",
+        "callback_data": "ms:picksub:1"
+       }
+      ],
+      [
+       {
+        "text": "Discrete Math",
+        "callback_data": "ms:picksub:3"
+       }
+      ],
+      [
+       {
+        "text": "English",
+        "callback_data": "ms:picksub:6"
+       }
+      ],
+      [
+       {
+        "text": "ICT",
+        "callback_data": "ms:picksub:4"
+       }
+      ],
+      [
+       {
+        "text": "Linear Algebra",
+        "callback_data": "ms:picksub:2"
+       }
+      ],
+      [
+       {
+        "text": "Programming",
+        "callback_data": "ms:picksub:5"
+       }
+      ]
+     ]
+    },
+    "at": 1794142190
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Тема · Calculus 1</b>\nВыберите тему или напишите новую.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Интегралы",
+        "callback_data": "ms:picktopic:2"
+       }
+      ],
+      [
+       {
+        "text": "Пределы",
+        "callback_data": "ms:picktopic:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794142191
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Формат занятия</b> (п. 8.1.2)\n\nОт формата зависит охват Syllabus Clinic в KPI и разбивка в отчётах.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Syllabus Clinic",
+        "callback_data": "ms:setformat:syllabus_clinic"
+       }
+      ],
+      [
+       {
+        "text": "How to start assignment",
+        "callback_data": "ms:setformat:how_to_start"
+       }
+      ],
+      [
+       {
+        "text": "Ошибки недели",
+        "callback_data": "ms:setformat:weekly_errors"
+       }
+      ],
+      [
+       {
+        "text": "Academic Emergency Hours",
+        "callback_data": "ms:setformat:emergency_hours"
+       }
+      ],
+      [
+       {
+        "text": "Групповой интенсив",
+        "callback_data": "ms:setformat:intensive"
+       }
+      ],
+      [
+       {
+        "text": "Консультация 1-на-1",
+        "callback_data": "ms:setformat:one_on_one"
+       }
+      ],
+      [
+       {
+        "text": "Асинхронные ответы",
+        "callback_data": "ms:setformat:async_answers"
+       }
+      ],
+      [
+       {
+        "text": "Разбор Mock-экзамена",
+        "callback_data": "ms:setformat:mock_review"
+       }
+      ],
+      [
+       {
+        "text": "Cheat Sheets & Calculator",
+        "callback_data": "ms:setformat:cheat_sheet"
+       }
+      ]
+     ]
+    },
+    "at": 1794142192
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Назначьте ментора</b>\nВыберите кнопкой или отправьте @username / Telegram ID.\nНет нужного человека? Добавьте через /addmentor, затем продолжите выбор.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "User100500 @user100500",
+        "callback_data": "ms:pickmentor:100500"
+       }
+      ],
+      [
+       {
+        "text": "Демо Ментор @demo_mentor",
+        "callback_data": "ms:pickmentor:900001"
+       }
+      ]
+     ]
+    },
+    "at": 1794142193
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Введите дату и время начала в часовом поясе <b>Asia/Almaty</b>.\nФормат: ДД.ММ.ГГГГ ЧЧ:ММ.",
+    "markup": null,
+    "at": 1794142193
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Длительность занятия в минутах: целое число от 15 до 360.",
+    "markup": null,
+    "at": 1794142194
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "Введите место проведения или ссылку на онлайн-встречу, до 300 символов.",
+    "markup": null,
+    "at": 1794142195
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Создать занятие?</b>\nCalculus 1 · Пределы\nФормат: Групповой интенсив\nМентор: User100500\n08.11.2026 21:49 (Asia/Almaty), 60 мин.\nМесто: C1.3.233",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "✅ Создать",
+        "callback_data": "ms:create:f1e5757f47264438b821d5f50b77b647"
+       }
+      ],
+      [
+       {
+        "text": "Не создавать",
+        "callback_data": "ms:stop"
+       }
+      ]
+     ]
+    },
+    "at": 1794142196
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "✅ Занятие #4 создано. Ментор получит уведомление.",
+    "markup": null,
+    "at": 1794142196
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Менторка #4</b> · Запланировано\n<b>Calculus 1 · Пределы</b>\nФормат: Групповой интенсив\n🕒 08.11.2026 21:49 · 60 мин.\nЧасовой пояс: Asia/Almaty\n🎓 Ментор: User100500\n📍 C1.3.233\nЗаписано: <b>0</b>\n\n<b>Что дальше:</b> Следующий шаг: посмотрите участников и подготовьтесь к занятию.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "👥 Участники",
+        "callback_data": "ms:people:4:0"
+       }
+      ],
+      [
+       {
+        "text": "📚 Материалы темы",
+        "callback_data": "ms:bank:1:0"
+       }
+      ],
+      [
+       {
+        "text": "⚙️ Управление занятием",
+        "callback_data": "ms:manage:4"
+       }
+      ],
+      [
+       {
+        "text": "← Менторки",
+        "callback_data": "ms:home"
+       }
+      ]
+     ]
+    },
+    "at": 1794142196
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "❌ Менторка #4 отменена.\nПричина: Автоматически: нет записей за 24 часа до начала.\n\nCalculus 1 · Пределы\n08.11.2026 21:49 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Другие занятия",
+        "callback_data": "ms:subjects:schedule:0"
+       }
+      ]
+     ]
+    },
+    "at": 1794142197
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 0,
+    "text": "/newsession",
+    "step": 1,
+    "role": "admin",
+    "until": 1
+   },
+   {
+    "after": 1,
+    "text": "Calculus 1",
+    "step": 2,
+    "role": "admin",
+    "until": 2
+   },
+   {
+    "after": 2,
+    "text": "Пределы",
+    "step": 3,
+    "role": "admin",
+    "until": 3
+   },
+   {
+    "after": 3,
+    "text": "→ Групповой интенсив",
+    "step": 4,
+    "role": "admin",
+    "until": 4
+   },
+   {
+    "after": 4,
+    "text": "→ User100500 @user100500",
+    "step": 5,
+    "role": "admin",
+    "until": 5
+   },
+   {
+    "after": 5,
+    "text": "{{now+4h}}",
+    "step": 6,
+    "role": "admin",
+    "until": 6
+   },
+   {
+    "after": 6,
+    "text": "60",
+    "step": 7,
+    "role": "admin",
+    "until": 7
+   },
+   {
+    "after": 7,
+    "text": "C1.3.233",
+    "step": 8,
+    "role": "admin",
+    "until": 8
+   },
+   {
+    "after": 8,
+    "text": "→ ✅ Создать",
+    "step": 9,
+    "role": "admin",
+    "until": 11
+   }
+  ]
+ }
+}

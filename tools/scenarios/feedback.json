@@ -1,0 +1,20 @@
+﻿{
+  "admin": 100500,
+  "seed_script": "tools/seed_feedback_demo.py",
+  "users": { "student": 100501 },
+  "steps": [
+    { "command": "/mysessions", "as": "student", "expect_button": "Менторки" },
+    { "tap_prefix": "ms:view:", "as": "student", "expect_button": "Оставить отзыв о занятии" },
+    { "tap_label": "📝 Оставить отзыв о занятии", "as": "student", "expect": "Шаг 1 из 5" },
+    { "tap_label": "4 · почти всё понятно", "as": "student", "expect": "Шаг 2 из 5" },
+    { "tap_label": "Частично", "as": "student" },
+    { "tap_label": "Помогал понять", "as": "student", "expect": "Шаг 3 из 5" },
+    { "say": "   ", "as": "student", "expect": "Комментарий обязателен" },
+    { "say": "Коротко", "as": "student", "expect": "Слишком коротко" },
+    { "say": "Разобрали именно мою задачу с подстановкой", "as": "student", "expect": "Шаг 4 из 5" },
+    { "tap_label": "Пропустить", "as": "student", "expect": "Шаг 5 из 5" },
+    { "tap_label": "5 · отлично", "as": "student", "expect": "Спасибо за отзыв",
+      "expect_db": "select clarity, overall, honesty from session_feedback", "equals": [[4, 5, "ok"]] }
+  ]
+}
+

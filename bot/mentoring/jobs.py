@@ -5,7 +5,7 @@ from html import escape
 from sqlalchemy import select
 from .. import repo
 from ..config import Settings
-from ..db import LearningMaterial, MentoringSession, MentoringNotification, SessionBooking
+from ..db import LearningMaterial, MentoringSession, MentoringNotification, SessionBooking, SessionFeedback
 from . import service as svc
 
 
@@ -41,6 +41,23 @@ async def generate_due(s, settings: Settings, now: datetime) -> None:
             targets = {lesson.mentor_id} if await repo.is_mentor(s, lesson.mentor_id) else settings.staff_ids
             for uid in targets:
                 await svc.enqueue(s, lesson, uid, 'attendance', now)
+
+    # Форма ОС (Прил. 11): после занятия каждому участнику — один запрос.
+    ended = list(await s.scalars(select(MentoringSession).where(
+        MentoringSession.status != 'cancelled',
+        MentoringSession.ends_at <= now,
+        MentoringSession.ends_at >= now - timedelta(days=3),
+    )))
+    for lesson in ended:
+        for booking in await svc.active_bookings(s, lesson.id):
+            await svc.enqueue(s, lesson, booking.student_id, 'feedback', now, booking_id=booking.id)
+
+    # Неподтверждённый формат + одна запись: не отменяем вслепую, но просим
+    # координатора подтвердить формат — иначе групповой слот останется без решения.
+    for lesson, count, _exempt in await svc.low_demand_candidates(s, settings, now):
+        if lesson.format_confirmed is not True and count == 1:
+            for uid in settings.staff_ids:
+                await svc.enqueue(s, lesson, uid, 'format_unknown', now)
 
 
 async def prepare(s, notification: MentoringNotification, settings: Settings, now: datetime):
@@ -100,6 +117,30 @@ async def prepare(s, notification: MentoringNotification, settings: Settings, no
             return None
         text = f'🕒 Данные менторки #{lesson.id} изменены. Ваша запись сохранена. Проверьте новое время, место и ведущего.'
         markup = kb([b('Посмотреть изменения', f'ms:view:{lesson.id}')])
+    elif kind == 'feedback':
+        booking = await s.get(SessionBooking, notification.booking_id)
+        if (lesson.status == 'cancelled' or lesson.ends_at > now or booking is None
+                or booking.student_id != notification.recipient_id or booking.status != 'active'):
+            return None
+        already = await s.scalar(select(SessionFeedback.id).where(
+            SessionFeedback.session_id == lesson.id,
+            SessionFeedback.student_id == notification.recipient_id).limit(1))
+        if already:
+            return None
+        text = (f'📝 Как прошла менторка #{lesson.id}? Оцените её. '
+                'Ментор увидит средние оценки и тексты без вашего имени; '
+                'в базе отзыв связан с занятием и вашей записью.')
+        markup = kb([b('Оставить отзыв', f'ms:fb:{lesson.id}')])
+    elif kind == 'format_unknown':
+        if not admin or lesson.status != 'scheduled' or lesson.format_confirmed is True:
+            return None
+        if len(await svc.active_bookings(s, lesson.id)) != 1:
+            return None
+        text = (f'❓ У занятия #{lesson.id} не подтверждён формат, записался один студент. '
+                'Автоотмена не применяется: для группы правило «меньше двух» отменило бы слот, '
+                'для 1-на-1 — нет. Подтвердите формат или отмените вручную.')
+        markup = kb([b('Подтвердить формат', f'ms:confirmformat:{lesson.id}')],
+                    [b('Открыть занятие', f'ms:view:{lesson.id}')])
     elif kind == 'cancelled':
         if lesson.status != 'cancelled':
             return None

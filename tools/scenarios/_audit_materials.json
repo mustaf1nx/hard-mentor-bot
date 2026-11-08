@@ -1,0 +1,203 @@
+{
+ "messages": {
+  "100500": [
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "<b>Предмет</b>\nВыберите существующий или напишите название нового.\n/cancel — отменить заполнение.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Calculus 1",
+        "callback_data": "ms:picksub:1"
+       }
+      ],
+      [
+       {
+        "text": "Discrete Math",
+        "callback_data": "ms:picksub:3"
+       }
+      ],
+      [
+       {
+        "text": "English",
+        "callback_data": "ms:picksub:6"
+       }
+      ],
+      [
+       {
+        "text": "ICT",
+        "callback_data": "ms:picksub:4"
+       }
+      ],
+      [
+       {
+        "text": "Linear Algebra",
+        "callback_data": "ms:picksub:2"
+       }
+      ],
+      [
+       {
+        "text": "Programming",
+        "callback_data": "ms:picksub:5"
+       }
+      ]
+     ]
+    },
+    "at": 1794040016
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "📝 Как прошла менторка #1? Оцените её — это анонимно для ментора, он увидит только средние оценки и тексты без имени.\n\nCalculus 1 · Интегралы\n05.11.2026 12:26 (Asia/Almaty)",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Оставить отзыв",
+        "callback_data": "ms:fb:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794040016
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Тема · Calculus 1</b>\nВыберите тему или напишите новую.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Интегралы",
+        "callback_data": "ms:picktopic:2"
+       }
+      ],
+      [
+       {
+        "text": "Пределы",
+        "callback_data": "ms:picktopic:1"
+       }
+      ]
+     ]
+    },
+    "at": 1794040017
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Какой это документ?",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "📖 Рекап-гайд — до занятия",
+        "callback_data": "ms:kind:recap"
+       }
+      ],
+      [
+       {
+        "text": "📎 Материал / конспект занятия",
+        "callback_data": "ms:kind:material"
+       }
+      ]
+     ]
+    },
+    "at": 1794040018
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "<b>Кому доступен документ?</b>\nОтветы к мокам можно оставить только команде.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "Студентам и команде",
+        "callback_data": "ms:visibility:students"
+       }
+      ],
+      [
+       {
+        "text": "Только менторам и координаторам",
+        "callback_data": "ms:visibility:staff"
+       }
+      ]
+     ]
+    },
+    "at": 1794040019
+   },
+   {
+    "kind": "editMessageText",
+    "chat_id": 100500,
+    "text": "Отправьте один документ <b>PDF или DOCX</b> до 20 МиБ. Не фотографию.\nИмя файла станет названием в банке. Публикация — без согласования.\n/cancel — отмена.",
+    "markup": null,
+    "at": 1794040020
+   },
+   {
+    "kind": "sendMessage",
+    "chat_id": 100500,
+    "text": "✅ <b>Документ сохранён в банке.</b> Доступен студентам.\n\nМожно <b>сразу отправить следующий PDF/DOCX</b> — он получит те же настройки.",
+    "markup": {
+     "inline_keyboard": [
+      [
+       {
+        "text": "➕ Загрузить ещё",
+        "callback_data": "ms:materialmore"
+       }
+      ],
+      [
+       {
+        "text": "🔄 Изменить тип / доступ",
+        "callback_data": "ms:materialsettings"
+       }
+      ],
+      [
+       {
+        "text": "📚 Открыть банк темы",
+        "callback_data": "ms:bank:1:0"
+       }
+      ],
+      [
+       {
+        "text": "✅ Готово",
+        "callback_data": "ms:stop"
+       }
+      ]
+     ]
+    },
+    "at": 1794040020
+   }
+  ]
+ },
+ "inputs": {
+  "100500": [
+   {
+    "after": 0,
+    "text": "/addmaterial"
+   },
+   {
+    "after": 2,
+    "text": "→ Calculus 1"
+   },
+   {
+    "after": 3,
+    "text": "→ Пределы"
+   },
+   {
+    "after": 4,
+    "text": "→ Рекап-гайд"
+   },
+   {
+    "after": 5,
+    "text": "→ Студентам и команде"
+   },
+   {
+    "after": 6,
+    "text": "📎 limits-guide.pdf"
+   }
+  ]
+ }
+}

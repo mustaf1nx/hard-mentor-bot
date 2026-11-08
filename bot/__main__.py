@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
@@ -28,6 +29,9 @@ STAFF_COMMANDS = [
     ("newsession", "Создать занятие"), ("sessionreport", "Сводка менторок"),
     ("mentorreport", "Сдать отчёт ментора"), ("mentorreports", "Отчёты менторов"),
     ("addmaterial", "Добавить материал"), ("setchecklist", "Чек-лист темы"),
+    ("term", "Триместр и неделя"), ("role", "Роль ментора по предмету"),
+    ("kpi", "KPI ментора"), ("dashboard", "Сводка для администрации"), ("finalreport", "Итоговый отчёт"),
+    ("staff", "Люди и назначения / People and responsibilities"),
     ("testnotify", "Проверить уведомления / Test alerts"),
     ("queue", "Очередь / Queue"), ("report", "Сводка / Summary"), ("mentors", "Менторы / Mentors"),
     ("addmentor", "Добавить менторов / Add mentors"), ("delmentor", "Убрать менторов / Remove mentors"),
@@ -47,6 +51,17 @@ async def setup_commands(bot: Bot, settings: Settings) -> None:
             log.warning("Сотрудник %s ещё не нажал /start — меню команд для него не выставлено", uid)
 
 
+def _session():
+    """AiohttpSession на фейковый Bot API, если задан BOT_API_BASE (только для тестов)."""
+    base = os.environ.get("BOT_API_BASE", "").strip()
+    if not base:
+        return None
+    from aiogram.client.session.aiohttp import AiohttpSession
+    from aiogram.client.telegram import TelegramAPIServer
+    log.warning("BOT_API_BASE=%s — бот работает с тестовым Bot API, не с Telegram", base)
+    return AiohttpSession(api=TelegramAPIServer.from_base(base))
+
+
 async def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     # aiogram на INFO пишет по строке на каждый апдейт. ID пользователя там нет, но лишние
@@ -64,7 +79,7 @@ async def main() -> None:
     await init_db(engine)
     sm = make_sessionmaker(engine)
 
-    bot = Bot(settings.bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(settings.bot_token, session=_session(), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = build_dispatcher(settings, sm)
     background: list[asyncio.Task] = []
     try:

@@ -1,0 +1,12 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "mentor": 100500 },
+  "steps": [
+    { "command": "/finalreport", "as": "mentor", "expect": "Шаг 1 из 3" },
+    { "say": "За триместр группа заметно выросла: студенты перестали бояться интегралов и сами предлагают способ решения.", "as": "mentor", "expect": "Шаг 2 из 3" },
+    { "say": "Мало аудиторий после обеда, часть студентов не успевала к началу.", "as": "mentor", "expect": "Шаг 3 из 3" },
+    { "say": "Дать слоты на утро и публиковать темы на две недели вперёд.", "as": "mentor", "expect": "Итоговый отчёт сохранён", "expect_db": "select direction, length(summary) > 40 from mentor_final_reports", "equals": [["hard", 1]] },
+    { "command": "/finalreports", "as": "mentor", "expect": "Итоговые отчёты" }
+  ]
+}

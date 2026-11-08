@@ -62,6 +62,8 @@ class Settings:
     report_weekday: int = 0  # 0 = понедельник
     report_hour: int = 9
     secret: bytes = b"dev-secret"
+    # Как часто цикл напоминаний просыпается. В тестах уменьшают, чтобы не ждать минуту.
+    reminder_interval: int = 60
 
     @property
     def staff_ids(self) -> frozenset[int]:
@@ -103,4 +105,5 @@ class Settings:
             report_weekday=int(os.environ.get("REPORT_WEEKDAY", "0")),
             report_hour=int(os.environ.get("REPORT_HOUR", "9")),
             secret=secret,
+            reminder_interval=max(1, int(os.environ.get("REMINDER_INTERVAL", "60"))),
         )

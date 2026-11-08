@@ -53,22 +53,28 @@ T: dict[str, dict[str, str]] = {
     # ---------- общее ----------
     "start": {
         "ru": (
-            "Привет! Это бот обратной связи программы <b>Hard Mentor</b>.\n\n"
-            "Здесь можно задать вопрос о программе, пожаловаться, предложить идею, "
-            "поблагодарить ментора или сообщить о серьёзной проблеме. Каждое обращение "
-            "получает номер и попадает к тому, кто за него отвечает.\n\n"
-            "Для записи на занятия откройте /sessions, для подготовки — /materials. "
-            "Записи на занятия именные и не связаны с анонимными обращениями.\n\n"
-            "Нажмите «✍️ Оставить обращение» или отправьте /feedback."
+            "Привет! Это <b>Hard-менторство</b> Школы менторства Re:Born 🎓\n\n"
+            "<b>Что здесь есть</b>\n"
+            "📅 Доступные занятия — записаться на менторку: предмет, тема, время (/sessions)\n"
+            "📚 Банк материалов — гайды, разборы, чек-листы (/materials)\n"
+            "📝 Мои записи — что вы уже запланировали (/mysessions)\n\n"
+            "Менторки ведут старшекурсники: разбираем сложные темы и пробные экзамены, "
+            "но не решаем задания за вас. Запись именная — ментор видит ваш вопрос "
+            "и готовится заранее.\n\n"
+            "Вопрос, жалоба или идея? Нажмите «✍️ Оставить обращение» или отправьте /feedback — "
+            "обращение получит номер, и вы увидите ответ в /status."
         ),
         "en": (
-            "Hi! This is the <b>Hard Mentor</b> feedback bot.\n\n"
-            "Use it to ask a question about the program, raise a complaint, suggest an idea, "
-            "thank a mentor, or report something serious. Every submission gets a ticket ID "
-            "and goes to the person responsible for it.\n\n"
-            "Use /sessions to book mentoring sessions and /materials to prepare. "
-            "Session bookings are identified and separate from anonymous feedback.\n\n"
-            "Tap “✍️ Send feedback” or send /feedback."
+            "Hi! This is <b>Hard mentoring</b> by the Re:Born Mentorship School 🎓\n\n"
+            "<b>What is here</b>\n"
+            "📅 Upcoming sessions — book a mentoring session: subject, topic, time (/sessions)\n"
+            "📚 Material bank — guides, walkthroughs, checklists (/materials)\n"
+            "📝 My bookings — what you have already booked (/mysessions)\n\n"
+            "Sessions are led by senior students: we break down hard topics and mock exams, "
+            "but never do the work for you. Bookings are on your name — the mentor sees your "
+            "question and prepares in advance.\n\n"
+            "A question, complaint or idea? Tap “✍️ Send feedback” or send /feedback — "
+            "every submission gets a ticket ID, and the reply appears in /status."
         ),
     },
     "help": {
@@ -130,6 +136,7 @@ T: dict[str, dict[str, str]] = {
             "/report — сводка за неделю\n"
             "/testnotify — проверить свои уведомления и повторить неудачные отправки\n"
             "/mentors — список менторов\n"
+            "/staff — люди, профили и зоны ответственности\n"
             "/addmentor @user1 @user2 — добавить менторов списком\n"
             "/delmentor @user1 @user2 — убрать менторов списком\n"
             "Для большого списка: .txt с подписью /addmentor или /delmentor.\n"
@@ -142,6 +149,7 @@ T: dict[str, dict[str, str]] = {
             "/report — weekly summary\n"
             "/testnotify — test your alerts and retry failed deliveries\n"
             "/mentors — list mentors\n"
+            "/staff — people, profiles and responsibilities\n"
             "/addmentor @user1 @user2 — add a list of mentors\n"
             "/delmentor @user1 @user2 — remove a list of mentors\n"
             "For a large list: a .txt file captioned /addmentor or /delmentor.\n"

@@ -1,0 +1,29 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "admin": 100500, "student": 100501 },
+  "warmup": 5.0,
+  "steps": [
+    { "command": "/newsession", "as": "admin", "expect": "Предмет" },
+    { "say": "Calculus 1", "as": "admin", "expect": "Тема" },
+    { "say": "Пределы", "as": "admin", "expect": "Формат занятия" },
+    { "tap_label": "Консультация 1-на-1", "as": "admin", "expect": "ментора" },
+    { "tap_label": "@user100500", "as": "admin", "expect": "Введите дату" },
+    { "say": "{{now+26h}}", "as": "admin", "expect": "лительность" },
+    { "say": "60", "as": "admin", "expect": "место" },
+    { "say": "C1.3.233", "as": "admin", "expect": "Создать" },
+    { "tap_prefix": "ms:create:", "as": "admin", "expect": "создано" },
+    { "command": "/start", "as": "student", "expect": "Hard-менторство" },
+    { "command": "/sessions", "as": "student", "expect_button": "Доступные занятия" },
+    { "tap_label": "Доступные занятия", "as": "student", "expect_button": "Calculus 1" },
+    { "tap_label": "Calculus 1", "as": "student", "expect": "Выберите тему" },
+    { "tap_label": "Пределы", "as": "student", "expect": "Доступные занятия" },
+    { "tap_first": 0, "as": "student", "expect_button": "Записаться" },
+    { "tap_label": "Записаться", "as": "student", "expect": "Шаг 1 из 3" },
+    { "say": "Не понимаю, как раскрывать неопределённость 0/0", "as": "student", "expect": "Шаг 2 из 3" },
+    { "say": "Прочитал лекцию и разобрал два примера, но на третьем застрял.", "as": "student", "expect": "Шаг 3 из 3" },
+    { "tap_label": "2 · понимаю условие, не знаю с чего начать", "as": "student", "expect": "Входной билет принят" },
+    { "expect_db": "select count(*) from mentoring_sessions where format='one_on_one' and format_confirmed=1 and creation_key not like 'demo-%'", "equals": [1], "as": "student" },
+    { "expect_db": "select count(*) from session_bookings where session_id=(select id from mentoring_sessions where format='one_on_one' and creation_key not like 'demo-%')", "equals": [1], "as": "student" }
+  ]
+}

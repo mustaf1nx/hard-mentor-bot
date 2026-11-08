@@ -1,0 +1,35 @@
+{
+  "admin": 100500,
+  "seed": true,
+  "users": { "mentor": 100500, "student": 100501 },
+  "steps": [
+    { "command": "/addmaterial", "as": "mentor", "expect": "Выберите существующий" },
+    { "tap_label": "Calculus 1", "as": "mentor", "expect": "тему" },
+    { "tap_label": "Пределы", "as": "mentor", "expect": "документ" },
+    { "tap_label": "Рекап-гайд", "as": "mentor", "expect": "Кому доступен" },
+    { "tap_label": "Студентам и команде", "as": "mentor", "expect": "фотографию" },
+    { "document": "limits-guide.pdf", "as": "mentor", "expect": "Ожидает фиксации проверки Лектором",
+      "expect_db": "select kind, visibility, file_name, review_status, cycle_stage from learning_materials", "equals": [["recap", "students", "limits-guide.pdf", "pending", null]] },
+
+    { "command": "/sessions", "as": "student", "expect_button": "Доступные занятия" },
+    { "tap_label": "Доступные занятия", "as": "student", "expect_button": "Calculus 1" },
+    { "tap_label": "Calculus 1", "as": "student", "expect": "Выберите тему" },
+    { "tap_label": "Пределы", "as": "student", "expect": "Доступные занятия" },
+    { "tap_first": 0, "as": "student", "expect_button": "Материалы темы" },
+    { "tap_label": "Материалы темы", "as": "student", "expect": "Банк ·" },
+
+    { "tap_label": "📚 Открыть банк темы", "as": "mentor", "expect": "Банк ·" },
+    { "tap_label": "limits-guide.pdf", "as": "mentor", "expect": "limits-guide.pdf" },
+    { "tap_label": "Зафиксировать проверку Лектором", "as": "mentor", "expect": "фактическую проверку" },
+    { "say": "Лектор Тест; 01.01.2026", "as": "mentor", "expect": "Проверка Лектором зафиксирована" },
+    { "expect_db": "select review_status, lecturer_name, review_recorded_by, reviewed_at is not null from learning_materials", "equals": [["approved", "Лектор Тест", 100500, 1]] },
+
+    { "command": "/sessions", "as": "student", "expect_button": "Доступные занятия" },
+    { "tap_label": "Доступные занятия", "as": "student", "expect_button": "Calculus 1" },
+    { "tap_label": "Calculus 1", "as": "student", "expect": "Выберите тему" },
+    { "tap_label": "Пределы", "as": "student", "expect": "Доступные занятия" },
+    { "tap_first": 0, "as": "student", "expect_button": "Материалы темы" },
+    { "tap_label": "Материалы темы", "as": "student", "expect_button": "limits-guide.pdf" },
+    { "tap_label": "limits-guide.pdf", "as": "student", "expect": "limits-guide.pdf" }
+  ]
+}

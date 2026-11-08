@@ -1,0 +1,18 @@
+{
+  "admin": 100500,
+  "seed_script": "tools/seed_format_demo.py",
+  "users": { "admin": 100500 },
+  "warmup": 5.0,
+  "steps": [
+    { "command": "/dashboard", "as": "admin", "expect": "Сводка", "expect_button": "Неподтверждённые форматы" },
+    { "tap_label": "Неподтверждённые форматы", "as": "admin", "expect": "Неподтверждённые форматы" },
+    { "tap_prefix": "dash:lesson:", "as": "admin", "expect_button": "✅ Указать формат" },
+    { "tap_label": "✅ Указать формат", "as": "admin", "expect": "Выберите фактический формат" },
+    { "tap_label": "Syllabus Clinic", "as": "admin", "expect": "Было:" },
+    { "tap_label": "✅ Подтвердить", "as": "admin", "expect": "Формат подтверждён",
+      "expect_db": "select format, format_confirmed from mentoring_sessions where creation_key='demo-past'", "equals": [["syllabus_clinic", 1]] },
+    { "expect": "Формат подтвердил:", "as": "admin" },
+    { "command": "/dashboard", "as": "admin", "expect": "Сводка" },
+    { "tap_label": "KPI и цели", "as": "admin", "expect": "Syllabus Clinic: слотов 1" }
+  ]
+}
