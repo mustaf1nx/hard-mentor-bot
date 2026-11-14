@@ -204,7 +204,8 @@ async def draft_topics(target, state, sm, page=0):
     rows = [[ui.b(x.name, f'ms:picktopic:{x.id}')] for x in items]
     if nav := ui.nav(len(all_items), page, 'ms:drafttopic'):
         rows.append(nav)
-    await ui.show(target, f'<b>Тема · {ui.e(data["subject_name"], 100)}</b>\nВыберите тему или напишите новую.', ui.kb(*rows) if rows else None)
+    await ui.show(target, f'<b>Тема · {ui.e(data["subject_name"], 100)}</b>\nВыберите тему или напишите новую.\n'
+                  'Новая тема без материала, занятия или чек-листа удалится через час.', ui.kb(*rows) if rows else None)
 
 
 async def draft_mentors(target, state, sm, page=0):
@@ -783,7 +784,9 @@ async def actions(callback: CallbackQuery, state: FSMContext, viewer: Viewer,
                                     subject_id=subject.id, subject_name=subject.name)
             await state.set_state(MentoringForm.topic)
             await ui.show(callback, f'<b>Новая тема · {ui.e(subject.name, 100)}</b>\n'
-                          'Введите название новой темы.\n/cancel — отменить заполнение.')
+                          'Введите название новой темы.\n'
+                          'После создания добавьте материал в течение часа, иначе пустая тема удалится.\n'
+                          '/cancel — отменить заполнение.')
         elif op == 'list':
             await state.clear()
             await show_list(callback, sm, viewer, settings, p[2], num(p[3]), num(p[4]))

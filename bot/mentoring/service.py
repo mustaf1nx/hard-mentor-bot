@@ -11,13 +11,13 @@ from datetime import datetime, timedelta, timezone
 from pathlib import PurePosixPath
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import and_, func, or_, select, update
+from sqlalchemy import and_, delete, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import clock, repo
 from ..config import Settings
 from ..db import (FinalReport, LearningMaterial, Mentor, MentorRole, MentorWeeklyReport, MentoringNotification, MentoringSession,
-                  SessionBooking, SessionFeedback, SessionFormatChange, Subject, Term, Topic, TopicChecklist, User,
+                  SessionBooking, SessionFeedback, SessionFormatChange, Subject, Term, Topic, TopicChecklist, TopicExpiry, User,
                   conflict_insert)
 from ..repo import Viewer
 
@@ -168,17 +168,42 @@ async def ensure_topic(s: AsyncSession, subject_name: str, topic_name: str) -> T
     await s.execute(conflict_insert(Subject.__table__, dialect).values(
         name=subject_name, name_key=subject_name.casefold()).on_conflict_do_nothing(index_elements=['name_key']))
     subject_id = await s.scalar(select(Subject.id).where(Subject.name_key == subject_name.casefold()))
-    await s.execute(conflict_insert(Topic.__table__, dialect).values(
+    created_id = await s.scalar(conflict_insert(Topic.__table__, dialect).values(
         subject_id=subject_id, name=topic_name, name_key=topic_name.casefold()).on_conflict_do_nothing(
-            index_elements=['subject_id', 'name_key']))
+            index_elements=['subject_id', 'name_key']).returning(Topic.id))
+    if created_id is not None:
+        s.add(TopicExpiry(topic_id=created_id, expires_at=clock.now() + timedelta(hours=1)))
+        await s.flush()
     return await s.scalar(select(Topic).where(Topic.subject_id == subject_id, Topic.name_key == topic_name.casefold()))
 
 
-async def topic_names(s: AsyncSession, topic_id: int) -> tuple[str, str]:
-    row = (await s.execute(select(Subject.name, Topic.name).join(Topic, Topic.subject_id == Subject.id).where(Topic.id == topic_id))).first()
+async def topic_names(s: AsyncSession, topic_id: int, *, lock: bool = False) -> tuple[str, str]:
+    query = select(Subject.name, Topic.name).join(Topic, Topic.subject_id == Subject.id).where(Topic.id == topic_id)
+    if lock:
+        query = query.with_for_update(of=Topic)
+    row = (await s.execute(query)).first()
     if row is None:
         raise RuleError('Тема не найдена.')
     return row[0], row[1]
+
+
+async def cleanup_expired_topics(s: AsyncSession, now: datetime) -> int:
+    """Delete expired unused topics, serialized against uploads on PostgreSQL."""
+    ids = list(await s.scalars(select(TopicExpiry.topic_id).where(TopicExpiry.expires_at <= now)))
+    deleted = 0
+    for topic_id in ids:
+        topic = await s.scalar(select(Topic).where(Topic.id == topic_id).with_for_update(skip_locked=True))
+        if topic is None:
+            continue
+        # Archived/private/pending materials and cancelled sessions still own their topic.
+        unused = await s.scalar(select(Topic.id).where(Topic.id == topic_id, *(
+            ~select(model.topic_id).where(model.topic_id == Topic.id).exists()
+            for model in (LearningMaterial, MentoringSession, TopicChecklist))))
+        await s.execute(delete(TopicExpiry).where(TopicExpiry.topic_id == topic_id))
+        if unused is not None:
+            await s.execute(delete(Topic).where(Topic.id == topic_id))
+            deleted += 1
+    return deleted
 
 
 async def subjects(s: AsyncSession) -> list[Subject]:
@@ -192,7 +217,7 @@ async def topics(s: AsyncSession, subject_id: int) -> list[Topic]:
 async def put_checklist(s: AsyncSession, viewer: Viewer, topic_id: int, items: list[str]) -> None:
     require_staff(viewer)
     parse_items('\n'.join(items))
-    await topic_names(s, topic_id)
+    await topic_names(s, topic_id, lock=True)
     ins = conflict_insert(TopicChecklist.__table__, s.get_bind().dialect.name)
     await s.execute(ins.values(topic_id=topic_id, items=items, author_id=viewer.id).on_conflict_do_update(
         index_elements=['topic_id'], set_={'items': items, 'author_id': viewer.id}))
@@ -246,7 +271,7 @@ async def create_session(s: AsyncSession, viewer: Viewer, settings: Settings, *,
         raise RuleError('Начало — позже чем через 5 минут, длительность — от 15 до 360 минут.')
     if not await repo.is_mentor(s, mentor_id):
         raise RuleError('Ментор больше не в списке. Сначала добавьте его через /addmentor.')
-    await topic_names(s, topic_id)
+    await topic_names(s, topic_id, lock=True)
     term = await active_term(s, settings, starts_at)
     lesson = MentoringSession(creation_key=creation_key, topic_id=topic_id, mentor_id=mentor_id,
         created_by=viewer.id, starts_at=starts_at, ends_at=starts_at + timedelta(minutes=duration),
@@ -527,7 +552,7 @@ async def add_material(s: AsyncSession, viewer: Viewer, *, topic_id: int, kind: 
         if lesson.status == 'cancelled':
             raise RuleError('Материалы нельзя прикрепить к отменённому занятию. Добавьте их в банк отдельно.')
         topic_id = lesson.topic_id
-    await topic_names(s, topic_id)
+    await topic_names(s, topic_id, lock=True)
     existing = await s.scalar(select(LearningMaterial).where(
         LearningMaterial.topic_id == topic_id, LearningMaterial.session_id == session_id,
         LearningMaterial.file_unique_id == file_unique_id, LearningMaterial.kind == kind,

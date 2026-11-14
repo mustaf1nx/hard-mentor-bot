@@ -28,6 +28,9 @@ async def check_once(bot: Bot, sm: async_sessionmaker, settings: Settings,
                      now: datetime | None = None) -> int:
     now = now or clock.now()
     async with sm() as s:
+        await svc.cleanup_expired_topics(s, now)
+        await s.commit()
+    async with sm() as s:
         # Правило 24 часов (п. 8.1.3): слот без двух билетов аннулируется до напоминаний.
         await svc.autocancel_low_demand(s, settings, now)
         await generate_due(s, settings, now)

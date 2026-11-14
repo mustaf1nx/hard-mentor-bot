@@ -174,6 +174,13 @@ class Topic(Base):
     name_key: Mapped[str] = mapped_column(String(360))
 
 
+class TopicExpiry(Base):
+    """Persistent grace period for newly created, unused topics."""
+    __tablename__ = "topic_expiries"
+    topic_id: Mapped[int] = mapped_column(ForeignKey("mentor_topics.id", ondelete="CASCADE"), primary_key=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, index=True)
+
+
 class TopicChecklist(Base):
     __tablename__ = "topic_checklists"
     topic_id: Mapped[int] = mapped_column(ForeignKey("mentor_topics.id"), primary_key=True)
