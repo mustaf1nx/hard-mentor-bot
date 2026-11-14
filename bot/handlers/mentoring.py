@@ -118,7 +118,7 @@ async def browse_subjects(target, sm, mode: str, page: int):
     await ui.show(target, text, ui.kb(*rows))
 
 
-async def browse_topics(target, sm, mode: str, subject_id: int, page: int):
+async def browse_topics(target, sm, viewer: Viewer, mode: str, subject_id: int, page: int):
     if mode not in ('schedule', 'bank'):
         raise svc.RuleError('Неизвестный раздел.')
     async with sm() as s:
@@ -130,6 +130,8 @@ async def browse_topics(target, sm, mode: str, subject_id: int, page: int):
     rows = [[ui.b(x.name, f'ms:bank:{x.id}:0' if mode == 'bank' else f'ms:list:upcoming:{x.id}:0')] for x in items]
     if nav := ui.nav(len(all_items), page, f'ms:topics:{mode}:{subject_id}'):
         rows.append(nav)
+    if mode == 'bank' and viewer.is_staff:
+        rows.append([ui.b('➕ Добавить новую тему', f'ms:newtopic:{subject_id}')])
     rows += [[ui.b('← Предметы', f'ms:subjects:{mode}:0')]]
     await ui.show(target, f'<b>{ui.e(subject.name, 100)}</b>\nВыберите тему.' if items else 'Тем пока нет.', ui.kb(*rows))
 
@@ -769,7 +771,19 @@ async def actions(callback: CallbackQuery, state: FSMContext, viewer: Viewer,
             await browse_subjects(callback, sm, p[2], num(p[3]))
         elif op == 'topics':
             await state.clear()
-            await browse_topics(callback, sm, p[2], num(p[3]), num(p[4]))
+            await browse_topics(callback, sm, viewer, p[2], num(p[3]), num(p[4]))
+        elif op == 'newtopic':
+            svc.require_staff(viewer)
+            async with sm() as s:
+                subject = await s.get(Subject, num(p[2]))
+                if subject is None:
+                    raise svc.RuleError('Предмет не найден.')
+            await state.clear()
+            await state.update_data(operation='material', token=uuid4().hex, session_id=None,
+                                    subject_id=subject.id, subject_name=subject.name)
+            await state.set_state(MentoringForm.topic)
+            await ui.show(callback, f'<b>Новая тема · {ui.e(subject.name, 100)}</b>\n'
+                          'Введите название новой темы.\n/cancel — отменить заполнение.')
         elif op == 'list':
             await state.clear()
             await show_list(callback, sm, viewer, settings, p[2], num(p[3]), num(p[4]))
